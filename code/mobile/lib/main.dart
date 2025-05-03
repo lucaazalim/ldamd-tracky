@@ -8,6 +8,7 @@ import 'modules/client/order_history_page.dart';
 import 'modules/client/notifications_page.dart';
 import 'modules/common/login_page.dart';
 import 'modules/common/settings_page.dart';
+import 'modules/driver/screens/pending_deliveries_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,11 +43,12 @@ class MyApp extends StatelessWidget {
             ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginPage(),
+        '/': (context) => const PendingDeliveriesPage(),
         '/tracking': (context) => const TrackingPage(),
         '/order-history': (context) => const OrderHistoryPage(),
         '/notifications': (context) => const NotificationsPage(),
         '/settings': (context) => const SettingsPage(),
+        '/welcome': (context) => PendingDeliveriesScreen()
       },
     );
   }

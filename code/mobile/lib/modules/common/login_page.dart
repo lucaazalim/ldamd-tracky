@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../theme_provider.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class PendingDeliveriesPage extends StatelessWidget {
+  const PendingDeliveriesPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,7 @@ class LoginPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/tracking');
+                Navigator.pushReplacementNamed(context, '/welcome');
               },
               child: const Text('Login', style: TextStyle(color: Colors.black)),
             ),
