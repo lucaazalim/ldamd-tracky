@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/modules/common/data/address.dart';
 import 'package:mobile/modules/common/data/delivery.dart';
 import 'package:mobile/modules/driver/common/bottom_bar.dart';
+import 'package:mobile/modules/driver/common/delivery_card.dart';
 
 class PendingDeliveriesScreen extends StatelessWidget {
   const PendingDeliveriesScreen({super.key});
@@ -18,47 +19,10 @@ class PendingDeliveriesScreen extends StatelessWidget {
         itemCount: mockDeliveries.length,
         itemBuilder: (context, index) {
           final delivery = mockDeliveries[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              leading: const Icon(Icons.local_shipping),
-              title: Text('Pedido: ${delivery.orderId}'),
-              subtitle: Text(
-                'Destinatário: ${delivery.recipientName}\n'
-                    'Endereço: ${delivery.address.street}, ${delivery.address.city}',
-              ),
-              trailing: Text(
-                delivery.status,
-                style: TextStyle(
-                  color: _statusColor(delivery.status),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              isThreeLine: true,
-            ),
-          );
-        },
+          return DeliveryCard(delivery: delivery);
+        }
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1, // Defina o índice da aba atual
-        onTap: (index) {
-          // Lógica para navegação entre as telas
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Início',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_shipping),
-            label: 'Entregas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Perfil',
-          ),
-        ],
-      ),
+      bottomNavigationBar: BottomNavBar(currentIndex: 1)
     );
   }
 

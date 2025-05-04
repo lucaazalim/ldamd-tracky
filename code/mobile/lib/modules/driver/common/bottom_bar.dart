@@ -1,67 +1,41 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const BottomBar());
+class BottomNavBar extends StatelessWidget {
+  final int currentIndex;
 
-class BottomBar extends StatelessWidget {
-  const BottomBar({super.key});
+  const BottomNavBar({
+    super.key,
+    required this.currentIndex,
+  });
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Bottom Bar Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const HomeScreen(),
-    );
-  }
-}
+  void _onItemTapped(BuildContext context, int index) {
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+    final routes = ['/', '/driver/pending-deliveries', '/driver/available-deliveries'];
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-
-  final List<Widget> _pages = const [
-    Center(child: Text('Home')),
-    Center(child: Text('Pesquisar')),
-    Center(child: Text('Perfil')),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index != currentIndex) {
+      Navigator.pushReplacementNamed(context, routes[index]);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bottom Navigation Example'),
-      ),
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Início',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Pesquisar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Perfil',
-          ),
-        ],
-      ),
+    return BottomNavigationBar(
+      currentIndex: currentIndex,
+      onTap: (index) => _onItemTapped(context, index),
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Início',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.local_shipping),
+          label: 'Entregas',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Perfil',
+        ),
+      ],
     );
   }
 }

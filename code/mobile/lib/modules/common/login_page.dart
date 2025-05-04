@@ -85,7 +85,7 @@ class PendingDeliveriesPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/welcome');
+                Navigator.pushReplacementNamed(context, '/driver/pending-deliveries');
               },
               child: const Text('Login', style: TextStyle(color: Colors.black)),
             ),
