@@ -9,7 +9,7 @@ import 'modules/client/order_history_page.dart';
 import 'modules/client/notifications_page.dart';
 import 'modules/common/login_page.dart';
 import 'modules/common/settings_page.dart';
-import 'modules/driver/screens/pending _deliveries_page.dart';
+import 'modules/driver/screens/pending_deliveries_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

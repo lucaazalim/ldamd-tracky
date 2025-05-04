@@ -9,20 +9,24 @@ class PendingDeliveriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Entregas Pendentes'),
+    return WillPopScope(
+      onWillPop: () async => false, // Impede voltar
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Entregas Pendentes'),
+          automaticallyImplyLeading: false, // Remove botão de voltar da AppBar
+        ),
+        body: mockDeliveries.isEmpty
+            ? const Center(child: Text('Nenhuma entrega pendente.'))
+            : ListView.builder(
+          itemCount: mockDeliveries.length,
+          itemBuilder: (context, index) {
+            final delivery = mockDeliveries[index];
+            return DeliveryCard(delivery: delivery);
+          },
+        ),
+        bottomNavigationBar: BottomNavBar(currentIndex: 1),
       ),
-      body: mockDeliveries.isEmpty
-          ? const Center(child: Text('Nenhuma entrega pendente.'))
-          : ListView.builder(
-        itemCount: mockDeliveries.length,
-        itemBuilder: (context, index) {
-          final delivery = mockDeliveries[index];
-          return DeliveryCard(delivery: delivery);
-        }
-      ),
-      bottomNavigationBar: BottomNavBar(currentIndex: 1)
     );
   }
 
