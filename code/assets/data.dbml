@@ -1,0 +1,35 @@
+Table users {
+  id int [pk, increment]
+  name varchar
+  type enum('CUSTOMER', 'DRIVER')
+}
+
+Table orders {
+  id int [pk, increment]
+  customer_id int
+  driver_id int
+  status enum('PENDING', 'ACCEPTED', 'ON_COURSE', 'DELIVERIED')
+  address varchar
+  description varchar
+}
+
+Table locations {
+  order_id int
+  created_at timestamp
+  latitude float
+  longitude float
+
+  Indexes {
+    (order_id, created_at) [pk]
+  }
+}
+
+Table notification_preferences {
+  user_id int
+  enabled boolean
+}
+
+Ref: orders.customer_id > users.id
+Ref: orders.driver_id > users.id
+Ref: locations.order_id > orders.id
+Ref: notification_preferences.user_id > users.id
