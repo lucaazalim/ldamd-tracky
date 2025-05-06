@@ -12,6 +12,7 @@ Table orders {
   status enum('PENDING', 'ACCEPTED', 'ON_COURSE', 'DELIVERIED')
   address varchar [not null]
   description varchar [not null]
+  image_url varchar [not null]
 }
 
 Table locations {
