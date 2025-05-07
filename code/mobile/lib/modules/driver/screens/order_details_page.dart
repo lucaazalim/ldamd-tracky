@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mobile/modules/common/data/delivery.dart';
+import 'package:mobile/modules/common/data/location.dart';
+import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/services/location_service.dart';
 
-class DeliveryDetailsScreen extends StatefulWidget {
-  const DeliveryDetailsScreen({super.key});
+class OrderDetailsScreen extends StatefulWidget {
+  const OrderDetailsScreen({super.key});
 
   @override
-  State<DeliveryDetailsScreen> createState() => _DeliveryDetailsScreenState();
+  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
 }
 
-class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   final LocationService _locationService = LocationService();
   Position? _position;
   String? _error;
@@ -38,26 +39,36 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments;
 
-    if (args == null || args is! Delivery) {
+    if (args == null || args is! Order) {
       return const Scaffold(
         body: Center(child: Text('Dados da entrega não fornecidos.')),
       );
     }
 
-    final delivery = args;
+    final order = args as Order;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Detalhes da Entrega')),
+      appBar: AppBar(title: const Text('Detalhes do Pedido')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            Text('Pedido: ${delivery.orderId}', style: const TextStyle(fontSize: 18)),
-            Text('Destinatário: ${delivery.recipientName}'),
-            Text('Endereço: ${delivery.address.street}, ${delivery.address.city}'),
-            Text('Status: ${delivery.status}'),
+            Text('Pedido ID: ${order.id}', style: const TextStyle(fontSize: 18)),
+            Text('Cliente: ${order.customerId}'),
+            Text('Motorista: ${order.driverId}'),
+            Text('Endereço: ${order.address}'),
+            Text('Descrição: ${order.description}'),
+            Text('Status: ${order.status}'),
             const SizedBox(height: 16),
-            Text('Data de Entrega: ${delivery.deliveryDate}'),
+            if (order.imageUrl != null && order.imageUrl.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Imagem do Pedido:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Image.network(order.imageUrl, height: 150),
+                ],
+              ),
             const Divider(height: 32),
             const Text('Sua localização atual:', style: TextStyle(fontWeight: FontWeight.bold)),
             if (_position != null)
@@ -70,5 +81,7 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
         ),
       ),
     );
+
   }
+
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/modules/common/data/delivery.dart';
+import 'package:mobile/modules/common/data/order.dart';
 
-class DeliveryCard extends StatelessWidget {
-  final Delivery delivery;
+class OrderCard extends StatelessWidget {
+  final Order order;
 
-  const DeliveryCard({super.key, required this.delivery});
+  const OrderCard({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
@@ -12,15 +12,15 @@ class DeliveryCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
         leading: const Icon(Icons.local_shipping),
-        title: Text('Pedido: ${delivery.orderId}'),
+        title: Text('Pedido #${order.id}'),
         subtitle: Text(
-          'Destinatário: ${delivery.recipientName}\n'
-              'Endereço: ${delivery.address.street}, ${delivery.address.city}',
+          'Descrição: ${order.description}\n'
+              'Endereço: ${order.address}',
         ),
         trailing: Text(
-          delivery.status,
+          order.status.name,
           style: TextStyle(
-            color: _statusColor(delivery.status),
+            color: _statusColor(order.status.name),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -28,8 +28,8 @@ class DeliveryCard extends StatelessWidget {
         onTap: () {
           Navigator.pushNamed(
             context,
-            '/driver/delivery/details',
-            arguments: delivery,
+            '/driver/order/details',
+            arguments: order,
           );
         },
       ),
@@ -37,13 +37,15 @@ class DeliveryCard extends StatelessWidget {
   }
 
   Color _statusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
+    switch (status.toUpperCase()) {
+      case 'PENDING':
         return Colors.orange;
-      case 'delivered':
+      case 'ACCEPTED':
+        return Colors.blue;
+      case 'ON_COURSE':
+        return Colors.purple;
+      case 'DELIVERIED':
         return Colors.green;
-      case 'cancelled':
-        return Colors.red;
       default:
         return Colors.grey;
     }
