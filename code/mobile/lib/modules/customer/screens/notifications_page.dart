@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../theme_provider.dart';
+import '../common/bottom_bar.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({Key? key}) : super(key: key);
@@ -17,19 +18,28 @@ class NotificationsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notifications'),
+        titleTextStyle: TextStyle(
+            color: const Color(0xFFBFF205),
+            fontSize: 20.0
+        ),
         actions: [
-          Switch(
-            value: themeProvider.isDarkMode,
-            onChanged: (value) => themeProvider.toggleTheme(),
+          IconButton(
+            icon: Icon(
+              themeProvider.isDarkMode ? Icons.brightness_2 : Icons.wb_sunny,
+            ),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
           ),
         ],
+        automaticallyImplyLeading: false,
       ),
       body: ListView.builder(
         itemCount: mockNotifications.length,
         itemBuilder: (context, index) {
           final notification = mockNotifications[index];
           return ListTile(
-            leading: const Icon(Icons.notifications, color: Colors.orange),
+            leading: const Icon(Icons.notifications_active, color: Colors.orange),
             title: Text(notification['title']!,
                 style: TextStyle(
                   color: themeProvider.isDarkMode ? Colors.white : Colors.black,
@@ -41,6 +51,7 @@ class NotificationsPage extends StatelessWidget {
           );
         },
       ),
+      bottomNavigationBar: BottomNavBar(currentIndex: 1),
     );
   }
 }

@@ -17,6 +17,10 @@ class OrderDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order History'),
+        titleTextStyle: TextStyle(
+            color: const Color(0xFFBFF205),
+            fontSize: 20.0
+        ),
         actions: [
           IconButton(
             icon: Icon(

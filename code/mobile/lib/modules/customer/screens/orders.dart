@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../theme_provider.dart';
 import "../common/bottom_bar.dart";
-import '../../common/services/orders_service.dart'; // Importe o OrdersService
+import '../../common/services/orders_service.dart';
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({Key? key}) : super(key: key);
@@ -14,13 +15,21 @@ class OrdersPage extends StatefulWidget {
 class _OrdersPageState extends State<OrdersPage> {
   final OrdersService _ordersService = OrdersService();
   late Future<List<Map<String, dynamic>>> _ordersFuture;
-  late int _customerId; // Variável para armazenar o ID do cliente
+  late int _customerId;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _customerId = ModalRoute.of(context)?.settings.arguments as int? ?? 0;
+  void initState() {
+    super.initState();
+    _loadCustomerId();
+  }
+
+  Future<void> _loadCustomerId() async {
+    final prefs = await SharedPreferences.getInstance();
+    _customerId = prefs.getInt('userId') ?? 0;
     _ordersFuture = _ordersService.getOrdersForCustomer(_customerId);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -29,7 +38,11 @@ class _OrdersPageState extends State<OrdersPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Orders'),
+        title: const Text('Orders'),
+        titleTextStyle: TextStyle(
+            color: const Color(0xFFBFF205),
+            fontSize: 20.0
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -40,6 +53,7 @@ class _OrdersPageState extends State<OrdersPage> {
             },
           ),
         ],
+        automaticallyImplyLeading: false,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _ordersFuture,
@@ -47,7 +61,7 @@ class _OrdersPageState extends State<OrdersPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error loading orders: ${snapshot.error}'));
+            return Center(child: Text('Erro ao carregar os pedidos: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             final orders = snapshot.data!;
             return ListView.builder(
@@ -56,7 +70,7 @@ class _OrdersPageState extends State<OrdersPage> {
                 final order = orders[index];
                 return ListTile(
                   leading: Icon(Icons.local_shipping, color: themeProvider.isDarkMode ? Colors.white : Colors.black,),
-                  title: Text('Order ID: ${order['id']}',
+                  title: Text('ID do Pedido: ${order['id']}',
                       style: TextStyle(
                         color: themeProvider.isDarkMode ? Colors.white : Colors.black,
                       )),
@@ -67,11 +81,11 @@ class _OrdersPageState extends State<OrdersPage> {
                           style: TextStyle(
                             color: themeProvider.isDarkMode ? Colors.white70 : Colors.black54,
                           )),
-                      Text('Address: ${order['address']}',
+                      Text('Endereço: ${order['address']}',
                           style: TextStyle(
                             color: themeProvider.isDarkMode ? Colors.white70 : Colors.black54,
                           )),
-                      Text('Description: ${order['description']}',
+                      Text('Descrição: ${order['description']}',
                           style: TextStyle(
                             color: themeProvider.isDarkMode ? Colors.white70 : Colors.black54,
                           )),
@@ -81,7 +95,7 @@ class _OrdersPageState extends State<OrdersPage> {
               },
             );
           } else {
-            return const Center(child: Text('No orders found.'));
+            return const Center(child: Text('Nenhum pedido encontrado.'));
           }
         },
       ),
@@ -89,3 +103,4 @@ class _OrdersPageState extends State<OrdersPage> {
     );
   }
 }
+
