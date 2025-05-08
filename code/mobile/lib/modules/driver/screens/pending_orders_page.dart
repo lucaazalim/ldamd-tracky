@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/order.dart';
@@ -7,8 +8,33 @@ import 'package:mobile/modules/driver/common/bottom_bar.dart';
 import 'package:mobile/modules/driver/common/order_card.dart';
 import '../../../theme_provider.dart';
 
-class PendingOrdersScreen extends StatelessWidget {
+class PendingOrdersScreen extends StatefulWidget {
   const PendingOrdersScreen({super.key});
+
+  @override
+  State<PendingOrdersScreen> createState() => _PendingOrdersScreenState();
+}
+
+class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
+  late Future<List<Order>> _currentOrders;
+  late Future<List<Order>> _completedOrders;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentOrders = _loadPendingOrders();
+    _completedOrders = _loadCompletedOrders();
+  }
+
+  Future<List<Order>> _loadPendingOrders() async {
+    final currentOrders = OrdersService().getCurrentOrdersByDriverId(2);
+    return currentOrders;
+  }
+
+  Future<List<Order>> _loadCompletedOrders() async {
+    final currentOrders = OrdersService().getCompletedOrdersByDriverId(2);
+    return currentOrders;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,58 +57,29 @@ class PendingOrdersScreen extends StatelessWidget {
           ],
           automaticallyImplyLeading: false, // Remove botão de voltar da AppBar
         ),
-        body: mockOrders.isEmpty
-            ? const Center(child: Text('Nenhuma entrega pendente.'))
-            : ListView.builder(
-          itemCount: mockOrders.length,
-          itemBuilder: (context, index) {
-            final order = mockOrders[index];
-            return OrderCard(order: order);
+        body:
+        FutureBuilder<List<Order>>(
+          future: _currentOrders,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Erro ao carregar as entregas: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('Nenhuma entrega pendente.'));
+            } else {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  final order = snapshot.data![index];
+                  return OrderCard(order: order);
+                },
+              );
+            }
           },
         ),
-        bottomNavigationBar: BottomNavBar(currentIndex: 1),
+        bottomNavigationBar: const BottomNavBar(currentIndex: 1),
       ),
     );
   }
-
 }
-
-
-final List<Order> mockOrders = [
-  Order(
-    id: 1,
-    customerId: 101,
-    driverId: 201,
-    status: OrderStatus.accepted,
-    address: 'Rua das Flores, 123 - Centro, Belo Horizonte - MG',
-    description: 'Entrega de utensílios domésticos',
-    imageUrl: 'https://example.com/images/order1.png',
-  ),
-  Order(
-    id: 2,
-    customerId: 102,
-    driverId: 201,
-    status: OrderStatus.delivered,
-    address: 'Av. Afonso Pena, 1000 - Funcionários, Belo Horizonte - MG',
-    description: 'Pacote de ferramentas manuais',
-    imageUrl: 'https://example.com/images/order2.png',
-  ),
-  Order(
-    id: 3,
-    customerId: 103,
-    driverId: 201,
-    status: OrderStatus.onCourse,
-    address: 'Rua Bahia, 500 - Lourdes, Belo Horizonte - MG',
-    description: 'Itens de pesca e camping',
-    imageUrl: 'https://example.com/images/order3.png',
-  ),
-  Order(
-    id: 4,
-    customerId: 104,
-    driverId: 202,
-    status: OrderStatus.onCourse,
-    address: 'Rua Timbiras, 750 - Funcionários, Belo Horizonte - MG',
-    description: 'Decoração para eventos',
-    imageUrl: 'https://example.com/images/order4.png',
-  ),
-];

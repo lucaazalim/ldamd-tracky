@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:mobile/modules/common/data/order.dart';
 
 class OrdersService {
+
   Future<Map<String, dynamic>> _loadMockData() async {
     final String response = await rootBundle.loadString('mock/data.json');
     return json.decode(response);
@@ -12,4 +14,34 @@ class OrdersService {
     final orders = (mockData['orders'] as List<dynamic>?) ?? [];
     return orders.where((order) => order['customer_id'] == customerId).cast<Map<String, dynamic>>().toList();
   }
+
+  Future<List<Order>> getCurrentOrdersByDriverId(int driverId) async {
+    final Map<String, dynamic> decodedData = await _loadMockData();
+    final List<dynamic> ordersData = decodedData['orders'] as List<dynamic>? ?? [];
+    List<Order> driverOrders = [];
+
+    for (var orderData in ordersData) {
+      if (orderData['driver_id'] == driverId && orderData['status'] != 'DELIVERED') {
+        driverOrders.add(Order.fromJson(orderData));
+      }
+    }
+
+    return driverOrders;
+  }
+
+  Future<List<Order>> getCompletedOrdersByDriverId(int driverId) async {
+    final Map<String, dynamic> decodedData = await _loadMockData();
+    final List<dynamic> ordersData = decodedData['orders'] as List<dynamic>? ?? [];
+    List<Order> driverOrders = [];
+
+    for (var orderData in ordersData) {
+      if (orderData['driver_id'] == driverId && orderData['status'] == 'DELIVERED') {
+        driverOrders.add(Order.fromJson(orderData));
+      }
+    }
+
+    return driverOrders;
+  }
+
+
 }

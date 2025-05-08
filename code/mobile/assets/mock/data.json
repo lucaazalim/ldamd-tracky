@@ -27,11 +27,29 @@
   ],
   "orders": [
     {
+      "id": 108,
+      "customer_id": 1,
+      "driver_id": 2,
+      "status": "ACCEPTED",
+      "address": "Rua das Flores, 123, Bairro Primavera",
+      "description": "Encomenda de livros",
+      "image_url": "https://exemplo.com/imagem1.jpg"
+    },
+    {
       "id": 101,
       "customer_id": 1,
       "driver_id": 2,
-      "status": "DELIVERIED",
+      "status": "ACCEPTED",
       "address": "Rua das Flores, 123, Bairro Primavera",
+      "description": "Encomenda de eletrônicos",
+      "image_url": "https://exemplo.com/imagem1.jpg"
+    },
+    {
+      "id": 109,
+      "customer_id": 3,
+      "driver_id": 2,
+      "status": "ON_COURSE",
+      "address": "Avenida Central, 123, Centro",
       "description": "Encomenda de eletrônicos",
       "image_url": "https://exemplo.com/imagem1.jpg"
     },

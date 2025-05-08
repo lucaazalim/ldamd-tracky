@@ -22,7 +22,7 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'],
-      customerId: json['costumer_id'],
+      customerId: json['customer_id'],
       driverId: json['driver_id'],
       status: OrderStatus.fromString(json['status']),
       address: json['address'],
@@ -34,7 +34,7 @@ class Order {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'costumer_id': customerId,
+      'customer_id': customerId,
       'driver_id': driverId,
       'status': status.toJson(),
       'address': address,
