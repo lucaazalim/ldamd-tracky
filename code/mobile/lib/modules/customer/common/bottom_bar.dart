@@ -9,11 +9,10 @@ class BottomNavBar extends StatelessWidget {
   });
 
   void _onItemTapped(BuildContext context, int index) {
-
-    final routes = ['/', '/customer/orders', '/customer/order-details'];
+    final routes = ['/customer/orders', '/customer/notifications', '/preferences','/' ];
 
     if (index != currentIndex) {
-      Navigator.pushReplacementNamed(context, routes[index]);
+      Navigator.pushNamed(context, routes[index]);
     }
   }
 
@@ -22,18 +21,24 @@ class BottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: (index) => _onItemTapped(context, index),
+      type: BottomNavigationBarType.fixed,
       items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
+
         BottomNavigationBarItem(
           icon: Icon(Icons.local_shipping),
           label: 'Orders',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Perfil',
+          icon: Icon(Icons.notifications),
+          label: 'Notifications',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          label: 'Preferences',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.logout),
+          label: 'Logout',
         ),
       ],
     );

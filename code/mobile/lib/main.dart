@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile/modules/driver/screens/order_details_page.dart';
 import 'package:provider/provider.dart';
+import 'modules/common/screens/shared_preferences.dart';
 import 'modules/customer/screens/orders.dart';
 import 'theme_provider.dart';
 import 'modules/customer/screens/order_details_page.dart';
-import 'modules/common/screens/notifications_page.dart';
+import 'modules/customer/screens/notifications_page.dart';
 import 'modules/lobby/login_page.dart';
 import 'modules/driver/screens/pending_orders_page.dart';
 
@@ -43,9 +44,10 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginPage(),
+        '/preferences': (context) => const PreferencesPage(),
         '/customer/orders': (context) => const OrdersPage(),
         '/customer/order/details': (context) => const OrderDetailsPage(),
-        '/notifications': (context) => const NotificationsPage(),
+        '/customer/notifications': (context) => const NotificationsPage(),
         '/driver/pending-deliveries': (context) => PendingOrdersScreen(),
         '/driver/order/details': (context) => OrderDetailsScreen()
       },
