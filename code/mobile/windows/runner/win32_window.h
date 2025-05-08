@@ -52,7 +52,7 @@ class Win32Window {
   // If true, closing this window will quit the application.
   void SetQuitOnClose(bool quit_on_close);
 
-  // Return a RECT representing the bounds of the current client area.
+  // Return a RECT representing the bounds of the current customer area.
   RECT GetClientArea();
 
  protected:
@@ -75,8 +75,8 @@ class Win32Window {
   friend class WindowClassRegistrar;
 
   // OS callback called by message pump. Handles the WM_NCCREATE message which
-  // is passed when the non-client area is being created and enables automatic
-  // non-client DPI scaling so that the non-client area automatically
+  // is passed when the non-customer area is being created and enables automatic
+  // non-customer DPI scaling so that the non-customer area automatically
   // responds to changes in DPI. All other messages are handled by
   // MessageHandler.
   static LRESULT CALLBACK WndProc(HWND const window,

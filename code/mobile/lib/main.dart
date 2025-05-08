@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile/modules/driver/screens/order_details_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'modules/customer/screens/orders.dart';
 import 'theme_provider.dart';
-import 'modules/client/tracking_page.dart';
-import 'modules/client/order_history_page.dart';
-import 'modules/client/notifications_page.dart';
-import 'modules/common/login_page.dart';
-import 'modules/common/settings_page.dart';
+import 'modules/customer/screens/order_details_page.dart';
+import 'modules/common/screens/notifications_page.dart';
+import 'modules/lobby/login_page.dart';
 import 'modules/driver/screens/pending_orders_page.dart';
 
 void main() {
@@ -44,11 +42,10 @@ class MyApp extends StatelessWidget {
             ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const PendingDeliveriesPage(),
-        '/tracking': (context) => const TrackingPage(),
-        '/order-history': (context) => const OrderHistoryPage(),
+        '/': (context) => const LoginPage(),
+        '/customer/orders': (context) => const OrdersPage(),
+        '/customer/order/details': (context) => const OrderDetailsPage(),
         '/notifications': (context) => const NotificationsPage(),
-        '/settings': (context) => const SettingsPage(),
         '/driver/pending-deliveries': (context) => PendingOrdersScreen(),
         '/driver/order/details': (context) => OrderDetailsScreen()
       },

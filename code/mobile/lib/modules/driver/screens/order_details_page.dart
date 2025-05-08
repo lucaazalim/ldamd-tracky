@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mobile/modules/common/data/location.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/services/location_service.dart';
+import '../../../theme_provider.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   const OrderDetailsScreen({super.key});
@@ -37,6 +39,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final args = ModalRoute.of(context)?.settings.arguments;
 
     if (args == null || args is! Order) {
@@ -45,10 +48,22 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       );
     }
 
-    final order = args as Order;
+    final order = args;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Detalhes do Pedido')),
+      appBar: AppBar(
+          title: const Text('Detalhes do Pedido'),
+          actions: [
+            IconButton(
+              icon: Icon(
+                themeProvider.isDarkMode ? Icons.brightness_2 : Icons.wb_sunny,
+              ),
+              onPressed: () {
+                themeProvider.toggleTheme();
+              },
+            ),
+          ]
+        ,),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(

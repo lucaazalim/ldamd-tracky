@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/data/location.dart';
 import 'package:mobile/modules/driver/common/bottom_bar.dart';
 import 'package:mobile/modules/driver/common/order_card.dart';
+import '../../../theme_provider.dart';
 
 class PendingOrdersScreen extends StatelessWidget {
   const PendingOrdersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return WillPopScope(
       onWillPop: () async => false, // Impede voltar
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Entregas Pendentes'),
+          actions: [
+            IconButton(
+              icon: Icon(
+                themeProvider.isDarkMode ? Icons.brightness_2 : Icons.wb_sunny,
+              ),
+              onPressed: () {
+                themeProvider.toggleTheme();
+              },
+            ),
+          ],
           automaticallyImplyLeading: false, // Remove botão de voltar da AppBar
         ),
         body: mockOrders.isEmpty
