@@ -8,7 +8,7 @@ import 'theme_provider.dart';
 import 'modules/customer/screens/order_details_page.dart';
 import 'modules/customer/screens/notifications_page.dart';
 import 'modules/lobby/login_page.dart';
-import 'modules/driver/screens/pending_orders_page.dart';
+import 'modules/driver/screens/orders_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

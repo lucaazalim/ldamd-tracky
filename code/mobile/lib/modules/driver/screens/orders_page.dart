@@ -45,10 +45,10 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
 
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Entregas Pendentes'),
+          title: const Text('Orders'),
           titleTextStyle: TextStyle(
               color: const Color(0xFFBFF205),
-              fontSize: 20.0
+              fontSize: 24.0
           ),
           actions: [
             IconButton(
@@ -65,10 +65,20 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
 
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(1.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Text(
+                      'Current Orders',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      ),
+                    ),
+                  ),
+                ),
                 FutureBuilder<List<Order>>(
                   future: _currentOrders,
                   builder: (context, snapshot) {
@@ -99,8 +109,9 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: Center(
                     child: Text(
-                      'Entregas Concluídas',
-                      style: Theme.of(context).textTheme.headlineSmall,
+                      'Concluded Orders',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      ),
                     ),
                   ),
                 ),
