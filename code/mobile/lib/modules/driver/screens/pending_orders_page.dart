@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/data/location.dart';
-import 'package:mobile/modules/driver/common/bottom_bar.dart';
+import '../../common/components/bottom_bar.dart';
 import 'package:mobile/modules/driver/common/order_card.dart';
 import '../../../theme_provider.dart';
 
@@ -45,6 +45,10 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Entregas Pendentes'),
+          titleTextStyle: TextStyle(
+              color: const Color(0xFFBFF205),
+              fontSize: 20.0
+          ),
           actions: [
             IconButton(
               icon: Icon(
@@ -78,7 +82,7 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
             }
           },
         ),
-        bottomNavigationBar: const BottomNavBar(currentIndex: 1),
+        bottomNavigationBar: const BottomNavBar(currentIndex: 0),
       ),
     );
   }

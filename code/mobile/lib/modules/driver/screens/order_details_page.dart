@@ -53,6 +53,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
           title: const Text('Detalhes do Pedido'),
+        titleTextStyle: TextStyle(
+            color: const Color(0xFFBFF205),
+            fontSize: 20.0
+        ),
           actions: [
             IconButton(
               icon: Icon(

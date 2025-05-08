@@ -13,7 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+
   final AuthService _authService = AuthService();
   Future<void> _login(BuildContext context) async {
     final String username = _usernameController.text;
@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt('userId', user['id']);
       await prefs.setString('username', username);
+      await prefs.setString('type', user['type']);
 
       if (user['type'] == 'CUSTOMER') {
         Navigator.pushReplacementNamed(

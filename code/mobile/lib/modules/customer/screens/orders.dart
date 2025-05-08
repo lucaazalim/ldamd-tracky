@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../theme_provider.dart';
-import "../common/bottom_bar.dart";
+import '../../common/components/bottom_bar.dart';
 import '../../common/services/orders_service.dart';
 
 class OrdersPage extends StatefulWidget {

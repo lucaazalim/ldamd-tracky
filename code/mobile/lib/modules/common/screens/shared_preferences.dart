@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../theme_provider.dart';
-import '../../customer/common/bottom_bar.dart';
+import '../../common/components/bottom_bar.dart';
 
 class PreferencesPage extends StatefulWidget {
   const PreferencesPage({Key? key}) : super(key: key);
@@ -13,17 +13,21 @@ class PreferencesPage extends StatefulWidget {
 
 class _PreferencesPageState extends State<PreferencesPage> {
   String _username = '';
+  String _userType = '';
+  int _bottomNavIndex = 2;
 
   @override
   void initState() {
     super.initState();
-    _loadUsername();
+    _loadUserData();
   }
 
-  Future<void> _loadUsername() async {
+  Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _username = prefs.getString('username') ?? 'No username found';
+      _userType = prefs.getString('type') ?? 'Unknown user type';
+      _bottomNavIndex = _userType == 'CUSTOMER' ? 2 : 1;
     });
   }
 
@@ -34,10 +38,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Preferences'),
-        titleTextStyle: TextStyle(
-            color: const Color(0xFFBFF205),
-            fontSize: 20.0
-        ),
+        titleTextStyle: const TextStyle(color: Color(0xFFBFF205), fontSize: 20.0),
         automaticallyImplyLeading: false,
       ),
       body: Padding(
@@ -48,7 +49,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Theme Mode', style: TextStyle(fontSize: 18)),
+                const Text('Theme mode', style: TextStyle(fontSize: 18)),
                 IconButton(
                   icon: Icon(
                     themeProvider.isDarkMode ? Icons.brightness_2 : Icons.wb_sunny,
@@ -61,10 +62,13 @@ class _PreferencesPageState extends State<PreferencesPage> {
             ),
             const SizedBox(height: 20),
             Text('Username: $_username', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 30),
+            Text('User type: ${(_userType).toLowerCase()}', style: const TextStyle(fontSize: 18)),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(currentIndex: 2),
+      bottomNavigationBar: BottomNavBar(currentIndex: _bottomNavIndex), // Use dynamic index
     );
   }
 }
+

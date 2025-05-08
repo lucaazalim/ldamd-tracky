@@ -17,6 +17,6 @@ class AuthService {
         return user as Map<String, dynamic>;
       }
     }
-    return null; // Usuário não encontrado
+    return null;
   }
 }
