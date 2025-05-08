@@ -41,7 +41,8 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return WillPopScope(
-      onWillPop: () async => false, // Impede voltar
+      onWillPop: () async => false,
+
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Entregas Pendentes'),
@@ -59,28 +60,78 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
               },
             ),
           ],
-          automaticallyImplyLeading: false, // Remove botão de voltar da AppBar
+          automaticallyImplyLeading: false,
         ),
-        body:
-        FutureBuilder<List<Order>>(
-          future: _currentOrders,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Erro ao carregar as entregas: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('Nenhuma entrega pendente.'));
-            } else {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  final order = snapshot.data![index];
-                  return OrderCard(order: order);
-                },
-              );
-            }
-          },
+
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FutureBuilder<List<Order>>(
+                  future: _currentOrders,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
+                      ));
+                    } else if (snapshot.hasError) {
+                      return Text('Erro ao carregar as entregas: ${snapshot.error}');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Text('Nenhuma entrega pendente.');
+                    } else {
+                      return ListView.builder(
+                        shrinkWrap: true, // <- importante para funcionar dentro do Column
+                        physics: const NeverScrollableScrollPhysics(), // <- evita conflito de scrolls
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          final order = snapshot.data![index];
+                          return OrderCard(order: order);
+                        },
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Text(
+                      'Entregas Concluídas',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                  ),
+                ),
+                FutureBuilder<List<Order>>(
+                  future: _completedOrders,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
+                      ));
+                    } else if (snapshot.hasError) {
+                      return Text('Erro ao carregar as entregas: ${snapshot.error}');
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Text('Nenhuma entrega concluída.');
+                    } else {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          final order = snapshot.data![index];
+                          return OrderCard(order: order);
+                        },
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
         bottomNavigationBar: const BottomNavBar(currentIndex: 0),
       ),

@@ -75,7 +75,16 @@
       "id": 104,
       "customer_id": 3,
       "driver_id": 2,
-      "status": "ACCEPTED",
+      "status": "DELIVERED",
+      "address": "Rua da Agua, 101, Papagaio",
+      "description": "Remessa de remédios",
+      "image_url": "https://exemplo.com/imagem4.jpg"
+    },
+    {
+      "id": 104,
+      "customer_id": 3,
+      "driver_id": 2,
+      "status": "DELIVERED",
       "address": "Alameda dos Sonhos, 101, Jardim Alegre",
       "description": "Remessa de documentos",
       "image_url": "https://exemplo.com/imagem4.jpg"
