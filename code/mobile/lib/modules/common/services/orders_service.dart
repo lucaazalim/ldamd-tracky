@@ -21,7 +21,7 @@ class OrdersService {
     List<Order> driverOrders = [];
 
     for (var orderData in ordersData) {
-      if (orderData['driver_id'] == driverId && orderData['status'] != 'DELIVERED') {
+      if (orderData['driver_id'] == driverId && orderData['status'] != 'DELIVERED' && orderData['status'] != 'PENDING') {
         driverOrders.add(Order.fromJson(orderData));
       }
     }
@@ -29,13 +29,13 @@ class OrdersService {
     return driverOrders;
   }
 
-  Future<List<Order>> getCompletedOrdersByDriverId(int driverId) async {
+  Future<List<Order>> getAvailableOrdersByDriverId(int driverId) async {
     final Map<String, dynamic> decodedData = await _loadMockData();
     final List<dynamic> ordersData = decodedData['orders'] as List<dynamic>? ?? [];
     List<Order> driverOrders = [];
 
     for (var orderData in ordersData) {
-      if (orderData['driver_id'] == driverId && orderData['status'] == 'DELIVERED') {
+      if (orderData['driver_id'] == driverId && orderData['status'] == 'PENDING') {
         driverOrders.add(Order.fromJson(orderData));
       }
     }

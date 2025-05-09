@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:provider/provider.dart';
-import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/order.dart';
-import 'package:mobile/modules/common/data/location.dart';
 import '../../common/components/bottom_bar.dart';
 import 'package:mobile/modules/driver/common/order_card.dart';
 import '../../../theme_provider.dart';
@@ -17,13 +15,13 @@ class PendingOrdersScreen extends StatefulWidget {
 
 class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
   late Future<List<Order>> _currentOrders;
-  late Future<List<Order>> _completedOrders;
+  late Future<List<Order>> _availableOrders;
 
   @override
   void initState() {
     super.initState();
     _currentOrders = _loadPendingOrders();
-    _completedOrders = _loadCompletedOrders();
+    _availableOrders = _loadAvailableOrders();
   }
 
   Future<List<Order>> _loadPendingOrders() async {
@@ -31,9 +29,9 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
     return currentOrders;
   }
 
-  Future<List<Order>> _loadCompletedOrders() async {
-    final currentOrders = OrdersService().getCompletedOrdersByDriverId(2);
-    return currentOrders;
+  Future<List<Order>> _loadAvailableOrders() async {
+    final availableOrders = OrdersService().getAvailableOrdersByDriverId(2);
+    return availableOrders;
   }
 
   @override
@@ -109,14 +107,14 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: Center(
                     child: Text(
-                      'Concluded Orders',
+                      'Available Orders',
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       ),
                     ),
                   ),
                 ),
                 FutureBuilder<List<Order>>(
-                  future: _completedOrders,
+                  future: _availableOrders,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: Padding(
