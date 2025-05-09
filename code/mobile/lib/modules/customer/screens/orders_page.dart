@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../theme_provider.dart';
 import '../../common/components/bottom_bar.dart';
 import '../../common/services/orders_service.dart';
+import 'package:mobile/modules/common/data/order.dart';
+import '../../common/components/order_card.dart';
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({Key? key}) : super(key: key);
@@ -14,23 +16,44 @@ class OrdersPage extends StatefulWidget {
 
 class _OrdersPageState extends State<OrdersPage> {
   final OrdersService _ordersService = OrdersService();
-  late Future<List<Map<String, dynamic>>> _ordersFuture;
+  late Future<List<Order>> _ordersFuture;
   late int _customerId;
 
   @override
   void initState() {
     super.initState();
-    _loadCustomerId();
+
+    _loadCustomerIdAndOrders();
   }
 
-  Future<void> _loadCustomerId() async {
+  Future<void> _loadCustomerIdAndOrders() async {
     final prefs = await SharedPreferences.getInstance();
     _customerId = prefs.getInt('userId') ?? 0;
-    _ordersFuture = _ordersService.getOrdersForCustomer(_customerId);
+
+    if (_customerId == 0) {
+
+      _ordersFuture = Future.value([]);
+    } else {
+      try {
+        final List<Map<String, dynamic>> ordersData = await _ordersService.getOrdersForCustomer(_customerId);
+
+        final List<Order> orders = ordersData.map((orderMap) => Order.fromJson(orderMap)).toList();
+
+        _ordersFuture = Future.value(orders);
+
+      } catch (e) {
+
+        _ordersFuture = Future.error(e); // Define o future com o erro
+      }
+    }
+
+
     if (mounted) {
       setState(() {});
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +61,9 @@ class _OrdersPageState extends State<OrdersPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Orders'),
+        title: const Text('Meus Pedidos'), // Título mais específico para o cliente
         titleTextStyle: TextStyle(
-            color: const Color(0xFFBFF205),
+            color: const Color(0xFFBFF205), // Exemplo de cor da sua AppBar
             fontSize: 20.0
         ),
         actions: [
@@ -53,54 +76,38 @@ class _OrdersPageState extends State<OrdersPage> {
             },
           ),
         ],
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false, // Remove o botão voltar padrão
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
+      body: FutureBuilder<List<Order>>( // O FutureBuilder espera List<Order>
         future: _ordersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
+            // Exibe a mensagem de erro capturada
             return Center(child: Text('Erro ao carregar os pedidos: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             final orders = snapshot.data!;
+            if (orders.isEmpty) {
+              return const Center(child: Text('Nenhum pedido encontrado.'));
+            }
             return ListView.builder(
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final order = orders[index];
-                return ListTile(
-                  leading: Icon(Icons.local_shipping, color: themeProvider.isDarkMode ? Colors.white : Colors.black,),
-                  title: Text('ID do Pedido: ${order['id']}',
-                      style: TextStyle(
-                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                      )),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Status: ${order['status']}',
-                          style: TextStyle(
-                            color: themeProvider.isDarkMode ? Colors.white70 : Colors.black54,
-                          )),
-                      Text('Endereço: ${order['address']}',
-                          style: TextStyle(
-                            color: themeProvider.isDarkMode ? Colors.white70 : Colors.black54,
-                          )),
-                      Text('Descrição: ${order['description']}',
-                          style: TextStyle(
-                            color: themeProvider.isDarkMode ? Colors.white70 : Colors.black54,
-                          )),
-                    ],
-                  ),
+                // Usa o OrderCard reutilizado
+                return OrderCard(
+                  order: order,
+
                 );
               },
             );
           } else {
-            return const Center(child: Text('Nenhum pedido encontrado.'));
+            return const Center(child: Text('Carregando pedidos...')); // Ou outro indicador
           }
         },
       ),
-      bottomNavigationBar: BottomNavBar(currentIndex: 0),
+      bottomNavigationBar: BottomNavBar(currentIndex: 0), // Assumindo que esta é a primeira tab
     );
   }
 }
-

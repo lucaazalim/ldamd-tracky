@@ -4,7 +4,7 @@ import 'package:mobile/modules/driver/screens/order_details_page.dart';
 import 'package:mobile/modules/driver/screens/update_order_status_page.dart';
 import 'package:provider/provider.dart';
 import 'modules/common/screens/shared_preferences.dart';
-import 'modules/customer/screens/orders.dart';
+import 'modules/customer/screens/orders_page.dart';
 import 'theme_provider.dart';
 import 'modules/customer/screens/order_details_page.dart';
 import 'modules/customer/screens/notifications_page.dart';

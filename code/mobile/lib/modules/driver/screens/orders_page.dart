@@ -3,7 +3,7 @@ import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import '../../common/components/bottom_bar.dart';
-import 'package:mobile/modules/driver/common/order_card.dart';
+import 'package:mobile/modules/common/components/order_card.dart';
 import '../../../theme_provider.dart';
 
 class PendingOrdersScreen extends StatefulWidget {
