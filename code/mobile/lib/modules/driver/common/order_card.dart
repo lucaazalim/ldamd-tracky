@@ -28,7 +28,7 @@ class OrderCard extends StatelessWidget {
         onTap: () {
           Navigator.pushNamed(
             context,
-            '/driver/order/details',
+            '/driver/order/details', // "/driver/order/update-status" both screens need an orders as arguments
             arguments: order,
           );
         },

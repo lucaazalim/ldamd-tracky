@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile/modules/driver/screens/order_details_page.dart';
+import 'package:mobile/modules/driver/screens/update_order_status_page.dart';
 import 'package:provider/provider.dart';
 import 'modules/common/screens/shared_preferences.dart';
 import 'modules/customer/screens/orders.dart';
@@ -49,7 +50,8 @@ class MyApp extends StatelessWidget {
         '/customer/order/details': (context) => const OrderDetailsPage(),
         '/customer/notifications': (context) => const NotificationsPage(),
         '/driver/pending-deliveries': (context) => PendingOrdersScreen(),
-        '/driver/order/details': (context) => OrderDetailsScreen()
+        '/driver/order/details': (context) => OrderDetailsScreen(),
+        '/driver/order/update-status': (context) => UpdateOrderStatusPage()
       },
     );
   }
