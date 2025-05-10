@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mobile/modules/common/data/location.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/services/location_service.dart';
-import '../../../theme_provider.dart';
+import '../../common/components/theme_provider.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
   const OrderDetailsScreen({super.key});

@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Location {
   final int orderId;
   final DateTime createdAt;
@@ -18,6 +20,12 @@ class Location {
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
     );
+  }
+
+  @override
+  String toString() {
+    final formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    return 'LocationPoint(orderId: $orderId, createdAt: ${formatter.format(createdAt)}, latitude: $latitude, longitude: $longitude)';
   }
 
   Map<String, dynamic> toJson() {

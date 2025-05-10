@@ -3,7 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/services/orders_service.dart';
-import 'package:mobile/theme_provider.dart';
+import 'package:mobile/modules/common/components/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class UpdateOrderStatusPage extends StatefulWidget {

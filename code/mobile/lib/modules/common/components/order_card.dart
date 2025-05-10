@@ -13,10 +13,10 @@ class OrderCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
         leading: const Icon(Icons.local_shipping),
-        title: Text('Pedido #${order.id}'),
+        title: Text('Order #${order.id}'),
         subtitle: Text(
-          'Descrição: ${order.description}\n'
-              'Endereço: ${order.address}',
+          'Description: ${order.description}\n'
+              'Address: ${order.address}',
         ),
         trailing: Text(
           order.status.name,
@@ -27,29 +27,23 @@ class OrderCard extends StatelessWidget {
         ),
         isThreeLine: true,
         onTap: () async {
-          // *** AVISO: Esta não é a maneira recomendada de lidar com a navegação. ***
-          // *** A lógica de navegação DEVE estar nas telas que usam OrderCard.    ***
           final prefs = await SharedPreferences.getInstance();
-          final userType = prefs.getString('type'); // Obtém o tipo do usuário
+          final userType = prefs.getString('type');
 
           if (userType == 'CUSTOMER') {
-            // *** AVISO: Navegação direta no componente dificulta a reusabilidade. ***
             Navigator.pushNamed(
               context,
               '/customer/order/details',
-              arguments: order, //talvez precise passar o order
+              arguments: order,
             );
           } else if (userType == 'DRIVER') {
-            // *** AVISO: Navegação direta no componente dificulta a reusabilidade. ***
             Navigator.pushNamed(
-              context, //duplicado
-              '/driver/order/details', // Assumindo que esta é a rota correta
+              context,
+              '/driver/order/details',
               arguments: order,
             );
           } else {
-            // *** AVISO: Trate o caso em que o tipo de usuário é desconhecido ou nulo. ***
-            print('Tipo de usuário desconhecido. Navegação não realizada.');
-            // Você pode exibir uma mensagem de erro ou fazer outra ação apropriada aqui.
+            print('User type not found.');
           }
         },
       ),

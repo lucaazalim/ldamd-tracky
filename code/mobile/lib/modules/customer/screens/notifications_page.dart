@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../theme_provider.dart';
+import '../../common/components/theme_provider.dart';
 import '../../common/components/bottom_bar.dart';
 
 class NotificationsPage extends StatelessWidget {

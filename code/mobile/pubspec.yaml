@@ -43,6 +43,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_launcher_icons: ^0.14.3
   camera: ^0.11.1
+  flutter_map: ^6.0.0 # Verifique a versão mais recente em pub.dev
+  latlong2: ^0.9.0 # Verifique a versão mais recente em pub.dev
 
 dev_dependencies:
   flutter_test:

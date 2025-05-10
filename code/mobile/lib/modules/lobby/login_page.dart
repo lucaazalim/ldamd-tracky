@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../theme_provider.dart';
+import '../common/components/theme_provider.dart';
 import '../common/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Usuário não encontrado.')),
+        const SnackBar(content: Text('User not found.')),
       );
     }
   }

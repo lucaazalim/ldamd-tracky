@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../theme_provider.dart';
+import '../components/theme_provider.dart';
 import '../../common/components/bottom_bar.dart';
 
 class PreferencesPage extends StatefulWidget {

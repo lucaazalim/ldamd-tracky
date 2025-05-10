@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../theme_provider.dart';
+import '../../common/components/theme_provider.dart';
 import '../../common/components/bottom_bar.dart';
 import '../../common/services/orders_service.dart';
 import 'package:mobile/modules/common/data/order.dart';
@@ -16,44 +16,45 @@ class OrdersPage extends StatefulWidget {
 
 class _OrdersPageState extends State<OrdersPage> {
   final OrdersService _ordersService = OrdersService();
-  late Future<List<Order>> _ordersFuture;
-  late int _customerId;
+  // Não precisamos mais de 'late' aqui, pois vamos inicializá-lo em initState
+  // O FutureBuilder é quem vai lidar com o estado desse Future
+  Future<List<Order>>? _ordersFuture; // Tornamos nullable caso não seja possível carregar o CustomerID imediatamente
+
+  // A variável _customerId só é usada dentro do método assíncrono,
+  // então podemos inicializá-la lá ou nem torná-la uma variável de estado Late
+  // late int _customerId; // Não precisamos mais disso como late state variable
 
   @override
   void initState() {
     super.initState();
-
-    _loadCustomerIdAndOrders();
+    // Chamamos o método que busca os dados e atribuímos o Future retornado a _ordersFuture
+    // Isso garante que _ordersFuture tem um Future válido (que ainda vai completar) desde o início
+    _ordersFuture = _fetchOrdersForCustomer();
   }
 
-  Future<void> _loadCustomerIdAndOrders() async {
-    final prefs = await SharedPreferences.getInstance();
-    _customerId = prefs.getInt('userId') ?? 0;
+  // Renomeamos o método para indicar que ele busca e retorna o Future
+  Future<List<Order>> _fetchOrdersForCustomer() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      // Obtemos o customerId aqui dentro
+      final int customerId = prefs.getInt('userId') ?? 0;
 
-    if (_customerId == 0) {
-
-      _ordersFuture = Future.value([]);
-    } else {
-      try {
-        final List<Map<String, dynamic>> ordersData = await _ordersService.getOrdersForCustomer(_customerId);
-
+      if (customerId == 0) {
+        // Se customerId for 0, retornamos uma lista vazia diretamente
+        return [];
+      } else {
+        // Caso contrário, buscamos os pedidos
+        final List<Map<String, dynamic>> ordersData = await _ordersService.getOrdersForCustomer(customerId);
         final List<Order> orders = ordersData.map((orderMap) => Order.fromJson(orderMap)).toList();
-
-        _ordersFuture = Future.value(orders);
-
-      } catch (e) {
-
-        _ordersFuture = Future.error(e); // Define o future com o erro
+        return orders;
       }
-    }
-
-
-    if (mounted) {
-      setState(() {});
+    } catch (e) {
+      // Capturamos qualquer erro durante a busca e lançamos como um Future.error
+      // O FutureBuilder irá capturar este erro no snapshot.hasError
+      print('Error fetching orders: $e'); // Opcional: logar o erro
+      throw e; // Lança o erro para o FutureBuilder
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +62,9 @@ class _OrdersPageState extends State<OrdersPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meus Pedidos'), // Título mais específico para o cliente
+        title: const Text('Orders'),
         titleTextStyle: TextStyle(
-            color: const Color(0xFFBFF205), // Exemplo de cor da sua AppBar
+            color: const Color(0xFFBFF205),
             fontSize: 20.0
         ),
         actions: [
@@ -76,20 +77,22 @@ class _OrdersPageState extends State<OrdersPage> {
             },
           ),
         ],
-        automaticallyImplyLeading: false, // Remove o botão voltar padrão
+        automaticallyImplyLeading: false,
       ),
-      body: FutureBuilder<List<Order>>( // O FutureBuilder espera List<Order>
+      body: FutureBuilder<List<Order>>(
+        // Usamos o _ordersFuture que foi inicializado em initState
+        // O FutureBuilder vai gerenciar os estados (waiting, hasData, hasError)
         future: _ordersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // Exibe a mensagem de erro capturada
-            return Center(child: Text('Erro ao carregar os pedidos: ${snapshot.error}'));
+            // Exibe a mensagem de erro capturada pelo FutureBuilder
+            return Center(child: Text('Error loading orders: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             final orders = snapshot.data!;
             if (orders.isEmpty) {
-              return const Center(child: Text('Nenhum pedido encontrado.'));
+              return const Center(child: Text('No orders found.')); // Mensagem ajustada
             }
             return ListView.builder(
               itemCount: orders.length,
@@ -103,11 +106,15 @@ class _OrdersPageState extends State<OrdersPage> {
               },
             );
           } else {
-            return const Center(child: Text('Carregando pedidos...')); // Ou outro indicador
+            // Este caso (snapshot não tem erro, não tem data, e não está waiting)
+            // geralmente não acontece com FutureBuilder quando o Future é fornecido em initState,
+            // mas podemos manter um fallback.
+            return const Center(child: Text('Loading orders...'));
           }
         },
       ),
-      bottomNavigationBar: BottomNavBar(currentIndex: 0), // Assumindo que esta é a primeira tab
+      // Assumindo que BottomNavBar tem o índice correto para esta página
+      bottomNavigationBar: BottomNavBar(currentIndex: 0),
     );
   }
 }

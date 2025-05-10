@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import '../../common/components/bottom_bar.dart';
 import 'package:mobile/modules/common/components/order_card.dart';
-import '../../../theme_provider.dart';
+import '../../common/components/theme_provider.dart';
 
 class PendingOrdersScreen extends StatefulWidget {
   const PendingOrdersScreen({super.key});
