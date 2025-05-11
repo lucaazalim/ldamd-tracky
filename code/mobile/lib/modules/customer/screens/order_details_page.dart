@@ -129,7 +129,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
     // Default initial camera position if order location is not yet loaded
     final LatLng _initialMapCenter = LatLng(_orderLocation?.latitude ?? -19.9208, _orderLocation?.longitude ?? -43.9378); // Defaulting to a known location if _orderLocation is null initially
-    const double _initialMapZoom = 12.0;
+    const double _initialMapZoom = 13.0;
 
 
     return Scaffold(

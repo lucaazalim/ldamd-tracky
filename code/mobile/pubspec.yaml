@@ -37,14 +37,14 @@ dependencies:
   sqflite: ^2.0.0
   geolocator: ^9.0.0
   google_maps_flutter: ^2.0.0
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  flutter_map_cancellable_tile_provider: ^2.0.0
   cupertino_icons: ^1.0.8
   flutter_launcher_icons: ^0.14.3
   camera: ^0.11.1
-  flutter_map: ^6.0.0 # Verifique a versão mais recente em pub.dev
-  latlong2: ^0.9.0 # Verifique a versão mais recente em pub.dev
+  flutter_map: ^6.0.0
+  latlong2: ^0.9.0
+  open_route_service: ^1.2.7
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

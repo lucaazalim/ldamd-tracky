@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mobile/modules/common/data/location.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:open_route_service/open_route_service.dart';
+import 'package:mobile/modules/common/data/route_data.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/services/location_service.dart';
+import 'package:mobile/modules/common/services/location_tracking_service.dart';
+import 'package:mobile/modules/common/data/location.dart';
+
 import '../../common/components/theme_provider.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
@@ -14,25 +20,139 @@ class OrderDetailsScreen extends StatefulWidget {
 }
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
-  final LocationService _locationService = LocationService();
-  Position? _position;
-  String? _error;
+  final LocationService _userLocationService = LocationService();
+  final LocationTrackingService _orderLocationService = LocationTrackingService();
+
+  Position? _driverPosition;
+  String? _locationError;
+
+  final MapController _mapController = MapController();
+  List<Marker> _markers = [];
+  List<Polyline> _polylines = [];
+
+  AppRouteSummary? _routeSummary;
+  bool _isLoadingRoute = true;
+  String? _routeError;
 
   @override
   void initState() {
     super.initState();
-    _getLocation();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initRouteFlow());
   }
 
-  Future<void> _getLocation() async {
-    try {
-      final pos = await _locationService.getCurrentLocation();
+  Future<void> _initRouteFlow() async {
+    final order = ModalRoute.of(context)?.settings.arguments as Order?;
+    if (order == null) {
       setState(() {
-        _position = pos;
+        _routeError = 'Order data not provided.';
+        _isLoadingRoute = false;
+      });
+      return;
+    }
+
+    // 1. Get driver position
+    try {
+      final pos = await _userLocationService.getCurrentLocation();
+      if (pos == null) throw Exception('Location service returned null position.');
+      setState(() {
+        _driverPosition = pos;
+        _markers = [
+          Marker(
+            point: LatLng(pos.latitude, pos.longitude),
+            width: 80,
+            height: 80,
+            child: const Icon(Icons.navigation, color: Colors.red, size: 40),
+          ),
+        ];
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _mapController.move(LatLng(pos.latitude, pos.longitude), 15.0);
+        }
       });
     } catch (e) {
       setState(() {
-        _error = e.toString();
+        _locationError = e.toString();
+        _isLoadingRoute = false;
+        _routeError = 'Could not get your location.';
+      });
+      return;
+    }
+
+    // 2. Get latest order location
+    Location? orderLoc;
+    try {
+      orderLoc = await _orderLocationService.getLatestLocationForOrder(order.id);
+      if (orderLoc == null) throw Exception('No location found for order.');
+    } catch (e) {
+      setState(() {
+        _routeError = 'Could not get the order location.';
+        _isLoadingRoute = false;
+      });
+      return;
+    }
+
+    // 3. Fetch and draw route
+    await _fetchRouteBetween(
+      driverPos: _driverPosition!,
+      destination: LatLng(orderLoc.latitude, orderLoc.longitude),
+    );
+  }
+
+  Future<void> _fetchRouteBetween({
+    required Position driverPos,
+    required LatLng destination,
+  }) async {
+    setState(() {
+      _isLoadingRoute = true;
+      _routeError = null;
+      _routeSummary = null;
+      _polylines = [];
+    });
+
+    try {
+      final client = OpenRouteService(apiKey: '5b3ce3597851110001cf6248fe6e4e794c9247b599ab35ed87100e77');
+
+      final List<ORSCoordinate> routeCoordinates = await client.directionsRouteCoordsGet(
+        startCoordinate: ORSCoordinate(latitude: driverPos.latitude, longitude: driverPos.longitude),
+        endCoordinate: ORSCoordinate(latitude: destination.latitude, longitude: destination.longitude),
+        profileOverride: ORSProfile.drivingCar,
+      );
+
+      final routePoints = routeCoordinates
+          .map((coord) => LatLng(coord.latitude, coord.longitude))
+          .toList();
+
+      final route = AppRoute(
+        distance: '', // adicionar se desejar
+        duration: '', // adicionar se desejar
+        startAddress: 'Your current location',
+        endAddress: 'Order destiny',
+        polylinePoints: routePoints,
+      );
+
+      setState(() {
+        _routeSummary = AppRouteSummary(
+          mapUrl:
+          'https://maps.google.com/maps?saddr=${driverPos.latitude},${driverPos.longitude}&daddr=${destination.latitude},${destination.longitude}',
+          routes: [route],
+        );
+        _polylines = [Polyline(points: routePoints, strokeWidth: 4.0, color: Colors.blue)];
+        _markers.add(
+          Marker(
+            point: destination,
+            width: 60,
+            height: 60,
+            child: const Icon(Icons.location_on, color: Colors.blue, size: 40),
+          ),
+        );
+        _isLoadingRoute = false;
+      });
+    } catch (e) {
+      setState(() {
+        _routeError = 'Erro ao buscar rota: $e';
+        _isLoadingRoute = false;
       });
     }
   }
@@ -44,63 +164,119 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
     if (args == null || args is! Order) {
       return const Scaffold(
-        body: Center(child: Text('Dados da entrega não fornecidos.')),
+        body: Center(child: Text('Order data not provided.')),
       );
     }
-
     final order = args;
+
+    final initialCenter = _driverPosition != null
+        ? LatLng(_driverPosition!.latitude, _driverPosition!.longitude)
+        : const LatLng(-19.9208, -43.9378);
 
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Detalhes do Pedido'),
-        titleTextStyle: TextStyle(
-            color: const Color(0xFFBFF205),
-            fontSize: 20.0
-        ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                themeProvider.isDarkMode ? Icons.brightness_2 : Icons.wb_sunny,
-              ),
-              onPressed: () {
-                themeProvider.toggleTheme();
-              },
-            ),
-          ]
-        ,),
+        title: const Text('Order Details'),
+        titleTextStyle: const TextStyle(color: Color(0xFFBFF205), fontSize: 20.0),
+        actions: [
+          IconButton(
+            icon: Icon(themeProvider.isDarkMode ? Icons.brightness_2 : Icons.wb_sunny),
+            onPressed: themeProvider.toggleTheme,
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            Text('Pedido ID: ${order.id}', style: const TextStyle(fontSize: 18)),
-            Text('Cliente: ${order.customerId}'),
-            Text('Motorista: ${order.driverId}'),
-            Text('Endereço: ${order.address}'),
-            Text('Descrição: ${order.description}'),
-            Text('Status: ${order.status}'),
+            Text('Order ID: ${order.id}', style: const TextStyle(fontSize: 18)),
+            Text('Client: ${order.customerId}'),
+            Text('Driver: ${order.driverId}'),
+            Text('Address: ${order.address}'),
+            Text('Description: ${order.description}'),
+            Text('Status: ${order.status.name}'),
             const SizedBox(height: 16),
-            if (order.imageUrl != null && order.imageUrl.isNotEmpty)
+            if (order.imageUrl != null && order.imageUrl!.isNotEmpty)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Imagem do Pedido:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text('Order image:', style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
-                  Image.network(order.imageUrl, height: 150),
+                  Image.network(order.imageUrl!, height: 150),
                 ],
               ),
             const Divider(height: 32),
-            const Text('Sua localização atual:', style: TextStyle(fontWeight: FontWeight.bold)),
-            if (_position != null)
-              Text('Latitude: ${_position!.latitude}\nLongitude: ${_position!.longitude}'),
-            if (_error != null)
-              Text('Erro: $_error', style: const TextStyle(color: Colors.red)),
-            if (_position == null && _error == null)
-              const CircularProgressIndicator(),
+            const Text('Location and Route:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Container(
+              height: 300,
+              child: _driverPosition == null && _locationError == null
+                  ? const Center(child: CircularProgressIndicator())
+                  : _locationError != null
+                  ? Center(
+                child: Text(
+                  'Error getting driver location: $_locationError',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              )
+                  : FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(center: initialCenter, zoom: 15.0),
+                children: [
+                  TileLayer(
+                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.yourcompany.yourappname',
+                  ),
+                  MarkerLayer(markers: _markers),
+                  if (_polylines.isNotEmpty) PolylineLayer(polylines: _polylines),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text('Route Information:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            if (_isLoadingRoute)
+              const Center(child: CircularProgressIndicator())
+            else if (_routeError != null)
+              Center(
+                child: Text(
+                  'Error loading route: $_routeError',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              )
+            else if (_routeSummary != null && _routeSummary!.routes?.isNotEmpty == true)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Origin: ${_routeSummary!.routes!.first.startAddress}'),
+                    Text('Destination: ${_routeSummary!.routes!.first.endAddress}'),
+                    Text('Distance: ${_routeSummary!.routes!.first.distance}'),
+                    Text('Duration: ${_routeSummary!.routes!.first.duration}'),
+                    if (_routeSummary!.mapUrl != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: InkWell(
+                          onTap: () {
+                            // TODO: launch _routeSummary!.mapUrl com url_launcher
+                          },
+                          child: const Text(
+                            'View on external map',
+                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+                          ),
+                        ),
+                      ),
+                  ],
+                )
+              else
+                const Text('Could not find a route for this order.'),
           ],
         ),
       ),
     );
-
   }
 
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
 }
