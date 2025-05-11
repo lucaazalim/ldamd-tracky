@@ -172,11 +172,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              Image.network(
-                order.imageUrl!,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.fitWidth,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Order image:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Image.asset(
+                    'assets/images/delivery.jpg', // Caminho da imagem local
+                    height: 150,
+                    fit: BoxFit.cover,
+                  ),
+                ],
               ),
             ],
             const Divider(height: 32),

@@ -125,10 +125,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           .toList();
 
       final route = AppRoute(
-        distance: '', // adicionar se desejar
-        duration: '', // adicionar se desejar
-        startAddress: 'Your current location',
-        endAddress: 'Order destiny',
+        distance: 'To do', // adicionar se desejar
+        duration: 'To do', // adicionar se desejar
+        startAddress: 'To do',
+        endAddress: 'To do',
         polylinePoints: routePoints,
       );
 
@@ -195,15 +195,19 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             Text('Description: ${order.description}'),
             Text('Status: ${order.status.name}'),
             const SizedBox(height: 16),
-            if (order.imageUrl != null && order.imageUrl!.isNotEmpty)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Order image:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Image.network(order.imageUrl!, height: 150),
-                ],
-              ),
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Order image:', style: TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                Image.asset(
+                  'assets/images/delivery.jpg', // Caminho da imagem local
+                  height: 150,
+                  fit: BoxFit.cover,
+                ),
+              ],
+            ),
             const Divider(height: 32),
             const Text('Location and Route:', style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
