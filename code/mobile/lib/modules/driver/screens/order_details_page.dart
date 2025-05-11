@@ -194,7 +194,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             Text('Address: ${order.address}'),
             Text('Description: ${order.description}'),
             Text('Status: ${order.status.name}'),
-            const SizedBox(height: 16),
+            const Divider(height: 32),
 
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

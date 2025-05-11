@@ -165,13 +165,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   fontWeight: FontWeight.bold,
                   color: _getStatusColor(order.status.name),
                 )),
-            const SizedBox(height: 16),
+            const Divider(height: 32),
             if (order.imageUrl != null && order.imageUrl!.isNotEmpty) ...[
-              const Text(
-                'Order Image:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
