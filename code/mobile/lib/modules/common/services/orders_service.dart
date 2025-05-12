@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/order.dart';
+import 'package:mobile/modules/common/services/user_service.dart';
 
 class OrdersService {
 
@@ -30,6 +31,20 @@ class OrdersService {
       }
     }
 
+    try {
+      for (var order in driverOrders) {
+        order.driver = await UserService().getUserById(order.driverId);
+        print("driver: ${order.driver?.username}");
+
+        order.costumer = await UserService().getUserById(order.customerId);
+        print("costumer: ${order.costumer?.username}");
+      }
+    } catch (e, stacktrace) {
+      print("Erro ao buscar usuários: $e");
+      print(stacktrace);
+    }
+
+
     return driverOrders;
 
   }
@@ -46,6 +61,11 @@ class OrdersService {
         driverOrders.add(Order.fromJson(orderData));
       }
 
+    }
+
+    for (var order in driverOrders) {
+      order.driver = await UserService().getUserById(order.driverId);
+      order.costumer = await UserService().getUserById(order.customerId);
     }
 
     return driverOrders;

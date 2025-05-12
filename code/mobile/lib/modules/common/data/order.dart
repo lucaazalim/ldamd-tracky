@@ -1,4 +1,5 @@
 import 'package:mobile/modules/common/data/enum/order_status.dart';
+import 'package:mobile/modules/common/data/user.dart';
 
 class Order {
   final int id;
@@ -8,6 +9,8 @@ class Order {
   final String address;
   final String description;
   final String imageUrl;
+  User? costumer;
+  User? driver;
 
   Order({
     required this.id,

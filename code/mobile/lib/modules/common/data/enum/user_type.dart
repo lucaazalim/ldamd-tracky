@@ -4,9 +4,9 @@ enum UserType {
 
   factory UserType.fromString(String value) {
     switch (value.toUpperCase()) {
-      case 'COSTUMER': // valor vindo da API/banco
+      case 'CUSTOMER': // valor vindo da API/banco
         return UserType.customer;
-      case 'DRIVE':
+      case 'DRIVER':
         return UserType.driver;
       default:
         throw ArgumentError('Invalid user type: $value');
@@ -16,9 +16,9 @@ enum UserType {
   String toJson() {
     switch (this) {
       case UserType.customer:
-        return 'COSTUMER'; // valor que será enviado para a API/banco
+        return 'CUSTOMER'; // valor que será enviado para a API/banco
       case UserType.driver:
-        return 'DRIVE';
+        return 'DRIVER';
     }
   }
 }
