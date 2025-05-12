@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -169,6 +170,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     }
     final order = args;
 
+    bool isConfirmed = order.status == OrderStatus.pending;
+
+
     final initialCenter = _driverPosition != null
         ? LatLng(_driverPosition!.latitude, _driverPosition!.longitude)
         : const LatLng(-19.9208, -43.9378);
@@ -199,6 +203,27 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 15),
+                isConfirmed
+                    ? ElevatedButton(
+                  onPressed: () {
+                    print('Order accepted...');
+                  },
+                  child: const Text('Accept order'),
+                )
+                    : ElevatedButton(
+                  onPressed: () {
+
+                    Navigator.pushNamed(
+                      context,
+                      '/driver/order/update-status',
+                      arguments: order,
+                    );
+
+                  },
+                  child: const Text('Change order status'),
+                ),
+                const SizedBox(height: 15),
                 const Text('Order image:', style: TextStyle(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 Image.asset(
