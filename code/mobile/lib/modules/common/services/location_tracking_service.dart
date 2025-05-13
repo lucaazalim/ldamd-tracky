@@ -4,7 +4,7 @@ import 'package:mobile/modules/common/data/location.dart'; // Import the new mod
 
 class LocationTrackingService {
   Future<Map<String, dynamic>> _loadMockData() async {
-    final String response = await rootBundle.loadString('mock/data.json');
+    final String response = await rootBundle.loadString('assets/mock/data.json');
     return json.decode(response);
   }
 

@@ -8,7 +8,7 @@ import 'package:mobile/modules/common/services/user_service.dart';
 class OrdersService {
 
   Future<Map<String, dynamic>> _loadMockData() async {
-    final String response = await rootBundle.loadString('mock/data.json');
+    final String response = await rootBundle.loadString('assets/mock/data.json');
     return json.decode(response);
   }
 

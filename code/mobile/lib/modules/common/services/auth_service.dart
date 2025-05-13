@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class AuthService {
   Future<Map<String, dynamic>> _loadMockData() async {
-    final String response = await rootBundle.loadString('mock/data.json');
+    final String response = await rootBundle.loadString('assets/mock/data.json');
     return json.decode(response);
   }
 
