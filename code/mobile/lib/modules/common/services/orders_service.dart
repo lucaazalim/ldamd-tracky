@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/services/user_service.dart';
+import 'package:mobile/modules/common/services/database_service.dart';
 
 class OrdersService {
 
@@ -73,15 +74,22 @@ class OrdersService {
   }
 
 
-  Future<Order>? updateOrderStatus( int orderId, XFile image, OrderStatus? orderStatus){
+  Future<Order?> updateOrderStatus(int orderId, XFile image, OrderStatus orderStatus) async {
+    final dbHelper = DatabaseService();
 
-    if(orderStatus != null){
-      print("atualizando status!");
+    print("orderId: ${orderId}");
+
+    await dbHelper.updateOrderStatusById(orderId, orderStatus);
+
+    print("Status atualizado com sucesso!");
+
+    if (image != null) {
+      print("Imagem capturada: ${image.path}");
     }
 
-    if(orderStatus != null){
-      print("imagem atualizada!");
-    }
+    OrderDTO? updatedOrder = await dbHelper.getOrderById(orderId);
+
+    print('updatedOrder2 = ${updatedOrder?.status}');
 
     return null;
 
