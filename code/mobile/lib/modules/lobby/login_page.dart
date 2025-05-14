@@ -4,6 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../common/components/theme_provider.dart';
 import '../common/services/auth_service.dart';
 
+/// A page that handles user login.
+///
+/// This page allows users to log in by providing their username. Depending on the user type (CUSTOMER or DRIVER),
+/// they are redirected to the appropriate section of the app.
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 

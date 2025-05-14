@@ -4,6 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../components/theme_provider.dart';
 import '../../common/components/bottom_bar.dart';
 
+/// A page for displaying and managing user preferences.
+///
+/// This page shows the username, user type, and allows toggling the theme mode.
 class PreferencesPage extends StatefulWidget {
   const PreferencesPage({Key? key}) : super(key: key);
 

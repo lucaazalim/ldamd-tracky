@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// A bottom navigation bar for the application.
+///
+/// This widget dynamically adjusts its items and routes based on the user type (CUSTOMER or DRIVER).
 class BottomNavBar extends StatefulWidget {
   final int currentIndex;
 

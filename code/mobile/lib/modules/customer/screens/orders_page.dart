@@ -7,6 +7,9 @@ import '../../common/services/orders_service.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import '../../common/components/order_card.dart';
 
+/// A page that displays a list of orders for the customer.
+///
+/// This page fetches and displays orders asynchronously, allowing the user to view their order history.
 class OrdersPage extends StatefulWidget {
   const OrdersPage({Key? key}) : super(key: key);
 
@@ -16,43 +19,43 @@ class OrdersPage extends StatefulWidget {
 
 class _OrdersPageState extends State<OrdersPage> {
   final OrdersService _ordersService = OrdersService();
-  // Não precisamos mais de 'late' aqui, pois vamos inicializá-lo em initState
-  // O FutureBuilder é quem vai lidar com o estado desse Future
-  Future<List<Order>>? _ordersFuture; // Tornamos nullable caso não seja possível carregar o CustomerID imediatamente
+  // We no longer need 'late' here, as it will be initialized in initState
+  // FutureBuilder will handle the state of this Future
+  Future<List<Order>>? _ordersFuture; // Made nullable in case CustomerID cannot be loaded immediately
 
-  // A variável _customerId só é usada dentro do método assíncrono,
-  // então podemos inicializá-la lá ou nem torná-la uma variável de estado Late
-  // late int _customerId; // Não precisamos mais disso como late state variable
+  // The _customerId variable is only used inside the asynchronous method,
+  // so we can initialize it there or not make it a Late state variable at all
+  // late int _customerId; // No longer needed as a late state variable
 
   @override
   void initState() {
     super.initState();
-    // Chamamos o método que busca os dados e atribuímos o Future retornado a _ordersFuture
-    // Isso garante que _ordersFuture tem um Future válido (que ainda vai completar) desde o início
+    // Call the method that fetches the data and assign the returned Future to _ordersFuture
+    // This ensures _ordersFuture has a valid Future (that will still complete) from the start
     _ordersFuture = _fetchOrdersForCustomer();
   }
 
-  // Renomeamos o método para indicar que ele busca e retorna o Future
+  // Renamed the method to indicate that it fetches and returns the Future
   Future<List<Order>> _fetchOrdersForCustomer() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      // Obtemos o customerId aqui dentro
+      // We obtain the customerId here
       final int customerId = prefs.getInt('userId') ?? 0;
 
       if (customerId == 0) {
-        // Se customerId for 0, retornamos uma lista vazia diretamente
+        // If customerId is 0, we return an empty list directly
         return [];
       } else {
-        // Caso contrário, buscamos os pedidos
+        // Otherwise, we fetch the orders
         final List<Map<String, dynamic>> ordersData = await _ordersService.getOrdersForCustomer(customerId);
         final List<Order> orders = ordersData.map((orderMap) => Order.fromJson(orderMap)).toList();
         return orders;
       }
     } catch (e) {
-      // Capturamos qualquer erro durante a busca e lançamos como um Future.error
-      // O FutureBuilder irá capturar este erro no snapshot.hasError
-      print('Error fetching orders: $e'); // Opcional: logar o erro
-      throw e; // Lança o erro para o FutureBuilder
+      // We capture any error during the fetch and throw it as a Future.error
+      // The FutureBuilder will capture this error in snapshot.hasError
+      print('Error fetching orders: $e'); // Optional: log the error
+      throw e; // Throws the error to the FutureBuilder
     }
   }
 
@@ -80,25 +83,25 @@ class _OrdersPageState extends State<OrdersPage> {
         automaticallyImplyLeading: false,
       ),
       body: FutureBuilder<List<Order>>(
-        // Usamos o _ordersFuture que foi inicializado em initState
-        // O FutureBuilder vai gerenciar os estados (waiting, hasData, hasError)
+        // We use the _ordersFuture that was initialized in initState
+        // The FutureBuilder will manage the states (waiting, hasData, hasError)
         future: _ordersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // Exibe a mensagem de erro capturada pelo FutureBuilder
+            // Display the error message captured by the FutureBuilder
             return Center(child: Text('Error loading orders: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             final orders = snapshot.data!;
             if (orders.isEmpty) {
-              return const Center(child: Text('No orders found.')); // Mensagem ajustada
+              return const Center(child: Text('No orders found.')); // Adjusted message
             }
             return ListView.builder(
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final order = orders[index];
-                // Usa o OrderCard reutilizado
+                // Uses the reused OrderCard
                 return OrderCard(
                   order: order,
 
@@ -106,14 +109,14 @@ class _OrdersPageState extends State<OrdersPage> {
               },
             );
           } else {
-            // Este caso (snapshot não tem erro, não tem data, e não está waiting)
-            // geralmente não acontece com FutureBuilder quando o Future é fornecido em initState,
-            // mas podemos manter um fallback.
+            // This case (snapshot has no error, no data, and is not waiting)
+            // generally does not occur with FutureBuilder when the Future is provided in initState,
+            // but we can keep a fallback.
             return const Center(child: Text('Loading orders...'));
           }
         },
       ),
-      // Assumindo que BottomNavBar tem o índice correto para esta página
+      // Assuming BottomNavBar has the correct index for this page
       bottomNavigationBar: BottomNavBar(currentIndex: 0),
     );
   }

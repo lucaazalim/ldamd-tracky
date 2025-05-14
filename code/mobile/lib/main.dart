@@ -11,6 +11,9 @@ import 'modules/customer/screens/notifications_page.dart';
 import 'modules/lobby/login_page.dart';
 import 'modules/driver/screens/orders_page.dart';
 
+/// The main entry point of the Tracky application.
+///
+/// This file initializes the app, sets up the theme provider, and defines the routes for navigation.
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

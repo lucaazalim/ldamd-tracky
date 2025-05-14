@@ -1,5 +1,10 @@
 import 'package:intl/intl.dart';
 
+/// Represents a geographical location associated with an order.
+/// 
+/// This class is used to store and manage the latitude, longitude, and timestamp
+/// of a specific location related to an order. It also provides methods for
+/// JSON serialization and deserialization.
 class Location {
   final int orderId;
   final DateTime createdAt;

@@ -6,6 +6,9 @@ import '../../common/components/bottom_bar.dart';
 import 'package:mobile/modules/common/components/order_card.dart';
 import '../../common/components/theme_provider.dart';
 
+/// A page that displays pending and available orders for drivers.
+///
+/// This page fetches and displays orders asynchronously, allowing drivers to view and manage their deliveries.
 class PendingOrdersScreen extends StatefulWidget {
   const PendingOrdersScreen({super.key});
 
@@ -86,13 +89,13 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
                         child: CircularProgressIndicator(),
                       ));
                     } else if (snapshot.hasError) {
-                      return Text('Erro ao carregar as entregas: ${snapshot.error}');
+                      return Text('Error loading deliveries: ${snapshot.error}');
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Text('Nenhuma entrega pendente.');
+                      return const Text('No pending deliveries.');
                     } else {
                       return ListView.builder(
-                        shrinkWrap: true, // <- importante para funcionar dentro do Column
-                        physics: const NeverScrollableScrollPhysics(), // <- evita conflito de scrolls
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           final order = snapshot.data![index];
@@ -122,9 +125,9 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
                         child: CircularProgressIndicator(),
                       ));
                     } else if (snapshot.hasError) {
-                      return Text('Erro ao carregar as entregas: ${snapshot.error}');
+                      return Text('Error loading deliveries: ${snapshot.error}');
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Text('Nenhuma entrega concluída.');
+                      return const Text('No completed deliveries.');
                     } else {
                       return ListView.builder(
                         shrinkWrap: true,

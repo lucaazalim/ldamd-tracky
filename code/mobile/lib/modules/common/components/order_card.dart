@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mobile/modules/common/data/order.dart'; // Assumindo que Order está aqui
 import 'package:shared_preferences/shared_preferences.dart'; // Importe o SharedPreferences
 
+/// A widget that displays an order card with details such as ID, description, address, and status.
+///
+/// The card also provides navigation based on the user type (CUSTOMER or DRIVER).
+///
+/// Example:
+/// ```dart
+/// OrderCard(order: myOrder)
+/// ```
 class OrderCard extends StatelessWidget {
   final Order order;
 
@@ -53,15 +61,15 @@ class OrderCard extends StatelessWidget {
   Color _statusColor(String status) {
     switch (status.toUpperCase()) {
       case 'PENDING':
-        return Colors.red; // Aguardando
+        return Colors.red;
       case 'ACCEPTED':
-        return Colors.blue; // Aceito
+        return Colors.blue;
       case 'ON_COURSE':
-        return Colors.orange; // Em andamento
+        return Colors.orange;
       case 'DELIVERED':
-        return Colors.green; // Entregue
+        return Colors.green;
       default:
-        return Colors.grey; // Estado desconhecido
+        return Colors.grey;
     }
   }
 }

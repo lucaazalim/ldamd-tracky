@@ -1,5 +1,10 @@
 import 'package:mobile/modules/common/data/enum/user_type.dart';
 
+/// Represents a user in the system.
+/// 
+/// This class is used to store and manage user information such as ID,
+/// username, name, and user type. It also provides methods for JSON
+/// serialization and deserialization.
 class User {
   final int id;
   final String username;

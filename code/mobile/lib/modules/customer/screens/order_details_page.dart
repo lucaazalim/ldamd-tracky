@@ -10,7 +10,10 @@ import '../../common/components/theme_provider.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:intl/intl.dart'; // Ensure intl is imported for date formatting if used in InfoWindow
 
-
+/// A page that displays detailed information about a specific order.
+///
+/// This page includes a map showing the order's location and the user's current position.
+/// It fetches and displays data asynchronously.
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({Key? key}) : super(key: key);
 

@@ -6,6 +6,9 @@ import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/services/user_service.dart';
 import 'package:mobile/modules/common/services/database_service.dart';
 
+/// A service that provides operations related to orders.
+///
+/// This service includes methods to fetch orders for customers and drivers from mock data files.
 class OrdersService {
 
   Future<Map<String, dynamic>> _loadMockData() async {
@@ -41,7 +44,7 @@ class OrdersService {
         print("costumer: ${order.costumer?.username}");
       }
     } catch (e, stacktrace) {
-      print("Erro ao buscar usuários: $e");
+      print("Error fetching users: $e");
       print(stacktrace);
     }
 
@@ -81,10 +84,10 @@ class OrdersService {
 
     await dbHelper.updateOrderStatusById(orderId, orderStatus);
 
-    print("Status atualizado com sucesso!");
+    print("Status updated successfully!");
 
     if (image != null) {
-      print("Imagem capturada: ${image.path}");
+      print("Captured image: ${image.path}");
     }
 
     OrderDTO? updatedOrder = await dbHelper.getOrderById(orderId);

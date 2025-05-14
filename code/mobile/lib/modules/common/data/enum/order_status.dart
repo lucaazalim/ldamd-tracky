@@ -1,3 +1,10 @@
+/// Enum representing the status of an order.
+///
+/// The possible statuses are:
+/// - `pending`: The order is awaiting processing.
+/// - `accepted`: The order has been accepted.
+/// - `onCourse`: The order is currently being delivered.
+/// - `delivered`: The order has been successfully delivered.
 enum OrderStatus {
   pending,
   accepted,

@@ -1,5 +1,9 @@
 import 'package:geolocator/geolocator.dart';
 
+/// A service for managing location-related operations.
+///
+/// This service provides methods to fetch the current location of the user,
+/// ensuring that location services and permissions are properly handled.
 class LocationService {
   Future<Position> getCurrentLocation() async {
     bool serviceEnabled;
@@ -7,19 +11,19 @@ class LocationService {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      throw Exception('Serviço de localização está desativado.');
+      throw Exception('Location service is disabled.');
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        throw Exception('Permissão de localização negada.');
+        throw Exception('Location permission denied.');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      throw Exception('Permissão de localização permanentemente negada.');
+      throw Exception('Location permission permanently denied.');
     }
 
     return await Geolocator.getCurrentPosition(

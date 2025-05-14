@@ -6,6 +6,9 @@ import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:mobile/modules/common/components/theme_provider.dart';
 import 'package:provider/provider.dart';
 
+/// A page that allows drivers to update the status of an order.
+///
+/// This page includes a camera interface for capturing images and a dropdown to select the new status.
 class UpdateOrderStatusPage extends StatefulWidget {
   const UpdateOrderStatusPage({super.key});
 
@@ -53,7 +56,7 @@ class _UpdateOrderStatusPageState extends State<UpdateOrderStatusPage> {
 
     if (args == null || args is! Order) {
       return const Scaffold(
-        body: Center(child: Text('Dados da entrega não fornecidos.')),
+        body: Center(child: Text('Delivery data not provided.')),
       );
     }
 

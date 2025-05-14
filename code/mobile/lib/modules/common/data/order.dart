@@ -1,6 +1,10 @@
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/user.dart';
 
+/// A model representing an order in the system.
+///
+/// This class includes details such as the order ID, customer and driver IDs, status, address, description, and image URL.
+/// It also provides methods for JSON serialization and deserialization.
 class Order {
   final int id;
   final int customerId;

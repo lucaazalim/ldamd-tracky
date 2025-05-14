@@ -13,6 +13,10 @@ import 'package:mobile/modules/common/data/location.dart';
 
 import '../../common/components/theme_provider.dart';
 
+/// A page that displays detailed information about a specific order for drivers.
+///
+/// This page includes a map showing the driver's location, the order's location, and the route between them.
+/// It fetches and displays data asynchronously, including route details and order information.
 class OrderDetailsScreen extends StatefulWidget {
   const OrderDetailsScreen({super.key});
 
@@ -126,8 +130,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           .toList();
 
       final route = AppRoute(
-        distance: 'To do', // adicionar se desejar
-        duration: 'To do', // adicionar se desejar
+        distance: 'To do',
+        duration: 'To do',
         startAddress: 'To do',
         endAddress: 'To do',
         polylinePoints: routePoints,

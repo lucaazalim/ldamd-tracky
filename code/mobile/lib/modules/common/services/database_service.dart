@@ -20,6 +20,10 @@ class OrderDTO {
 
 }
 
+/// A service for managing database operations.
+///
+/// This service provides methods to initialize the database, insert mock data,
+/// and perform CRUD operations on orders.
 class DatabaseService {
   static Database? _database;
   static const String _dbName = 'app_database.db';

@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import '../../common/components/theme_provider.dart';
 import '../../common/components/bottom_bar.dart';
 
+/// A page that displays a list of notifications for the user.
+///
+/// Notifications include updates about orders, such as shipping and delivery statuses.
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({Key? key}) : super(key: key);
 
