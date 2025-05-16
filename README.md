@@ -7,6 +7,9 @@ This project was developed as an assignment for the Laboratory for Mobile and Di
 - Pedro Braga ([@bragap](https://github.com/bragap))
 - Luca Azalim ([@lucaazalim](https://github.com/lucaazalim))
 
+## Demo video
+![Demonstração da aplicação Tracky](assets/demo.gif)
+
 ## Screenshots
 
 ![Screenshots](/assets/screenshots.png)
