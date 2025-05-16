@@ -8,7 +8,7 @@ This project was developed as an assignment for the Laboratory for Mobile and Di
 - Luca Azalim ([@lucaazalim](https://github.com/lucaazalim))
 
 <h2>Demo video</h2>
-<img src="assets/demo.gif" alt="Demonstração da aplicação Tracky" height="300">
+<img src="assets/demo.gif" alt="Demonstração da aplicação Tracky" height="600">
 
 ## Screenshots
 
