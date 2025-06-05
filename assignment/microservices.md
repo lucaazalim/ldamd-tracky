@@ -98,13 +98,13 @@
                            ▼
 ┌─────────────────────────────────────────────────────┐
 │                    API Gateway                      │
-│   Autenticação, Roteamento, Rate Limiting, Cache    │ 
+│   Autenticação, Roteamento, Rate Limiting, Cache    │
 └─────┬──────────────────┬──────────────────────┬─────┘
       ▼                  ▼                      ▼
 ┌──────────┐      ┌─────────────┐       ┌─────────────┐
 │ Serviço  │      │   Serviço   │       │ Serviço     │
 │ Pedidos  │      │Rastreamento │       │Notificacação│
-└──────────┘      └─────────────┘       └─────────────┘  
+└──────────┘      └─────────────┘       └─────────────┘
 
 ```
 
@@ -115,9 +115,9 @@
 2. **Documente as APIs**: Use Swagger/OpenAPI para documentar os endpoints de cada serviço.
 
 3. **Comunicação entre serviços**:
-    - Síncrona: REST para operações simples
-    - Assíncrona: RabbitMQ para eventos e operações de longa duração
-    -
+   - Síncrona: REST para operações simples
+   - Assíncrona: RabbitMQ para eventos e operações de longa duração
+   -
 4. **Teste local**: Crie scripts para executar todo o sistema localmente.
 
 ## Avaliação Prática

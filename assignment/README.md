@@ -7,6 +7,7 @@
 - O trabalho deve ser entregue no Github Classroom.
 
 - A avaliação será individual e levara em conta a contribuição do aluno para o projeto. A contribuição será avaliada como:
+
   - Criação obrigatório de _Issues_ e asstribuição da _issue_ ao aluno responsável (assignee).
   - Criação de commits para cada tarefa realizada (_atomic commit_) utilizando o padrão _Conventional Commits_ e referenciando obrigatoriamente a _Issue_ correspondente.
   - Documentação de todo o código criado.
@@ -22,11 +23,11 @@ Uma empresa de logística enfrenta desafios na gestão eficiente de suas entrega
 
 **Necessidades técnicas específicas por usuário:**
 
-| **Clientes** | **Motoristas** | **Operadores logísticos** |
-| :-- | :-- | :-- |
+| **Clientes**                                                               | **Motoristas**                                                    | **Operadores logísticos**                                                       |
+| :------------------------------------------------------------------------- | :---------------------------------------------------------------- | :------------------------------------------------------------------------------ |
 | Visualizar geolocalização de encomendas (com atualização a cada 2 minutos) | Receber alertas sobre restrições de rota (ex: obras ou bloqueios) | Gerar relatórios de produtividade por veículo (km rodado × entregas concluídas) |
-| Configurar preferências de notificação (e-mail ou push) | Acessar histórico de entregas com métricas de desempenho | Simular cenários de distribuição com variáveis climáticas e de demanda |
-| Visualizar histórico de pedidos | Reportar incidentes em tempo real (avarias, acidentes) | Monitorar consumo de combustível em tempo real por rota |
+| Configurar preferências de notificação (e-mail ou push)                    | Acessar histórico de entregas com métricas de desempenho          | Simular cenários de distribuição com variáveis climáticas e de demanda          |
+| Visualizar histórico de pedidos                                            | Reportar incidentes em tempo real (avarias, acidentes)            | Monitorar consumo de combustível em tempo real por rota                         |
 
 ---
 

@@ -189,4 +189,3 @@ Nesta abordagem, substituiremos os microsserviços tradicionais por funções se
 4. **Gerenciamento de estado**: Armazene estado em serviços externos, não nas funções que são efêmeras
 
 5. **Local development**: Use emuladores locais (AWS SAM, Serverless Framework) para desenvolvimento e testes
-  
