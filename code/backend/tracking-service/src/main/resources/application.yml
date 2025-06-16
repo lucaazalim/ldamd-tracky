@@ -1,0 +1,84 @@
+spring:
+  application:
+    name: tracking-service
+  profiles:
+    active: local
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: tracking-service
+        instance-id: ${spring.application.name}:${server.port}
+        health-check-path: /actuator/health
+        health-check-interval: 15s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+  endpoint:
+    health:
+      show-details: always
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5434/trackingdb
+    username: trackingservice
+    password: trackingpass123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+server:
+  port: 8083
+
+logging:
+  level:
+    com.tracky.trackingservice: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:consul}
+      port: ${CONSUL_PORT:8500}
+      discovery:
+        service-name: tracking-service
+        instance-id: ${spring.application.name}:${server.port}
+        health-check-path: /actuator/health
+        health-check-interval: 15s
+        hostname: tracking-service
+        prefer-ip-address: true
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:tracking-db}:${DB_PORT:5432}/${DB_NAME:trackingdb}
+    username: ${DB_USERNAME:trackingservice}
+    password: ${DB_PASSWORD:trackingpass123}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8083
+
+logging:
+  level:
+    com.tracky.trackingservice: INFO
