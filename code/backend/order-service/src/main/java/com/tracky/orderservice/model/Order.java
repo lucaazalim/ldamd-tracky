@@ -5,9 +5,6 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +16,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "orders")
@@ -69,7 +69,8 @@ public class Order {
         PENDING, ACCEPTED, ON_COURSE, DELIVERED
     }
 
-    // Custom constructor for creating orders without timestamps (they are auto-generated)
+    // Custom constructor for creating orders without timestamps (they are
+    // auto-generated)
     public Order(UUID customerId, String originAddress, String destinationAddress, String description) {
         this.customerId = customerId;
         this.originAddress = originAddress;

@@ -1,11 +1,12 @@
 package com.tracky.userservice.dto;
 
+import java.util.UUID;
+
 import com.tracky.userservice.model.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor

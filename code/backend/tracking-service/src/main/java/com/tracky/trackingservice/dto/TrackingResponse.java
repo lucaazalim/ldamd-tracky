@@ -1,13 +1,14 @@
 package com.tracky.trackingservice.dto;
 
-import com.tracky.trackingservice.model.Tracking;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.tracky.trackingservice.model.Tracking;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
