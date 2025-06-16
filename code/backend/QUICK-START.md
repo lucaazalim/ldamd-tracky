@@ -13,8 +13,7 @@ This guide will help you get the Tracky microservices backend up and running wit
 The Tracky backend consists of the following services:
 
 - **Consul**: Service discovery and configuration management
-- **Config Server**: Centralized configuration management
-- **API Gateway**: Entry point for all client requests
+- **API Gateway**: Entry point for all client requests (routes to `/api/*` endpoints)
 - **User Service**: User management and authentication
 - **Order Service**: Order processing and management
 - **Tracking Service**: Package tracking functionality
@@ -46,26 +45,34 @@ docker-compose logs -f
 
 ### 3. Verify Services
 
-- **Consul UI**: http://localhost:8500/ui
-- **API Gateway**: http://localhost:8080
-- **Config Server**: http://localhost:8888
+- **Consul UI**: <http://localhost:8500/ui>
+- **API Gateway**: <http://localhost:8080>
 
 ## Service URLs
 
-| Service          | Port | URL                              | Swagger UI                                  |
-| ---------------- | ---- | -------------------------------- | ------------------------------------------- |
-| Consul           | 8500 | http://localhost:8500            | N/A                                         |
-| API Gateway      | 8080 | http://localhost:8080            | http://localhost:8080/swagger-ui/index.html |
-| Config Server    | 8888 | http://localhost:8888            | N/A                                         |
-| User Service     | 8081 | http://localhost:8081 (internal) | http://localhost:8081/swagger-ui/index.html |
-| Order Service    | 8082 | http://localhost:8082 (internal) | http://localhost:8082/swagger-ui/index.html |
-| Tracking Service | 8083 | http://localhost:8083 (internal) | http://localhost:8083/swagger-ui/index.html |
+| Service          | Port | URL                                | Swagger UI                                    |
+| ---------------- | ---- | ---------------------------------- | --------------------------------------------- |
+| Consul           | 8500 | <http://localhost:8500>            | N/A                                           |
+| API Gateway      | 8080 | <http://localhost:8080>            | <http://localhost:8080/swagger-ui/index.html> |
+| User Service     | 8081 | <http://localhost:8081> (internal) | <http://localhost:8081/swagger-ui/index.html> |
+| Order Service    | 8082 | <http://localhost:8082> (internal) | <http://localhost:8082/swagger-ui/index.html> |
+| Tracking Service | 8083 | <http://localhost:8083> (internal) | <http://localhost:8083/swagger-ui/index.html> |
+
+### API Gateway Routes
+
+All external API requests should go through the API Gateway at `http://localhost:8080`:
+
+- **User APIs**: `GET/POST/PUT/DELETE http://localhost:8080/api/users/**`
+- **Order APIs**: `GET/POST/PUT/DELETE http://localhost:8080/api/orders/**`
+- **Tracking APIs**: `GET/POST/PUT/DELETE http://localhost:8080/api/tracking/**`
+
+The API Gateway automatically routes requests to the appropriate microservice based on the path prefix.
 
 ## Service Discovery with Consul
 
 All microservices automatically register with Consul when they start up. The API Gateway uses Consul to discover and route requests to the appropriate services.
 
-### Consul Features Used:
+### Consul Features Used
 
 - **Service Registration**: Services automatically register themselves
 - **Health Checks**: Each service provides health endpoints
@@ -145,16 +152,30 @@ docker-compose down -v
 
 ## Configuration
 
-Services use Spring Cloud Config for centralized configuration management. Configuration files are located in the config server's resources.
+Each service manages its own configuration through `application.yml` files with support for different profiles (local, docker). This provides:
 
-## Migration from Eureka
+- **Self-contained services**: Each service is completely independent
+- **Profile-based configuration**: Separate settings for local development and Docker deployment
+- **Environment variable support**: Override configurations using Docker environment variables
+- **No external dependencies**: Services don't depend on a central configuration server
 
-This system has been migrated from Netflix Eureka to HashiCorp Consul for improved:
+## Architecture
 
-- Built-in health checking
-- Key-value configuration storage
-- Better Docker integration
-- More robust service mesh capabilities
-- Multi-datacenter support
+This system uses a modern microservices architecture with:
 
-The migration maintains API compatibility while providing better operational features.
+- **HashiCorp Consul** for service discovery with:
+
+  - Built-in health checking
+  - Key-value configuration storage
+  - Better Docker integration
+  - Service mesh capabilities
+  - Multi-datacenter support
+
+- **Decentralized Configuration** providing:
+  - Self-contained services
+  - Faster startup times
+  - No single point of failure
+  - Simplified deployment
+  - Independent service scaling
+
+The architecture maintains API compatibility while providing excellent operational features and improved resilience.

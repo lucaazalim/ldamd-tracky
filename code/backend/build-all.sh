@@ -53,9 +53,6 @@ build_maven_service() {
 }
 
 # Build all services
-print_status "Building Config Server..."
-build_maven_service "Config Server" "config-server"
-
 print_status "Building User Service..."
 build_maven_service "User Service" "user-service"
 
@@ -78,5 +75,4 @@ echo "  3. View logs: docker-compose logs -f"
 echo ""
 echo "📋 Service URLs:"
 echo "  • Consul Dashboard: http://localhost:8500/ui"
-echo "  • Config Server: http://localhost:8888"
 echo "  • API Gateway: http://localhost:8080"

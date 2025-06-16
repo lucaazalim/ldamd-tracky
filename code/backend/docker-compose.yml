@@ -138,27 +138,6 @@ services:
       tracking-db:
         condition: service_started
 
-  # Config Server
-  config-server:
-    build:
-      context: ./config-server
-      dockerfile: Dockerfile
-    container_name: config-server
-    ports:
-      - "8888:8888"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - CONSUL_HOST=consul
-      - CONSUL_PORT=8500
-    depends_on:
-      consul:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
   # API Gateway
   api-gateway:
     build:
