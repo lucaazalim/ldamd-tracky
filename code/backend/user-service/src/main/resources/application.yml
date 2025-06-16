@@ -47,7 +47,7 @@ spring:
     port: 8081
 
 jwt:
-  secret: mySecretKey123456789012345678901234567890
+  secret: myVeryLongSecretKeyForHS512Algorithm1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
   expiration: 86400000 # 24 hours
 
 logging:
@@ -89,7 +89,7 @@ server:
   port: 8081
 
 jwt:
-  secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
+  secret: ${JWT_SECRET:myVeryLongSecretKeyForHS512Algorithm1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ}
   expiration: 86400000
 
 logging:

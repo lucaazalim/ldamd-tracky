@@ -83,7 +83,7 @@ services:
       DB_NAME: userdb
       DB_USERNAME: userservice
       DB_PASSWORD: userpass123
-      JWT_SECRET: mySecretKey123456789012345678901234567890
+      JWT_SECRET: myVeryLongSecretKeyForHS512Algorithm1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
     depends_on:
