@@ -1,15 +1,22 @@
 import 'dart:convert';
 import 'package:camera/camera.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/services/user_service.dart';
 import 'package:mobile/modules/common/services/database_service.dart';
+import 'package:mobile/modules/common/dio.dart';
 
 /// A service that provides operations related to orders.
 ///
 /// This service includes methods to fetch orders for customers and drivers from mock data files.
+///
+
+
 class OrdersService {
+
+  final  dioClient = DioClient().dio;
 
   Future<Map<String, dynamic>> _loadMockData() async {
     final String response = await rootBundle.loadString('assets/mock/data.json');
@@ -55,24 +62,14 @@ class OrdersService {
 
   Future<List<Order>> getAvailableOrdersByDriverId(int driverId) async {
 
-    final Map<String, dynamic> decodedData = await _loadMockData();
-    final List<dynamic> ordersData = decodedData['orders'] as List<dynamic>? ?? [];
-    List<Order> driverOrders = [];
-
-    for (var orderData in ordersData) {
-
-      if (orderData['driver_id'] == driverId && orderData['status'] == 'PENDING') {
-        driverOrders.add(Order.fromJson(orderData));
-      }
-
-    }
-
-    for (var order in driverOrders) {
-      order.driver = await UserService().getUserById(order.driverId);
-      order.costumer = await UserService().getUserById(order.customerId);
-    }
-
-    return driverOrders;
+    final response = await dioClient.get(
+      "/orders",
+      options: Options(
+        headers: {
+          "Authorization": "Bearer ",
+        },
+      ),
+    );
 
   }
 
