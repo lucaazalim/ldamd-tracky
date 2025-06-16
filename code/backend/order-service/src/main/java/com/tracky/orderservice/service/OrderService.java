@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.tracky.orderservice.dto.CreateOrderRequest;
 import com.tracky.orderservice.dto.OrderResponse;
+import com.tracky.orderservice.dto.RouteResponse;
 import com.tracky.orderservice.dto.UpdateOrderRequest;
 import com.tracky.orderservice.model.Order;
 import com.tracky.orderservice.repository.OrderRepository;
@@ -18,6 +19,9 @@ public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private GoogleMapsService googleMapsService;
 
     public OrderResponse createOrder(CreateOrderRequest request) {
         Order order = new Order();
@@ -90,5 +94,12 @@ public class OrderService {
             throw new RuntimeException("Order not found");
         }
         orderRepository.deleteById(id);
+    }
+
+    public RouteResponse getOrderRoute(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        return googleMapsService.getDirections(order.getOriginAddress(), order.getDestinationAddress());
     }
 }

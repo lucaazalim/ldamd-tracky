@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tracky.orderservice.dto.CreateOrderRequest;
 import com.tracky.orderservice.dto.OrderResponse;
+import com.tracky.orderservice.dto.RouteResponse;
 import com.tracky.orderservice.dto.UpdateOrderRequest;
 import com.tracky.orderservice.model.Order;
 import com.tracky.orderservice.service.OrderService;
@@ -100,6 +101,20 @@ public class OrderController {
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{orderId}/route")
+    @Operation(summary = "Get route for order", description = "Get the fastest route between origin and destination addresses using Google Maps")
+    public ResponseEntity<RouteResponse> getOrderRoute(@PathVariable UUID orderId) {
+        try {
+            RouteResponse route = orderService.getOrderRoute(orderId);
+            return ResponseEntity.ok(route);
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("Order not found")) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
