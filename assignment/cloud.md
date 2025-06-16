@@ -1,191 +1,114 @@
-# Detalhamento dos Requisitos do Trabalho sobre Desenvolvimento em Nuvem (40 pontos)
+# Trabalho de Laboratório de Desenvolvimento de Aplicações Distribuídas e Móveis
 
-## Índice
+## ETAPA 3: Sistema de Pedidos de Transporte de Mercadorias com Arquitetura Serverless (30 pontos)
 
-- [Visão Geral da Arquitetura Serverless](#visão-geral-da-arquitetura-serverless)
-- [API Gateway Serverless](#api-gateway-serverless)
-- [Funções Serverless para Lógica de Negócio](#funções-serverless-para-lógica-de-negócio)
-- [Banco de Dados Serverless](#banco-de-dados-serverless)
-- [Mensageria Serverless](#mensageria-serverless)
-- [Cache Serverless](#cache-serverless)
-- [Armazenamento de Arquivos](#armazenamento-de-arquivos)
-- [CI/CD para Serverless](#cicd-para-serverless)
-- [Arquitetura de Referência (Serverless)](#arquitetura-de-referência-serverless)
-- [Vantagens da Abordagem Serverless](#vantagens-da-abordagem-serverless)
-- [Considerações para Implementação](#considerações-para-implementação)
+### Contextualização das Etapas do Trabalho
 
-## Visão Geral da Arquitetura Serverless
+Este trabalho representa a **terceira e última etapa** de um projeto integrado de desenvolvimento de aplicações distribuídas:
 
-Nesta abordagem, substituiremos os microsserviços tradicionais por funções serverless e serviços gerenciados, mantendo a mesma funcionalidade do sistema original, mas com maior escalabilidade automática e menor necessidade de gerenciamento de infraestrutura. Nesta arquitetura serverless temos todos os benefícios da abordagem de microsserviços (independência, isolamento, escalabilidade), mas com menor sobrecarga operacional e melhor relação custo-benefício, sendo ideal em projetos que querem focar no desenvolvimento das funcionalidades sem se preocupar com a infraestrutura subjacente.
+- **ETAPA 1 - Aplicação Móvel**: Desenvolvimento da interface mobile para clientes e transportadores solicitarem e gerenciarem pedidos de transporte
+- **ETAPA 2 - Backend em Microserviços**: Implementação da arquitetura de microserviços para gerenciar o core business (pedidos, usuários, etc.)
+- **ETAPA 3 - Funcionalidades Serverless** (ATUAL): Implementação de funcionalidades complementares utilizando arquitetura serverless, filas e pub/sub para processamento assíncrono de eventos
 
-## API Gateway Serverless
+### Objetivo da Etapa Atual
 
-- **Tecnologia sugerida**: AWS API Gateway, Azure API Management ou Google Cloud Endpoints
-- **Funcionalidades principais**:
-  - Definição de rotas para diferentes funcionalidades (pedidos, rastreamento, notificações)
-  - Autenticação e autorização via JWT
-  - Throttling e quotas para controle de tráfego
-  - Cache de respostas para consultas frequentes
+Expandir o sistema desenvolvido nas etapas anteriores, adicionando funcionalidades de comunicação e notificação através de uma arquitetura serverless que se integre aos microserviços já desenvolvidos, garantindo escalabilidade e desacoplamento para operações assíncronas.
 
-### Vantagens de API Gateway Serverless
+### Integração com Etapas Anteriores
 
-- Escala automaticamente conforme o tráfego
-- Gerencia automaticamente certificados SSL
-- Cobrança baseada em requisições, não em tempo de execução
+O sistema serverless desta etapa deve:
 
-## Funções Serverless para Lógica de Negócio
+- **Integrar-se** com o backend de microserviços da Etapa 2 através de eventos e APIs
+- **Complementar** a experiência do usuário da aplicação móvel da Etapa 1 com notificações e comunicações automatizadas
+- **Manter** a consistência de dados e identidade visual estabelecidas nas etapas anteriores
 
-### Serviço de Pedidos
+### Contexto do Sistema Atual
 
-- **Funções**:
-  - `createOrder`: Criar novo pedido
-  - `getOrder`: Consultar pedido por ID
-  - `updateOrderStatus`: Atualizar status do pedido
-  - `listOrders`: Listar pedidos com filtros
-  - `calculateRoute`: Integrar com API de mapas para cálculo de rotas
+Com base no aplicativo móvel e microserviços já desenvolvidos, você agora deve implementar a camada de processamento assíncrono que será responsável por:
 
-### Serviço de Rastreamento
+- Reagir a eventos gerados pelo sistema de microserviços
+- Processar comunicações automáticas (e-mails, notificações)
+- Gerenciar campanhas promocionais em massa
+- Garantir a entrega confiável de mensagens
 
-- **Funções**:
-  - `updateLocation`: Receber atualizações de localização
-  - `getLocationHistory`: Consultar histórico de localização
-  - `getCurrentLocation`: Obter localização atual de uma entrega
+### Funcionalidades Obrigatórias
 
-### Serviço de Notificações
+![Diagrama das Funcionalidades](https://uml.planttext.com/plantuml/svg/hLTDRnit4BtlhvZeuWYfODbkt7O15t7yaHIm0wTIBwq0WzwbrqIvv9OVGfiW_wL13qKBv1Jqqkl-iGuvIsbNjbCNg6735Zapd9dtvf7Edbd7ZFErp1wv6rvpQ2GJAdF2IGupOHsl6PGSveOfssZZE4pWrAj2QCMaA5d9BSouMN8ZkRNm-CInXi7UECksu9XV2oNQtzlVD9JQGeD7YK8qJ3bkizud61qs3Pot7vTSBbGNOsSy0cO1TuQcvw8mskAH65dRbVakcP_FXjOdIuw_NdlkUToFVmrDpbXzLR9ObSEoGiXrHHILJ8PkhxGJrw9WmIUsG1HqHDpuPIEDcWavi8ehGwCBVxKzyrSmruqeRBJ29LmPcXqpnwwOfJ37pxFiu6034jZ9uLI4JszOrtuE5xmKfOQ3WomBtPvyZRtAuKWhPp0Wxbnt7j14ounXEvOC4SUUPkUpu77yF8T3vyaCgUEyHMIJ0zd43kSXSudT0Hu0q30YcyjqIAb7cT8Ot8ZgnkKGSShXxK915-vIb3cCTdRtHf-5nK8AjE2q-ldJ_MvrbJvjVF7bLxJXHCqnmRh1nTtfxjF9T7-oip_VcUPxqtmw_NwqKE-ohEI38cFgeGR2EqVQYwhY9XLnguPrZpg68EilZ2wGEAmc5sQOv18HGB1KHnd4v2-Q07YrNYAO3fSOcpvcW5yTEpkuNfpCOPlIiDjlHVaE7YFWE5k5hXl9dRRZw1MWwDLn76tMI0q34s4H0xKKYBwtDwjC0xcZTH-hKKSbR7uXVVkXr8yMAkRDGKCQJMXCG2007GBG8U4uP5-WnyOfy0IhvuqKwiUDz0BflkKLYf5X87M5hUnt4ll4fUKn-zZ1aqaShGSqRnipzBM-lsC1FU1tnOlZcw_01XHAb4xi4IRGSmWGKpuKwuXO7FV25-d2EXv1G06Wbzqc18VMUgGNOd620y0h5WQPm618xJ3LlFsxrA5p8SYA7p4QzQkVrcgC_iVCPea8f-kP7wJMiHAZKWsKcogpyDEVpJHSjuLk5nKCXvofco2MHjSwxWeRTMuBlb7jXoBGWa7HsI4lavdCVhXZsEyql9NB7TJg9CgccOojjRmAIa1C7MSRD3j3LiSBDlds0oUZ5Sa6iGRoEUll05xK-K9Du4mNwpiWB9mQ_fDl_yGMnaEzZQilCOdsen5579zkGCB64P86x_nEofG6XfTna3ZITZfCOQNeZbUM9abxONo3w1wbRbmONWjVRmmGtMozUw9EKV2k88zBQeeTtLAWSwuigz2buSRgZbrieP3bM88Djm9cnMt3iL9XepyTsDUxLLzbHA7fvVblQeKOLw7Cv3Gc3TeiFSXMwD7CR-h7fyh7MH1CNrelRrSUEKwD3sQXTYhxsd2qgapxtZsqODDbPxli7b1qpsLOybm7nkDtglq_rCkal1_gDDw0evbgJH3ZX9KcNPIVADUbv8f-SWyezyfeLXRCkZ5fqZsNKjt-uN1ycEthp60-ptHbuqZ6Tbd00rILnkorntSTwLcuFS8z5jVdx6T6AoIFTqdYLX1uZ1XKHED0-_QzGRrhVxKaNzrJe_VY-oxPU2VekRUYLE-LjweD6urFOHjV9xtYicVO4Fo_uHy0)
 
-- **Funções**:
-  - `sendPushNotification`: Enviar notificação push
-  - `updateNotificationPreferences`: Atualizar preferências
-  - `processNotificationQueue`: Processar fila de notificações
+#### 1. Processamento de Finalização de Pedido
 
-### Tecnologia sugerida
+Quando um contratado finalizar um pedido de entrega **através do app móvel** (que comunica com os microserviços), o sistema serverless deve ser **acionado automaticamente** para:
 
-- AWS Lambda, Google Cloud Functions ou Azure Functions
-- Arquivos de configuração para definir gatilhos, permissões e recursos
+**1.1 Notificação de Avaliação**
 
-## Banco de Dados Serverless
+- Receber evento de conclusão do pedido dos microserviços
+- Enviar notificação ao cliente solicitante através do app móvel
+- Registrar o envio da notificação para auditoria
 
-- **Tecnologia sugerida**:
-  - Amazon DynamoDB, Azure Cosmos DB ou Google Cloud Firestore
-  - Esquema sem servidor (schemaless) com índices secundários para consultas eficientes
+**1.2 Envio de E-mail de Resumo**
 
-### Modelagem de dados
+- Processar dados do pedido obtidos via API dos microserviços
+- Enviar e-mail simultaneamente para cliente e contratado
+- Conteúdo do e-mail deve incluir:
+  - Dados completos do pedido (integrados dos microserviços)
+  - Call-to-action para nova solicitação (app móvel)
 
-- Tabela de Pedidos (OrderID como chave primária)
-- Tabela de Localizações (OrderID + Timestamp como chave composta)
-- Tabela de Preferências de Notificação (UserID como chave primária)
+#### 2. Sistema de Notificações Promocionais
 
-### Vantagens de bancos de dados serverless
+Desenvolver sistema independente de campanhas que utilize dados dos microserviços:
 
-- Escala automaticamente tanto para leitura quanto para escrita
-- Baixa latência global
-- Pay-per-use sem mínimos fixos
+**2.1 Segmentação Inteligente**
 
-## Mensageria Serverless
+- Consumir dados de clientes dos microserviços de usuários
+- Desejavel criar grupos dinâmicos baseados em:
+  - Histórico de pedidos (frequência, valor médio)
+  - Localização geográfica
+  - Comportamento no app móvel
+  - Sazonalidade de uso
 
-- **Tecnologia sugerida**:
-  - AWS SQS/SNS, Google Cloud Pub/Sub ou Azure Service Bus
-  - Tópicos para diferentes tipos de eventos
+**2.2 Campanhas Promocionais**
 
-### Eventos principais
+- Envio de notificações para o app móvel
+- Segmentação por grupos de interesse
 
-- `OrderStatusChanged`: Disparado quando o status de um pedido é alterado
-- `LocationUpdated`: Disparado quando a localização é atualizada
-- `NotificationTriggered`: Disparado quando uma notificação deve ser enviada
+### Requisitos Técnicos Específicos
 
-### Vantagens da mensageria serverless
+#### Integração Obrigatória
 
-- Desacoplamento completo entre serviços
-- Processamento assíncrono de eventos
-- Entrega garantida de mensagens
+- **Event-Driven Architecture**: Os microserviços devem publicar eventos que acionam as funções serverless
+- **API Integration**: Funções serverless devem consumir APIs dos microserviços quando necessário
+- **Shared Database**: Acesso aos mesmos dados utilizados pelos microserviços (com permissões adequadas)
+- **Authentication**: Manter consistência de autenticação/autorização entre as camadas
 
-## Cache Serverless
+#### Arquitetura Serverless
 
-- **Tecnologia sugerida**:
-  - Amazon ElastiCache Serverless, Azure Cache for Redis ou Firebase Remote Config
-  - Políticas de expiração automática
+- **Serverless Functions**: Implementação de todas as funcionalidades como functions
+- **Event Triggers**: Acionamento automático via eventos dos microserviços
+- **Message Queues**: Filas para garantir processamento confiável
+- **Pub/Sub Topics**: Tópicos para campanhas promocionais
 
-### Dados para cache
+### Entregáveis Específicos da Etapa 3
 
-- Informações de rotas calculadas
-- Status atual de entregas
-- Tokens de autenticação
+1. **Código Fonte e Configuração**
 
-## Armazenamento de Arquivos
+   - Funções serverless implementadas
+   - Configuração de filas, tópicos e triggers
+   - Scripts de integração com microserviços
 
-- **Tecnologia sugerida**:
-  - Amazon S3, Google Cloud Storage ou Azure Blob Storage
-  - Imagens com prova de entrega e documentação
+2. **Demonstração Integrada**
+   - Video de demonstração completa: App → Microserviços → Serverless
+   - Evidências de funcionamento das notificações
 
-### Integrações
+### Observações Importantes para a Etapa Final
 
-- Uploads diretos do aplicativo móvel
-- Integração com CDN para entrega de conteúdo
+- **Reutilize** ao máximo os componentes das etapas anteriores
+- **Mantenha** a consistência de UX/UI estabelecida no app móvel
+- **Preserve** a integridade dos dados dos microserviços
 
-## CI/CD para Serverless
+### Entrega Final do Projeto Completo
 
-- **Tecnologia sugerida**:
-  - AWS SAM, Serverless Framework ou Google Cloud Deployment Manager
-  - GitHub Actions para automação de deploys
+Ao final desta etapa, você terá um sistema completo de transporte de mercadorias com:
 
-### Pipeline
-
-- Teste de funções
-- Deploy progressivo com possibilidade de rollback
-- Versionamento de funções
-
-## Arquitetura de Referência (Serverless)
-
-```text
-┌───────────────┐       ┌────────────────┐
-│  Aplicativos  │ ─────►│   API Gateway  │
-│    Móveis     │       │   Serverless   │
-└───────────────┘       └────────┬───────┘
-                                 │
-         ┌───────────────────────┼───────────────────────┐
-         │                       │                       │
-┌────────▼────────┐     ┌────────▼────────┐     ┌────────▼────────┐
-│  Funções Lambda │     │  Funções Lambda │     │  Funções Lambda │
-│     Pedidos     │     │   Rastreamento  │     │   Notificações  │
-└────────┬────────┘     └────────┬────────┘     └────────┬────────┘
-         │                       │                       │
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│  DynamoDB ou    │     │  Sistema de     │     │    SQS/SNS      │
-│  Banco NoSQL    │◄────┤  Mensageria     │◄────┤    ou similar   │
-│   Serverless    │     │   Serverless    │     │                 │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-         ▲                                               ▲
-         │                                               │
-         │                                               │
-┌────────┴────────┐                             ┌────────┴────────┐
-│  Cache Redis    │                             │ Armazenamento   │
-│   Serverless    │                             │  S3 ou similar  │
-└─────────────────┘                             └─────────────────┘
-
-```
-
-## Vantagens da Abordagem Serverless
-
-1. **Custo otimizado**: Paga-se apenas pelo tempo de execução das funções e recursos utilizados
-
-2. **Escalabilidade automática**: Escala de zero a milhares de instâncias sem intervenção manual
-
-3. **Menor operação**: Sem necessidade de gerenciar servidores, patches, sistemas operacionais
-
-4. **Alta disponibilidade**: Serviços gerenciados com SLAs garantidos pelo provedor de nuvem
-
-5. **Agilidade**: Foco no desenvolvimento do código de negócio, não na infraestrutura
-
-## Considerações para Implementação
-
-1. **Cold starts**: Primeiras execuções podem ter latência maior; implemente estratégias para minimizar
-
-2. **Limites de execução**: Funções serverless têm limites de tempo (geralmente 5-15 minutos); desenhe processos de longa duração adequadamente
-
-3. **Observabilidade**: Implemente logs detalhados e rastreamento de transações distribuídas
-
-4. **Gerenciamento de estado**: Armazene estado em serviços externos, não nas funções que são efêmeras
-
-5. **Local development**: Use emuladores locais (AWS SAM, Serverless Framework) para desenvolvimento e testes
+- ✅ **Frontend móvel** nativo e responsivo
+- ✅ **Backend robusto** em microserviços
+- ✅ **Processamento assíncrono** serverless e escalável
