@@ -13,6 +13,12 @@ spring:
         health-check-path: /actuator/health
         health-check-interval: 15s
 
+# Google Maps API Configuration
+google:
+  maps:
+    api:
+      key: AIzaSyDu9ndl3FCCcfY1j04gAEQLO--XxuUxRBA
+
 management:
   endpoints:
     web:
@@ -33,8 +39,12 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 server:
   port: 8082
 
@@ -65,8 +75,12 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 server:
   port: 8082
