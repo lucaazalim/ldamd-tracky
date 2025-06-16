@@ -1,13 +1,21 @@
 package com.tracky.orderservice.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "orders")
@@ -28,9 +36,13 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus status = OrderStatus.PENDING;
 
-    @NotBlank(message = "Address is required")
-    @Column(nullable = false)
-    private String address;
+    @NotBlank(message = "Origin address is required")
+    @Column(name = "origin_address", nullable = false)
+    private String originAddress;
+
+    @NotBlank(message = "Destination address is required")
+    @Column(name = "destination_address", nullable = false)
+    private String destinationAddress;
 
     @NotBlank(message = "Description is required")
     @Column(nullable = false)
@@ -55,9 +67,10 @@ public class Order {
     public Order() {
     }
 
-    public Order(UUID customerId, String address, String description) {
+    public Order(UUID customerId, String originAddress, String destinationAddress, String description) {
         this.customerId = customerId;
-        this.address = address;
+        this.originAddress = originAddress;
+        this.destinationAddress = destinationAddress;
         this.description = description;
     }
 
@@ -94,12 +107,20 @@ public class Order {
         this.status = status;
     }
 
-    public String getAddress() {
-        return address;
+    public String getOriginAddress() {
+        return originAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setOriginAddress(String originAddress) {
+        this.originAddress = originAddress;
+    }
+
+    public String getDestinationAddress() {
+        return destinationAddress;
+    }
+
+    public void setDestinationAddress(String destinationAddress) {
+        this.destinationAddress = destinationAddress;
     }
 
     public String getDescription() {

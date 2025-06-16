@@ -1,9 +1,9 @@
 package com.tracky.orderservice.dto;
 
-import com.tracky.orderservice.model.Order;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.tracky.orderservice.model.Order;
 
 public class OrderResponse {
 
@@ -11,7 +11,8 @@ public class OrderResponse {
     private UUID customerId;
     private UUID driverId;
     private Order.OrderStatus status;
-    private String address;
+    private String originAddress;
+    private String destinationAddress;
     private String description;
     private String imageUrl;
     private LocalDateTime createdAt;
@@ -22,13 +23,14 @@ public class OrderResponse {
     }
 
     public OrderResponse(UUID id, UUID customerId, UUID driverId, Order.OrderStatus status,
-            String address, String description, String imageUrl,
+            String originAddress, String destinationAddress, String description, String imageUrl,
             LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.customerId = customerId;
         this.driverId = driverId;
         this.status = status;
-        this.address = address;
+        this.originAddress = originAddress;
+        this.destinationAddress = destinationAddress;
         this.description = description;
         this.imageUrl = imageUrl;
         this.createdAt = createdAt;
@@ -41,7 +43,8 @@ public class OrderResponse {
                 order.getCustomerId(),
                 order.getDriverId(),
                 order.getStatus(),
-                order.getAddress(),
+                order.getOriginAddress(),
+                order.getDestinationAddress(),
                 order.getDescription(),
                 order.getImageUrl(),
                 order.getCreatedAt(),
@@ -81,12 +84,20 @@ public class OrderResponse {
         this.status = status;
     }
 
-    public String getAddress() {
-        return address;
+    public String getOriginAddress() {
+        return originAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setOriginAddress(String originAddress) {
+        this.originAddress = originAddress;
+    }
+
+    public String getDestinationAddress() {
+        return destinationAddress;
+    }
+
+    public void setDestinationAddress(String destinationAddress) {
+        this.destinationAddress = destinationAddress;
     }
 
     public String getDescription() {

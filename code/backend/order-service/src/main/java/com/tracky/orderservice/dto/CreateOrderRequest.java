@@ -1,17 +1,20 @@
 package com.tracky.orderservice.dto;
 
+import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import java.util.UUID;
 
 public class CreateOrderRequest {
 
     @NotNull(message = "Customer ID is required")
     private UUID customerId;
 
-    @NotBlank(message = "Address is required")
-    private String address;
+    @NotBlank(message = "Origin address is required")
+    private String originAddress;
+
+    @NotBlank(message = "Destination address is required")
+    private String destinationAddress;
 
     @NotBlank(message = "Description is required")
     private String description;
@@ -22,9 +25,11 @@ public class CreateOrderRequest {
     public CreateOrderRequest() {
     }
 
-    public CreateOrderRequest(UUID customerId, String address, String description, String imageUrl) {
+    public CreateOrderRequest(UUID customerId, String originAddress, String destinationAddress, String description,
+            String imageUrl) {
         this.customerId = customerId;
-        this.address = address;
+        this.originAddress = originAddress;
+        this.destinationAddress = destinationAddress;
         this.description = description;
         this.imageUrl = imageUrl;
     }
@@ -38,12 +43,20 @@ public class CreateOrderRequest {
         this.customerId = customerId;
     }
 
-    public String getAddress() {
-        return address;
+    public String getOriginAddress() {
+        return originAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setOriginAddress(String originAddress) {
+        this.originAddress = originAddress;
+    }
+
+    public String getDestinationAddress() {
+        return destinationAddress;
+    }
+
+    public void setDestinationAddress(String destinationAddress) {
+        this.destinationAddress = destinationAddress;
     }
 
     public String getDescription() {

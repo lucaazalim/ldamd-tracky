@@ -22,7 +22,8 @@ public class OrderService {
     public OrderResponse createOrder(CreateOrderRequest request) {
         Order order = new Order();
         order.setCustomerId(request.getCustomerId());
-        order.setAddress(request.getAddress());
+        order.setOriginAddress(request.getOriginAddress());
+        order.setDestinationAddress(request.getDestinationAddress());
         order.setDescription(request.getDescription());
         order.setImageUrl(request.getImageUrl());
 
@@ -67,8 +68,11 @@ public class OrderService {
         if (request.getStatus() != null) {
             order.setStatus(request.getStatus());
         }
-        if (request.getAddress() != null) {
-            order.setAddress(request.getAddress());
+        if (request.getOriginAddress() != null) {
+            order.setOriginAddress(request.getOriginAddress());
+        }
+        if (request.getDestinationAddress() != null) {
+            order.setDestinationAddress(request.getDestinationAddress());
         }
         if (request.getDescription() != null) {
             order.setDescription(request.getDescription());

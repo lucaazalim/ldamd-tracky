@@ -1,14 +1,15 @@
 package com.tracky.orderservice.dto;
 
-import com.tracky.orderservice.model.Order;
-
 import java.util.UUID;
+
+import com.tracky.orderservice.model.Order;
 
 public class UpdateOrderRequest {
 
     private UUID driverId;
     private Order.OrderStatus status;
-    private String address;
+    private String originAddress;
+    private String destinationAddress;
     private String description;
     private String imageUrl;
 
@@ -33,12 +34,20 @@ public class UpdateOrderRequest {
         this.status = status;
     }
 
-    public String getAddress() {
-        return address;
+    public String getOriginAddress() {
+        return originAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setOriginAddress(String originAddress) {
+        this.originAddress = originAddress;
+    }
+
+    public String getDestinationAddress() {
+        return destinationAddress;
+    }
+
+    public void setDestinationAddress(String destinationAddress) {
+        this.destinationAddress = destinationAddress;
     }
 
     public String getDescription() {
