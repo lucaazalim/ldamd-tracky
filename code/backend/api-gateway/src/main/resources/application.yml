@@ -40,20 +40,23 @@ spring:
               predicates:
                 - Path=/api/users/**
               filters:
+                - StripPrefix=1
                 - name: JwtAuthenticationFilter
                   args:
-                    exclude-patterns: "/api/users,/api/users/login"
+                    exclude-patterns: "/users,/users/login"
             - id: order-service
               uri: lb://order-service
               predicates:
                 - Path=/api/orders/**
               filters:
+                - StripPrefix=1
                 - name: JwtAuthenticationFilter
             - id: tracking-service
               uri: lb://tracking-service
               predicates:
                 - Path=/api/tracking/**
               filters:
+                - StripPrefix=1
                 - name: JwtAuthenticationFilter
 
 server:
@@ -96,20 +99,23 @@ spring:
               predicates:
                 - Path=/api/users/**
               filters:
+                - StripPrefix=1
                 - name: JwtAuthenticationFilter
                   args:
-                    exclude-patterns: "/api/users,/api/users/login"
+                    exclude-patterns: "/users,/users/login"
             - id: order-service
               uri: lb://order-service
               predicates:
                 - Path=/api/orders/**
               filters:
+                - StripPrefix=1
                 - name: JwtAuthenticationFilter
             - id: tracking-service
               uri: lb://tracking-service
               predicates:
                 - Path=/api/tracking/**
               filters:
+                - StripPrefix=1
                 - name: JwtAuthenticationFilter
 
 server:
