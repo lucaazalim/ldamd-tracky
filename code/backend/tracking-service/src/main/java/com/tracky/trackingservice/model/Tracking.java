@@ -2,6 +2,9 @@ package com.tracky.trackingservice.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -10,6 +13,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tracking")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tracking {
 
     @Id
@@ -32,54 +38,10 @@ public class Tracking {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // Constructors
-    public Tracking() {
-    }
-
+    // Custom constructor for creating tracking without timestamp (it's auto-generated)
     public Tracking(UUID orderId, BigDecimal latitude, BigDecimal longitude) {
         this.orderId = orderId;
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
-    }
-
-    public BigDecimal getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(BigDecimal latitude) {
-        this.latitude = latitude;
-    }
-
-    public BigDecimal getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(BigDecimal longitude) {
-        this.longitude = longitude;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

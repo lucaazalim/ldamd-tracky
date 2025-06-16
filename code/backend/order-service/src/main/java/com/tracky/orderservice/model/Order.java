@@ -5,6 +5,9 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +22,9 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "orders")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
 
     @Id
@@ -63,95 +69,11 @@ public class Order {
         PENDING, ACCEPTED, ON_COURSE, DELIVERED
     }
 
-    // Constructors
-    public Order() {
-    }
-
+    // Custom constructor for creating orders without timestamps (they are auto-generated)
     public Order(UUID customerId, String originAddress, String destinationAddress, String description) {
         this.customerId = customerId;
         this.originAddress = originAddress;
         this.destinationAddress = destinationAddress;
         this.description = description;
-    }
-
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(UUID customerId) {
-        this.customerId = customerId;
-    }
-
-    public UUID getDriverId() {
-        return driverId;
-    }
-
-    public void setDriverId(UUID driverId) {
-        this.driverId = driverId;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public String getOriginAddress() {
-        return originAddress;
-    }
-
-    public void setOriginAddress(String originAddress) {
-        this.originAddress = originAddress;
-    }
-
-    public String getDestinationAddress() {
-        return destinationAddress;
-    }
-
-    public void setDestinationAddress(String destinationAddress) {
-        this.destinationAddress = destinationAddress;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

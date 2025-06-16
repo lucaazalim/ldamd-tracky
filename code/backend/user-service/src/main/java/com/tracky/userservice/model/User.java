@@ -3,6 +3,9 @@ package com.tracky.userservice.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,6 +14,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -46,71 +52,11 @@ public class User {
         CUSTOMER, DRIVER
     }
 
-    // Constructors
-    public User() {
-    }
-
+    // Custom constructor for creating users without timestamps (they are auto-generated)
     public User(String name, String email, String password, UserType type) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.type = type;
-    }
-
-    // Getters and Setters
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public UserType getType() {
-        return type;
-    }
-
-    public void setType(UserType type) {
-        this.type = type;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }
