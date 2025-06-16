@@ -19,9 +19,10 @@ services:
         "-ui",
         "-client=0.0.0.0",
         "-bind=0.0.0.0",
+        "-data-dir=/consul/data",
       ]
-    networks:
-      - tracky-network
+    volumes:
+      - consul_data:/consul/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8500/v1/status/leader"]
       interval: 30s
@@ -40,8 +41,6 @@ services:
       - "5432:5432"
     volumes:
       - user_db_data:/var/lib/postgresql/data
-    networks:
-      - tracky-network
 
   # PostgreSQL for Order Service
   order-db:
@@ -55,8 +54,6 @@ services:
       - "5433:5432"
     volumes:
       - order_db_data:/var/lib/postgresql/data
-    networks:
-      - tracky-network
 
   # PostgreSQL for Tracking Service
   tracking-db:
@@ -70,8 +67,6 @@ services:
       - "5434:5432"
     volumes:
       - tracking_db_data:/var/lib/postgresql/data
-    networks:
-      - tracky-network
 
   # User Service
   user-service:
@@ -92,10 +87,10 @@ services:
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
     depends_on:
-      - user-db
-      - consul
-    networks:
-      - tracky-network
+      consul:
+        condition: service_healthy
+      user-db:
+        condition: service_started
 
   # Order Service
   order-service:
@@ -115,10 +110,10 @@ services:
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
     depends_on:
-      - order-db
-      - consul
-    networks:
-      - tracky-network
+      consul:
+        condition: service_healthy
+      order-db:
+        condition: service_started
 
   # Tracking Service
   tracking-service:
@@ -138,10 +133,10 @@ services:
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
     depends_on:
-      - tracking-db
-      - consul
-    networks:
-      - tracky-network
+      consul:
+        condition: service_healthy
+      tracking-db:
+        condition: service_started
 
   # Config Server
   config-server:
@@ -156,9 +151,8 @@ services:
       - CONSUL_HOST=consul
       - CONSUL_PORT=8500
     depends_on:
-      - consul
-    networks:
-      - tracky-network
+      consul:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
       interval: 30s
@@ -179,18 +173,17 @@ services:
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
     depends_on:
-      - user-service
-      - order-service
-      - tracking-service
-      - consul
-    networks:
-      - tracky-network
+      consul:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+      order-service:
+        condition: service_started
+      tracking-service:
+        condition: service_started
 
 volumes:
+  consul_data:
   user_db_data:
   order_db_data:
   tracking_db_data:
-
-networks:
-  tracky-network:
-    driver: bridge

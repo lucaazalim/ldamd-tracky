@@ -8,10 +8,16 @@ spring:
     config:
       server:
         git:
-          uri: file://${user.home}/config-repo
-          default-label: main
+          uri: https://github.com/dummy/dummy
+          clone-on-start: false
+          timeout: 5
         native:
-          search-locations: classpath:/config/
+          search-locations: classpath:/config
+        health:
+          repositories:
+            dummyRepo:
+              name: dummy
+              label: main
     consul:
       host: ${CONSUL_HOST:localhost}
       port: ${CONSUL_PORT:8500}
