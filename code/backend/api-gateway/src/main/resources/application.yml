@@ -1,0 +1,119 @@
+spring:
+  application:
+    name: api-gateway
+  profiles:
+    active: local
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: api-gateway
+        instance-id: ${spring.application.name}:${server.port}
+        health-check-path: /actuator/health
+        health-check-interval: 15s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+  endpoint:
+    health:
+      show-details: always
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+          filters:
+            - name: JwtAuthenticationFilter
+              args:
+                exclude-patterns: "/users,/users/login"
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/orders/**
+          filters:
+            - name: JwtAuthenticationFilter
+        - id: tracking-service
+          uri: lb://tracking-service
+          predicates:
+            - Path=/tracking/**
+          filters:
+            - name: JwtAuthenticationFilter
+
+server:
+  port: 8080
+
+jwt:
+  secret: mySecretKey123456789012345678901234567890
+
+logging:
+  level:
+    com.tracky.apigateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:consul}
+      port: ${CONSUL_PORT:8500}
+      discovery:
+        service-name: api-gateway
+        instance-id: ${spring.application.name}:${server.port}
+        health-check-path: /actuator/health
+        health-check-interval: 15s
+        hostname: api-gateway
+        prefer-ip-address: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+          filters:
+            - name: JwtAuthenticationFilter
+              args:
+                exclude-patterns: "/users,/users/login"
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/orders/**
+          filters:
+            - name: JwtAuthenticationFilter
+        - id: tracking-service
+          uri: lb://tracking-service
+          predicates:
+            - Path=/tracking/**
+          filters:
+            - name: JwtAuthenticationFilter
+
+server:
+  port: 8080
+
+jwt:
+  secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
+
+logging:
+  level:
+    com.tracky.apigateway: INFO
