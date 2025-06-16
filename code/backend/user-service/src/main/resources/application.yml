@@ -39,15 +39,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
   server:
     port: 8081
 
 jwt:
-  secret: myVeryLongSecretKeyForHS512Algorithm1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+  secret: 962f8f793fad33fe370eda6ce556c53ae458d6b55f57e27baf7ff43dba3435d1
   expiration: 86400000 # 24 hours
 
 logging:
@@ -69,9 +65,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   cloud:
     consul:
@@ -89,7 +82,7 @@ server:
   port: 8081
 
 jwt:
-  secret: ${JWT_SECRET:myVeryLongSecretKeyForHS512Algorithm1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ}
+  secret: ${JWT_SECRET:962f8f793fad33fe370eda6ce556c53ae458d6b55f57e27baf7ff43dba3435d1}
   expiration: 86400000
 
 logging:

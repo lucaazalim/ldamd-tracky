@@ -58,7 +58,7 @@ server:
   port: 8080
 
 jwt:
-  secret: mySecretKey123456789012345678901234567890
+  secret: 962f8f793fad33fe370eda6ce556c53ae458d6b55f57e27baf7ff43dba3435d1
 
 logging:
   level:
@@ -112,7 +112,7 @@ server:
   port: 8080
 
 jwt:
-  secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
+  secret: ${JWT_SECRET:962f8f793fad33fe370eda6ce556c53ae458d6b55f57e27baf7ff43dba3435d1}
 
 logging:
   level:
