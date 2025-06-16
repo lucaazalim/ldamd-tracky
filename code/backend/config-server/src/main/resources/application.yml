@@ -1,0 +1,39 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: file://${user.home}/config-repo
+          default-label: main
+        native:
+          search-locations: classpath:/config/
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      discovery:
+        service-name: config-server
+        instance-id: ${spring.application.name}:${server.port}
+        health-check-path: /actuator/health
+        health-check-interval: 15s
+        hostname: ${CONSUL_HOST:localhost}
+        prefer-ip-address: true
+  profiles:
+    active: native
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, refresh
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    org.springframework.cloud.config: DEBUG

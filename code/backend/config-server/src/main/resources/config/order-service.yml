@@ -1,0 +1,13 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://order-db:5432/orderdb
+    username: orderservice
+    password: orderpass123
+    driver-class-name: org.postgresql.Driver
+
+eureka:
+  instance:
+    hostname: order-service
