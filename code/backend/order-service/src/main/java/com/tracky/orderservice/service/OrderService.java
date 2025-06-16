@@ -1,14 +1,17 @@
 package com.tracky.orderservice.service;
 
-import com.tracky.orderservice.dto.*;
-import com.tracky.orderservice.model.Order;
-import com.tracky.orderservice.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.tracky.orderservice.dto.CreateOrderRequest;
+import com.tracky.orderservice.dto.OrderResponse;
+import com.tracky.orderservice.dto.UpdateOrderRequest;
+import com.tracky.orderservice.model.Order;
+import com.tracky.orderservice.repository.OrderRepository;
 
 @Service
 public class OrderService {
@@ -42,6 +45,13 @@ public class OrderService {
 
     public List<OrderResponse> getOrdersByStatus(Order.OrderStatus status) {
         List<Order> orders = orderRepository.findByStatus(status);
+        return orders.stream()
+                .map(OrderResponse::fromOrder)
+                .collect(Collectors.toList());
+    }
+
+    public List<OrderResponse> getOrdersByDriver(UUID driverId) {
+        List<Order> orders = orderRepository.findByDriverId(driverId);
         return orders.stream()
                 .map(OrderResponse::fromOrder)
                 .collect(Collectors.toList());

@@ -1,18 +1,30 @@
 package com.tracky.orderservice.controller;
 
-import com.tracky.orderservice.dto.*;
-import com.tracky.orderservice.model.Order;
-import com.tracky.orderservice.service.OrderService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.UUID;
+import com.tracky.orderservice.dto.CreateOrderRequest;
+import com.tracky.orderservice.dto.OrderResponse;
+import com.tracky.orderservice.dto.UpdateOrderRequest;
+import com.tracky.orderservice.model.Order;
+import com.tracky.orderservice.service.OrderService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/orders")
@@ -45,15 +57,18 @@ public class OrderController {
     }
 
     @GetMapping
-    @Operation(summary = "Get orders", description = "Get orders by customer ID or status")
+    @Operation(summary = "Get orders", description = "Get orders by customer ID, driver ID, or status")
     public ResponseEntity<List<OrderResponse>> getOrders(
             @RequestParam(required = false) UUID customer,
+            @RequestParam(required = false) UUID driver,
             @RequestParam(required = false) Order.OrderStatus status) {
 
         try {
             List<OrderResponse> response;
             if (customer != null) {
                 response = orderService.getOrdersByCustomer(customer);
+            } else if (driver != null) {
+                response = orderService.getOrdersByDriver(driver);
             } else if (status != null) {
                 response = orderService.getOrdersByStatus(status);
             } else {
