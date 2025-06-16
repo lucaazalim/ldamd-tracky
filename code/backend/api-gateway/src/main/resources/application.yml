@@ -28,31 +28,33 @@ spring:
       on-profile: local
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/api/users/**
-          filters:
-            - name: JwtAuthenticationFilter
-              args:
-                exclude-patterns: "/api/users,/api/users/login"
-        - id: order-service
-          uri: lb://order-service
-          predicates:
-            - Path=/api/orders/**
-          filters:
-            - name: JwtAuthenticationFilter
-        - id: tracking-service
-          uri: lb://tracking-service
-          predicates:
-            - Path=/api/tracking/**
-          filters:
-            - name: JwtAuthenticationFilter
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          routes:
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/users/**
+              filters:
+                - name: JwtAuthenticationFilter
+                  args:
+                    exclude-patterns: "/api/users,/api/users/login"
+            - id: order-service
+              uri: lb://order-service
+              predicates:
+                - Path=/api/orders/**
+              filters:
+                - name: JwtAuthenticationFilter
+            - id: tracking-service
+              uri: lb://tracking-service
+              predicates:
+                - Path=/api/tracking/**
+              filters:
+                - name: JwtAuthenticationFilter
 
 server:
   port: 8080
@@ -82,31 +84,33 @@ spring:
         hostname: api-gateway
         prefer-ip-address: true
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/api/users/**
-          filters:
-            - name: JwtAuthenticationFilter
-              args:
-                exclude-patterns: "/api/users,/api/users/login"
-        - id: order-service
-          uri: lb://order-service
-          predicates:
-            - Path=/api/orders/**
-          filters:
-            - name: JwtAuthenticationFilter
-        - id: tracking-service
-          uri: lb://tracking-service
-          predicates:
-            - Path=/api/tracking/**
-          filters:
-            - name: JwtAuthenticationFilter
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          routes:
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/users/**
+              filters:
+                - name: JwtAuthenticationFilter
+                  args:
+                    exclude-patterns: "/api/users,/api/users/login"
+            - id: order-service
+              uri: lb://order-service
+              predicates:
+                - Path=/api/orders/**
+              filters:
+                - name: JwtAuthenticationFilter
+            - id: tracking-service
+              uri: lb://tracking-service
+              predicates:
+                - Path=/api/tracking/**
+              filters:
+                - name: JwtAuthenticationFilter
 
 server:
   port: 8080
