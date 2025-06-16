@@ -18,7 +18,7 @@
     <description>Order management microservice for Tracky</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>24</java.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
     </properties>
 
