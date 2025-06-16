@@ -52,14 +52,14 @@ docker-compose logs -f
 
 ## Service URLs
 
-| Service          | Port | URL                              |
-| ---------------- | ---- | -------------------------------- |
-| Consul           | 8500 | http://localhost:8500            |
-| API Gateway      | 8080 | http://localhost:8080            |
-| Config Server    | 8888 | http://localhost:8888            |
-| User Service     | 8081 | http://localhost:8081 (internal) |
-| Order Service    | 8082 | http://localhost:8082 (internal) |
-| Tracking Service | 8083 | http://localhost:8083 (internal) |
+| Service          | Port | URL                              | Swagger UI                                  |
+| ---------------- | ---- | -------------------------------- | ------------------------------------------- |
+| Consul           | 8500 | http://localhost:8500            | N/A                                         |
+| API Gateway      | 8080 | http://localhost:8080            | http://localhost:8080/swagger-ui/index.html |
+| Config Server    | 8888 | http://localhost:8888            | N/A                                         |
+| User Service     | 8081 | http://localhost:8081 (internal) | http://localhost:8081/swagger-ui/index.html |
+| Order Service    | 8082 | http://localhost:8082 (internal) | http://localhost:8082/swagger-ui/index.html |
+| Tracking Service | 8083 | http://localhost:8083 (internal) | http://localhost:8083/swagger-ui/index.html |
 
 ## Service Discovery with Consul
 
