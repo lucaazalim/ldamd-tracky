@@ -47,9 +47,9 @@ class _OrdersPageState extends State<OrdersPage> {
         return [];
       } else {
         // Otherwise, we fetch the orders
-        final List<Map<String, dynamic>> ordersData = await _ordersService.getOrdersForCustomer(customerId);
-        final List<Order> orders = ordersData.map((orderMap) => Order.fromJson(orderMap)).toList();
-        return orders;
+        final List<Order> ordersData = await _ordersService.getOrdersForCustomer(customerId);
+        //final List<Order> orders = ordersData.map((orderMap) => Order.fromJson(orderMap)).toList();
+        return ordersData;
       }
     } catch (e) {
       // We capture any error during the fetch and throw it as a Future.error

@@ -13,55 +13,63 @@ import 'package:mobile/modules/common/dio.dart';
 /// This service includes methods to fetch orders for customers and drivers from mock data files.
 ///
 
-
 class OrdersService {
+  final dioClient = DioClient().dio;
 
-  final  dioClient = DioClient().dio;
-
-  Future<Map<String, dynamic>> _loadMockData() async {
-    final String response = await rootBundle.loadString('assets/mock/data.json');
-    return json.decode(response);
-  }
-
-  Future<List<Map<String, dynamic>>> getOrdersForCustomer(String customerId) async {
-    final mockData = await _loadMockData();
-    final orders = (mockData['orders'] as List<dynamic>?) ?? [];
-    return orders.where((order) => order['customerId'] == customerId).cast<Map<String, dynamic>>().toList();
-  }
-
-
-  Future<List<Order>> getCurrentOrdersByDriverId(String driverId) async {
-
-    try{
-
+  Future<List<Order>> getOrdersForCustomer(String customerId) async {
+    try {
       final response = await dioClient.get(
-        "/orders?driver=$driverId",
+        "/orders?driver=$customerId",
         options: Options(
           headers: {
-            "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1lc0BnbWFpbC5jb20iLCJpYXQiOjE3NTAxMTc3MzIsImV4cCI6MTc1MDIwNDEzMn0.ePzaA4oY78eibgm2pgf48wFUblOOOLNueP6C9gOF8AhAK9gyOkr10P2V4_EPzd1k5_CMXXXF84R14tYXbIiXHw",
+            "Authorization":
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1lc0BnbWFpbC5jb20iLCJpYXQiOjE3NTAxMTc3MzIsImV4cCI6MTc1MDIwNDEzMn0.ePzaA4oY78eibgm2pgf48wFUblOOOLNueP6C9gOF8AhAK9gyOkr10P2V4_EPzd1k5_CMXXXF84R14tYXbIiXHw",
           },
         ),
       );
 
-
       print(response.data);
-      if((response.data as List).isEmpty){
+      if ((response.data as List).isEmpty) {
         return [];
       }
 
-      final orders = (response.data as List)
-          .map((item) => Order.fromJson(item))
-          .toList();
+      final orders =
+          (response.data as List).map((item) => Order.fromJson(item)).toList();
 
       return orders;
+    } catch (e) {
+      print('Error loading orders: $e');
 
-    }catch (e) {
+      return [];
+    }
+  }
 
+  Future<List<Order>> getCurrentOrdersByDriverId(String driverId) async {
+    try {
+      final response = await dioClient.get(
+        "/orders?driver=$driverId",
+        options: Options(
+          headers: {
+            "Authorization":
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1lc0BnbWFpbC5jb20iLCJpYXQiOjE3NTAxMTc3MzIsImV4cCI6MTc1MDIwNDEzMn0.ePzaA4oY78eibgm2pgf48wFUblOOOLNueP6C9gOF8AhAK9gyOkr10P2V4_EPzd1k5_CMXXXF84R14tYXbIiXHw",
+          },
+        ),
+      );
+
+      print(response.data);
+      if ((response.data as List).isEmpty) {
+        return [];
+      }
+
+      final orders =
+          (response.data as List).map((item) => Order.fromJson(item)).toList();
+
+      return orders;
+    } catch (e) {
       print('Erro ao buscar pedidos: $e');
 
       return [];
     }
-
   }
 
   Future<List<Order>> getAvailableOrders() async {
@@ -70,60 +78,53 @@ class OrdersService {
         "/orders?status=PENDING",
         options: Options(
           headers: {
-            "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1lc0BnbWFpbC5jb20iLCJpYXQiOjE3NTAxMTc3MzIsImV4cCI6MTc1MDIwNDEzMn0.ePzaA4oY78eibgm2pgf48wFUblOOOLNueP6C9gOF8AhAK9gyOkr10P2V4_EPzd1k5_CMXXXF84R14tYXbIiXHw", //mudar
+            "Authorization":
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1lc0BnbWFpbC5jb20iLCJpYXQiOjE3NTAxMTc3MzIsImV4cCI6MTc1MDIwNDEzMn0.ePzaA4oY78eibgm2pgf48wFUblOOOLNueP6C9gOF8AhAK9gyOkr10P2V4_EPzd1k5_CMXXXF84R14tYXbIiXHw", //mudar
           },
         ),
       );
 
-
       print(response.data);
-      if((response.data as List).isEmpty){
-       return [];
+      if ((response.data as List).isEmpty) {
+        return [];
       }
 
-      final orders = (response.data as List)
-          .map((item) => Order.fromJson(item))
-          .toList();
+      final orders =
+          (response.data as List).map((item) => Order.fromJson(item)).toList();
 
       return orders;
-
     } catch (e) {
-
       print('Erro ao buscar pedidos: $e');
       return []; // Retorna uma lista vazia pra não dar erro no App
     }
-
   }
 
-
   Future<Order?> getOrderById(String orderId) async {
-
-    try{
-
+    try {
       final response = await dioClient.get(
         "/orders/$orderId",
         options: Options(
           headers: {
-            "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1lc0BnbWFpbC5jb20iLCJpYXQiOjE3NTAxMTc3MzIsImV4cCI6MTc1MDIwNDEzMn0.ePzaA4oY78eibgm2pgf48wFUblOOOLNueP6C9gOF8AhAK9gyOkr10P2V4_EPzd1k5_CMXXXF84R14tYXbIiXHw",//mudar
+            "Authorization":
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1lc0BnbWFpbC5jb20iLCJpYXQiOjE3NTAxMTc3MzIsImV4cCI6MTc1MDIwNDEzMn0.ePzaA4oY78eibgm2pgf48wFUblOOOLNueP6C9gOF8AhAK9gyOkr10P2V4_EPzd1k5_CMXXXF84R14tYXbIiXHw", //mudar
           },
         ),
       );
 
-
       return response.data;
-
-    }catch (e) {
-
+    } catch (e) {
       print('Erro ao buscar pedidos: $e');
 
       return null;
     }
-
   }
 
-  Future<Order?> updateOrderStatus(String orderId, XFile image, OrderStatus orderStatus) async {
+  Future<Order?> updateOrderStatus(
+    String orderId,
+    XFile image,
+    OrderStatus orderStatus,
+  ) async {
     try {
-
       FormData formData = FormData.fromMap({
         'image': await MultipartFile.fromFile(image.path),
         'status': orderStatus.toString(), // ou o que seu backend espera
@@ -134,7 +135,8 @@ class OrdersService {
         data: formData,
         options: Options(
           headers: {
-            "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1lc0BnbWFpbC5jb20iLCJpYXQiOjE3NTAxMTc3MzIsImV4cCI6MTc1MDIwNDEzMn0.ePzaA4oY78eibgm2pgf48wFUblOOOLNueP6C9gOF8AhAK9gyOkr10P2V4_EPzd1k5_CMXXXF84R14tYXbIiXHw", //mudar
+            "Authorization":
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1lc0BnbWFpbC5jb20iLCJpYXQiOjE3NTAxMTc3MzIsImV4cCI6MTc1MDIwNDEzMn0.ePzaA4oY78eibgm2pgf48wFUblOOOLNueP6C9gOF8AhAK9gyOkr10P2V4_EPzd1k5_CMXXXF84R14tYXbIiXHw", //mudar
           },
         ),
       );
@@ -145,6 +147,4 @@ class OrdersService {
       return null;
     }
   }
-
-
 }
