@@ -131,7 +131,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _emailController,
                   decoration: const InputDecoration(
                     labelText: 'Email',
-                    border: OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -139,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _usernameController,
                   decoration: const InputDecoration(
                     labelText: 'Username',
-                    border: OutlineInputBorder(),
+                    
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -148,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   obscureText: true,
                   decoration: const InputDecoration(
                     labelText: 'Password',
-                    border: OutlineInputBorder(),
+                    
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -156,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   value: _selectedType,
                   decoration: const InputDecoration(
                     labelText: 'Type',
-                    border: OutlineInputBorder(),
+                    
                   ),
                   items: const [
                     DropdownMenuItem(value: 'CUSTOMER', child: Text('Customer')),

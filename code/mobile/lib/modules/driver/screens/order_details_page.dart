@@ -213,6 +213,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 5, 242, 112), // seta verde
+        ),
         title: const Text('Order Details'),
         titleTextStyle: TextStyle(color: Color.fromARGB(255, 5, 242, 112), fontSize: 20.0),
         actions: [

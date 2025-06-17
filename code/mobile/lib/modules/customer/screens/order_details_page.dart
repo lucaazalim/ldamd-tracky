@@ -152,6 +152,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 5, 242, 112), // seta verde
+        ),
         title: const Text('Order Details'),
         titleTextStyle: TextStyle(
           color: const Color.fromARGB(255, 5, 242, 112),

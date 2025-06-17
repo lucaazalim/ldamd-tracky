@@ -42,7 +42,14 @@ class _OrderFormPageState extends State<OrderFormPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 5, 242, 112), // seta verde
+        ),
         title: const Text('New Order'),
+        titleTextStyle: TextStyle(
+            color: const Color.fromARGB(255, 5, 242, 112),
+            fontSize: 24.0
+        ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(8),
           child: Container(
@@ -77,14 +84,21 @@ class _OrderFormPageState extends State<OrderFormPage> {
                       validator: (v) => v == null || v.isEmpty ? 'Required field' : null,
                     ),
                     const SizedBox(height: 32),
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 5, 242, 112),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 5, 242, 112),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          minimumSize: const Size.fromHeight(46),
+                        ),
+                        onPressed: _submit,
+                        icon: const Icon(Icons.add, color: Colors.black),
+                        label: const Text(
+                          'Create Order',
+                          style: TextStyle(color: Colors.black, fontSize: 18),
+                        ),
                       ),
-                      onPressed: _submit,
-                      icon: const Icon(Icons.add, color: Colors.black),
-                      label: const Text('Create Order', style: TextStyle(color: Colors.black)),
                     ),
                   ],
                 ),

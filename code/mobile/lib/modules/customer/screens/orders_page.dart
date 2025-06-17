@@ -77,8 +77,16 @@ class _OrdersPageState extends State<OrdersPage> {
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.add),
-                label: const Text('New Order'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 5, 242, 112),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  minimumSize: const Size.fromHeight(46),
+                ),
+                icon: const Icon(Icons.add, color: Colors.black),
+                label: const Text(
+                  'New Order',
+                  style: TextStyle(color: Colors.black, fontSize: 18),
+                ),
                 onPressed: () async {
                   final result = await Navigator.pushNamed(context, '/customer/order/form');
                   if (result == true) {
