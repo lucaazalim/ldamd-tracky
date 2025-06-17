@@ -31,7 +31,8 @@
       "customer_id": 1,
       "driver_id": 2,
       "status": "ACCEPTED",
-      "address": "Rua das Flores, 123, Bairro Primavera",
+      "origin_address": "Rua das Flores, 123, Bairro Primavera",
+      "destination_address": "Alameda dos Sonhos, 101, Jardim Alegre",
       "description": "Book order",
       "image_url": "https://exemplo.com/imagem1.jpg"
     },
@@ -40,7 +41,8 @@
       "customer_id": 1,
       "driver_id": 2,
       "status": "ACCEPTED",
-      "address": "Rua das Flores, 123, Bairro Primavera",
+      "origin_address": "Rua das Flores, 123, Bairro Primavera",
+      "destination_address": "Alameda dos Sonhos, 101, Jardim Alegre",
       "description": "Electronics order",
       "image_url": "https://exemplo.com/imagem1.jpg"
     },
@@ -49,7 +51,8 @@
       "customer_id": 3,
       "driver_id": 2,
       "status": "ON_COURSE",
-      "address": "Avenida Central, 123, Centro",
+      "origin_address": "Rua das Flores, 123, Bairro Primavera",
+      "destination_address": "Alameda dos Sonhos, 101, Jardim Alegre",
       "description": "Electronics order",
       "image_url": "https://exemplo.com/imagem1.jpg"
     },
@@ -58,7 +61,8 @@
       "customer_id": 3,
       "driver_id": null,
       "status": "PENDING",
-      "address": "Avenida Central, 456, Centro",
+      "origin_address": "Rua das Flores, 123, Bairro Primavera",
+      "destination_address": "Alameda dos Sonhos, 101, Jardim Alegre",
       "description": "Book order",
       "image_url": "https://exemplo.com/imagem2.jpg"
     },
@@ -67,7 +71,8 @@
       "customer_id": 1,
       "driver_id": 4,
       "status": "ON_COURSE",
-      "address": "Travessa da Paz, 789, Bairro Novo",
+      "origin_address": "Rua das Flores, 123, Bairro Primavera",
+      "destination_address": "Alameda dos Sonhos, 101, Jardim Alegre",
       "description": "Clothing delivery",
       "image_url": "https://exemplo.com/imagem3.jpg"
     },
@@ -76,17 +81,9 @@
       "customer_id": 3,
       "driver_id": 2,
       "status": "PENDING",
-      "address": "Rua da Agua, 101, Papagaio",
+      "origin_address": "Rua das Flores, 123, Bairro Primavera",
+      "destination_address": "Alameda dos Sonhos, 101, Jardim Alegre",
       "description": "Medicine shipment",
-      "image_url": "https://exemplo.com/imagem4.jpg"
-    },
-    {
-      "id": 125,
-      "customer_id": 3,
-      "driver_id": 2,
-      "status": "PENDING",
-      "address": "Alameda dos Sonhos, 101, Jardim Alegre",
-      "description": "Document shipment",
       "image_url": "https://exemplo.com/imagem4.jpg"
     }
   ],
