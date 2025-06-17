@@ -55,7 +55,6 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         );
 
-        // Redireciona após breve atraso para permitir leitura da mensagem
         Future.delayed(const Duration(seconds: 2), () {
           Navigator.pushReplacementNamed(context, '/');
         });
