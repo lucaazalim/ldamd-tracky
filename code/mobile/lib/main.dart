@@ -56,32 +56,6 @@ class MyApp extends StatelessWidget {
         '/driver/order/details': (context) => OrderDetailsScreen(),
         '/driver/order/update-status': (context) => UpdateOrderStatusPage()
       },
-      // onGenerateRoute: (settings) {
-      //   final uri = Uri.parse(settings.name ?? '');
-      //   if (uri.pathSegments.length == 3 &&
-      //       uri.pathSegments[0] == 'customer' &&
-      //       uri.pathSegments[1] == 'order' &&
-      //       uri.pathSegments[2] == 'form') {
-      //     return MaterialPageRoute(
-      //       builder: (context) => const OrderFormPage(),
-      //     );
-      //   } else if (uri.pathSegments.length == 4 &&
-      //       uri.pathSegments[0] == 'customer' &&
-      //       uri.pathSegments[1] == 'order' &&
-      //       uri.pathSegments[2] == 'form') {
-      //     final orderId = uri.pathSegments[3];
-      //     return MaterialPageRoute(
-      //       builder: (context) => OrderFormPage(orderId: orderId),
-      //     );
-      //   }
-      //   if (settings.name == '/customer/order/form') {
-      //     final orderId = settings.arguments as String?;
-      //     return MaterialPageRoute(
-      //       builder: (context) => OrderFormPage(orderId: orderId),
-      //     );
-      //   }
-      //   return null;
-      // },
     );
   }
 }

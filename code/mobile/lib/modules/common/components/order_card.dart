@@ -5,8 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class OrderCard extends StatelessWidget {
   final Order order;
   final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
 
-  const OrderCard({super.key, required this.order, this.onDelete});
+  const OrderCard({super.key, required this.order, this.onDelete, this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,14 @@ class OrderCard extends StatelessWidget {
                 ),
               ),
             ),
+            if (onEdit != null) ...[
+              const SizedBox(width: 8),
+              IconButton(
+                icon: const Icon(Icons.edit, color: Colors.blue),
+                onPressed: onEdit,
+                tooltip: 'Edit order',
+              ),
+            ],
             if (onDelete != null) ...[
               const SizedBox(width: 8),
               IconButton(
