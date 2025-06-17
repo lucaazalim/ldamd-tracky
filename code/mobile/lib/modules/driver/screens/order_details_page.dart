@@ -11,6 +11,7 @@ import 'package:mobile/modules/common/services/location_service.dart';
 import 'package:mobile/modules/common/services/tracking_service.dart';
 import 'package:mobile/modules/common/data/tracking.dart';
 import 'package:mobile/modules/common/services/orders_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/components/theme_provider.dart';
 
@@ -45,13 +46,20 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   bool _isLoadingRoute = true;
   String? _routeError;
 
+  String? _driverID;
+
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetchOrderAndInitRoute());
   }
 
   Future<void> _fetchOrderAndInitRoute() async {
+
+    final prefs = await SharedPreferences.getInstance();
+    _driverID = prefs.getString('userId') ?? "";
+
     final orderId = ModalRoute.of(context)?.settings.arguments as String?;
     if (orderId == null) {
       setState(() {
@@ -252,7 +260,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 isConfirmed
                     ? ElevatedButton(
                   onPressed: () {
-                    print('Order accepted...');
+                    OrdersService().acceptOrder(order.id, _driverID!);
                   },
                   child: const Text('Accept order'),
                 )

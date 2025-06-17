@@ -79,7 +79,7 @@ class OrdersService {
 
   Future<Order?> updateOrderStatus(String id, String status) async {
     try {
-      
+
       if(status == "ONCOURSE"){
         status = "ON_COURSE";
       }
@@ -132,13 +132,13 @@ class OrdersService {
     }
   }
 
-  Future<Order?> acceptOrder(String id, String driverId, String status) async {
+  Future<Order?> acceptOrder(String orderId, String driverId) async {
     try {
       final response = await dioClient.put(
-        "/orders/$id",
+        "/orders/$orderId",
         data: {
           "driverId": driverId,
-          "status": status
+          "status": "ACCEPTED"
         },
       );
 
