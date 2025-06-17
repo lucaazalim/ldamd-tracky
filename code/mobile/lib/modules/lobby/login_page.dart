@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const Text('Tracky'),
         titleTextStyle: TextStyle(
-            color: const Color(0xFFBFF205),
+            color: const Color.fromARGB(255, 5, 242, 112),
             fontSize: 20.0
         ),
         actions: [
@@ -74,92 +74,108 @@ class _LoginPageState extends State<LoginPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              style: TextStyle(
-                color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-              ),
-              decoration: InputDecoration(
-                labelText: 'Email',
-                labelStyle: TextStyle(
-                  color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              style: TextStyle(
-                color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-              ),
-              decoration: InputDecoration(
-                labelText: 'Password',
-                labelStyle: TextStyle(
-                  color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFBFF205),
-                      padding: const EdgeInsets.symmetric(vertical: 15), // remove horizontal padding
-                    ),
-                    onPressed: () => _login(context),
-                    child: const Text('Login', style: TextStyle(color: Colors.black)),
+                const Text(
+                  'Welcome',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(width: 16), // espaçamento entre os botões
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFBFF205),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                    ),
-                    onPressed: () => _goToRegister(),
-                    child: const Text('Register', style: TextStyle(color: Colors.black)),
+                const SizedBox(height: 24),
+                TextField(
+                  controller: _emailController,
+                  style: TextStyle(
+                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
                   ),
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    labelStyle: TextStyle(
+                      color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  style: TextStyle(
+                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    labelStyle: TextStyle(
+                      color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 5, 242, 112),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                        ),
+                        onPressed: () => _login(context),
+                        icon: const Icon(Icons.login, color: Colors.black),
+                        label: const Text('Login', style: TextStyle(color: Colors.black)),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Color.fromARGB(255, 5, 242, 112), width: 2),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          foregroundColor: const Color.fromARGB(255, 5, 242, 112),
+                        ),
+                        onPressed: () => _goToRegister(),
+                        icon: const Icon(Icons.person_add, color: Color.fromARGB(255, 5, 242, 112)),
+                        label: const Text('Register', style: TextStyle(color: Color.fromARGB(255, 5, 242, 112))),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

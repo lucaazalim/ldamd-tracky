@@ -41,7 +41,15 @@ class _OrderFormPageState extends State<OrderFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text('New Order'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(8),
+          child: Container(
+            color: Colors.black,
+            height: 8,
+          ),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -69,9 +77,14 @@ class _OrderFormPageState extends State<OrderFormPage> {
                       validator: (v) => v == null || v.isEmpty ? 'Required field' : null,
                     ),
                     const SizedBox(height: 32),
-                    ElevatedButton(
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(255, 5, 242, 112),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
                       onPressed: _submit,
-                      child: const Text('Create Order'),
+                      icon: const Icon(Icons.add, color: Colors.black),
+                      label: const Text('Create Order', style: TextStyle(color: Colors.black)),
                     ),
                   ],
                 ),

@@ -151,9 +151,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text('Order Details'),
         titleTextStyle: TextStyle(
-          color: const Color(0xFFBFF205),
+          color: const Color.fromARGB(255, 5, 242, 112),
           fontSize: 20.0,
         ),
         actions: [
@@ -166,6 +167,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             },
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(8),
+          child: Container(
+            color: Colors.black,
+            height: 8,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -67,11 +67,19 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
 
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.black,
           title: const Text('Orders'),
           titleTextStyle: TextStyle(
-              color: const Color(0xFFBFF205),
+              color: const Color.fromARGB(255, 5, 242, 112),
               fontSize: 24.0
           ),
+          bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(8),
+          child: Container(
+            color: Colors.black,
+            height: 8,
+          ),
+        ),
           actions: [
             IconButton(
               icon: Icon(
@@ -112,7 +120,7 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
                     } else if (snapshot.hasError) {
                       return Text('Error loading deliveries: ${snapshot.error}');
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Text('No pending deliveries.');
+                      return const Center(child: Text('No pending deliveries.'));
                     } else {
                       return ListView.builder(
                         shrinkWrap: true,

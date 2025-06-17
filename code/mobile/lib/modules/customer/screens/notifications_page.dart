@@ -20,10 +20,11 @@ class NotificationsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text('Notifications'),
         titleTextStyle: TextStyle(
-            color: const Color(0xFFBFF205),
-            fontSize: 20.0
+          color: const Color.fromARGB(255, 5, 242, 112),
+          fontSize: 24.0,
         ),
         actions: [
           IconButton(
@@ -36,6 +37,13 @@ class NotificationsPage extends StatelessWidget {
           ),
         ],
         automaticallyImplyLeading: false,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(8),
+          child: Container(
+            color: Colors.black,
+            height: 8,
+          ),
+        ),
       ),
       body: ListView.builder(
         itemCount: mockNotifications.length,

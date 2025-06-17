@@ -183,14 +183,22 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text('Order Details'),
-        titleTextStyle: const TextStyle(color: Color(0xFFBFF205), fontSize: 20.0),
+        titleTextStyle: TextStyle(color: Color.fromARGB(255, 5, 242, 112), fontSize: 20.0),
         actions: [
           IconButton(
             icon: Icon(themeProvider.isDarkMode ? Icons.brightness_2 : Icons.wb_sunny),
             onPressed: themeProvider.toggleTheme,
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(8),
+          child: Container(
+            color: Colors.black,
+            height: 8,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -199,10 +207,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             Text('Order ID: ${order.id}', style: const TextStyle(fontSize: 18)),
             Text('Client: ${order.costumer?.name ?? 'Unknown'}'),
             Text('Driver: ${order.driver?.name ?? 'Unknown'}'),
-            Text('Address: ${order.originAddress ?? 'Unknown'}'),
-            Text('Address: ${order.destinationAddress ?? 'Unknown'}'),
-            Text('Description: ${order.description ?? 'Unknown'}'),
-            Text('Status: ${order.status.name ?? 'Unknown'}'),
+            Text('Address: ${order.originAddress}'),
+            Text('Address: ${order.destinationAddress}'),
+            Text('Description: ${order.description}'),
+            Text('Status: ${order.status.name}'),
             const Divider(height: 32),
 
             Column(

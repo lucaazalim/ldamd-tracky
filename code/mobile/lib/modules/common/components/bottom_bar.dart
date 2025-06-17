@@ -24,7 +24,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Future<void> _loadUserType() async {
     final prefs = await SharedPreferences.getInstance();
     _userType = prefs.getString('type') ??
-        'CUSTOMER'; // Default to CUSTOMER if not found
+        'CUSTOMER'; 
   }
 
   void _onItemTapped(BuildContext context, int index) {
@@ -63,6 +63,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               currentIndex: widget.currentIndex,
               onTap: (index) => _onItemTapped(context, index),
               type: BottomNavigationBarType.fixed,
+              selectedItemColor: const Color.fromARGB(255, 5, 242, 112),
+              unselectedItemColor: Colors.grey,
+              backgroundColor: Colors.black,
               items: _getBottomNavItems(),
             );
         }
