@@ -6,9 +6,9 @@ import 'package:mobile/modules/common/data/user.dart';
 /// This class includes details such as the order ID, customer and driver IDs, status, address, description, and image URL.
 /// It also provides methods for JSON serialization and deserialization.
 class Order {
-  final int id;
-  final int customerId;
-  final int driverId;
+  final String id;
+  final String customerId;
+  final String driverId;
   final OrderStatus status;
   final String originAddress;
   final String destinationAddress;
@@ -31,24 +31,23 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id'],
-      customerId: json['customer_id'],
-      driverId: json['driver_id'],
+      customerId: json['customerId'],
+      driverId: json['driverId'],
       status: OrderStatus.fromString(json['status']),
-      destinationAddress: json['destination_address'],
-      originAddress: json['origin_address'],
+      destinationAddress: json['destinationAddress'],
+      originAddress: json['originAddress'],
       description: json['description'],
       imageUrl: json['image_url'],
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'customer_id': customerId,
-      'driver_id': driverId,
+      'customerId': customerId,
+      'driverId': driverId,
       'status': status.toJson(),
-      'origin_address': originAddress,
-      'destination_address': destinationAddress,
+      'originAddress': originAddress,
+      'destinationAddress': destinationAddress,
       'description': description,
       'image_url': imageUrl,
     };

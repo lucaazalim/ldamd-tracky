@@ -12,7 +12,7 @@ class LocationTrackingService {
   }
 
 
-  Future<Location?> getLatestLocationForOrder(int orderId) async {
+  Future<Location?> getLatestLocationForOrder(String orderId) async {
     try {
       final mockData = await _loadMockData();
       final locations = (mockData['locations'] as List<dynamic>?) ?? [];

@@ -6,7 +6,7 @@ import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 
 class OrderDTO {
-  final int? id;
+  final String? id;
   final String status;
 
   OrderDTO({this.id, required this.status});
@@ -62,7 +62,7 @@ class DatabaseService {
 
   }
 
-  Future<void> updateOrderStatusById(int orderId, OrderStatus status) async {
+  Future<void> updateOrderStatusById(String orderId, OrderStatus status) async {
     final db = await database;
     await db.update(
       _tableOrder,
@@ -72,7 +72,7 @@ class DatabaseService {
     );
   }
 
-  Future<OrderDTO?> getOrderById(int orderId) async {
+  Future<OrderDTO?> getOrderById(String orderId) async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = await db.query(
@@ -84,7 +84,7 @@ class DatabaseService {
     if (maps.isNotEmpty) {
       final map = maps.first;
       return OrderDTO(
-        id: map['id'] as int,
+        id: map['id'] as String,
         status: map['status'] as String,
       );
     } else {

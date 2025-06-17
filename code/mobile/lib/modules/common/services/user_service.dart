@@ -15,7 +15,7 @@ class UserService {
     return json.decode(response);
   }
 
-  Future<User?> getUserById(int userId) async {
+  Future<User?> getUserById(String userId) async {
 
     final Map<String, dynamic> decodedData = await _loadMockData();
     final List<dynamic> usersData = decodedData['users'] as List<dynamic>? ?? [];

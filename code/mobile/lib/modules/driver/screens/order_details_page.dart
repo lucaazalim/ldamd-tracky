@@ -199,10 +199,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             Text('Order ID: ${order.id}', style: const TextStyle(fontSize: 18)),
             Text('Client: ${order.costumer?.name ?? 'Unknown'}'),
             Text('Driver: ${order.driver?.name ?? 'Unknown'}'),
-            Text('Address: ${order.originAddress}'),
-            Text('Address: ${order.destinationAddress}'),
-            Text('Description: ${order.description}'),
-            Text('Status: ${order.status.name}'),
+            Text('Address: ${order.originAddress ?? 'Unknown'}'),
+            Text('Address: ${order.destinationAddress ?? 'Unknown'}'),
+            Text('Description: ${order.description ?? 'Unknown'}'),
+            Text('Status: ${order.status.name ?? 'Unknown'}'),
             const Divider(height: 32),
 
             Column(

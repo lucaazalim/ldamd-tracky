@@ -40,7 +40,7 @@ class _OrdersPageState extends State<OrdersPage> {
     try {
       final prefs = await SharedPreferences.getInstance();
       // We obtain the customerId here
-      final int customerId = prefs.getInt('userId') ?? 0;
+      final String customerId = prefs.getString('userId') ?? "";
 
       if (customerId == 0) {
         // If customerId is 0, we return an empty list directly
