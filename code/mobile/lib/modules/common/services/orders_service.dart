@@ -141,4 +141,43 @@ class OrdersService {
       return false;
     }
   }
+
+  Future<Order?> acceptOrder(String id, String driverId, String status) async {
+    try {
+      final response = await dioClient.put(
+        "/orders/$id",
+        data: {
+          driverId: driverId,
+          status: status
+        },
+      );
+
+      return Order.fromJson(response.data);
+    } catch (e) {
+
+      print('Erro on editing order: $e');
+      return null;
+
+    };
+
+  }
+
+
+  Future<Order?> changeOrderStatus(String id, String status) async {
+    try {
+      final response = await dioClient.put(
+        "/orders/$id",
+        data: {
+          status: status
+        },
+      );
+
+      return Order.fromJson(response.data);
+    } catch (e) {
+
+      print('Erro on editing order: $e');
+      return null;
+
+    };
+
 }
