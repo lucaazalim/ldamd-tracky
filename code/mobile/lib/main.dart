@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile/modules/driver/screens/order_details_page.dart';
 import 'package:mobile/modules/driver/screens/update_order_status_page.dart';
+import 'package:mobile/modules/lobby/register_page.dart';
 import 'package:provider/provider.dart';
 import 'modules/common/screens/shared_preferences.dart';
 import 'modules/customer/screens/orders_page.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
         '/preferences': (context) => const PreferencesPage(),
         '/customer/orders': (context) => const OrdersPage(),
         '/customer/order/details': (context) => const OrderDetailsPage(),

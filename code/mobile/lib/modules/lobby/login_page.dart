@@ -44,6 +44,10 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void _goToRegister() {
+    Navigator.pushReplacementNamed(context, '/register');
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -130,13 +134,30 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFBFF205),
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-              ),
-              onPressed: () => _login(context),
-              child: const Text('Login', style: TextStyle(color: Colors.black)),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFBFF205),
+                      padding: const EdgeInsets.symmetric(vertical: 15), // remove horizontal padding
+                    ),
+                    onPressed: () => _login(context),
+                    child: const Text('Login', style: TextStyle(color: Colors.black)),
+                  ),
+                ),
+                const SizedBox(width: 16), // espaçamento entre os botões
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFBFF205),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                    ),
+                    onPressed: () => _goToRegister(),
+                    child: const Text('Register', style: TextStyle(color: Colors.black)),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

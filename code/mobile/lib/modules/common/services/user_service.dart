@@ -35,4 +35,28 @@ class UserService {
       DioClient().setAuthToken(token);
     }
   }
+  
+  Future<User?> registerUser(User user) async {
+    try {
+      final response = await dioClient.post(
+        '/users',
+        data: {
+          'name': user.name,
+          'email': user.email,
+          'password': user.password,
+          'type': user.type
+        },
+      );
+      print('response: $response');
+      print('response: ${response.statusCode}');
+      if (response.statusCode == 201 && response.data != null) {
+        return User.fromJson(response.data);
+      }
+      return null;
+    } catch (e) {
+      print('Error doing register: $e');
+      return null;
+    }
+  }
+
 }
