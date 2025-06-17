@@ -45,10 +45,10 @@ class OrdersService {
     try {
       for (var order in driverOrders) {
         order.driver = await UserService().getUserById(order.driverId);
-        print("driver: ${order.driver?.username}");
+        //print("driver: ${order.driver?.name}");
 
         order.costumer = await UserService().getUserById(order.customerId);
-        print("costumer: ${order.costumer?.username}");
+        //print("costumer: ${order.costumer?.name}");
       }
     } catch (e, stacktrace) {
       print("Error fetching users: $e");

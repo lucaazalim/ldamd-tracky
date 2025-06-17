@@ -10,13 +10,12 @@ class AuthService {
     return json.decode(response);
   }
 
-  Future<Map<String, dynamic>?> login(String username) async {
+  Future<Map<String, dynamic>?> login(String email, String password) async {
     final mockData = await _loadMockData();
     final users = mockData['users'] as List<dynamic>;
 
     for (final user in users) {
-      if (user['username'] == username) {
-
+      if (user['email'] == email && user['password'] == password) {
         return user as Map<String, dynamic>;
       }
     }

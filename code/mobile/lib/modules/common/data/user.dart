@@ -3,26 +3,29 @@ import 'package:mobile/modules/common/data/enum/user_type.dart';
 /// Represents a user in the system.
 /// 
 /// This class is used to store and manage user information such as ID,
-/// username, name, and user type. It also provides methods for JSON
+/// email, name, password, and user type. It also provides methods for JSON
 /// serialization and deserialization.
 class User {
   final int id;
-  final String username;
   final String name;
+  final String email;
+  final String password;
   final UserType type;
 
   User({
     required this.id,
-    required this.username,
     required this.name,
+    required this.email,
+    required this.password,
     required this.type,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
-      username: json['username'],
       name: json['name'],
+      email: json['email'],
+      password: json['password'],
       type: UserType.fromString(json['type']),
     );
   }
@@ -30,8 +33,9 @@ class User {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'username': username,
       'name': name,
+      'email': email,
+      'password': password,
       'type': type.toJson(),
     };
   }

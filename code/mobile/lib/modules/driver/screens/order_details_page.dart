@@ -197,8 +197,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         child: ListView(
           children: [
             Text('Order ID: ${order.id}', style: const TextStyle(fontSize: 18)),
-            Text('Client: ${order.costumer?.username ?? 'Unknown'}'),
-            Text('Driver: ${order.driver?.username ?? 'Unknown'}'),
+            Text('Client: ${order.costumer?.name ?? 'Unknown'}'),
+            Text('Driver: ${order.driver?.name ?? 'Unknown'}'),
             Text('Address: ${order.originAddress}'),
             Text('Address: ${order.destinationAddress}'),
             Text('Description: ${order.description}'),
