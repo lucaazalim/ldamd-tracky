@@ -60,16 +60,22 @@ class OrdersService {
 
   }
 
-  Future<List<Order>> getAvailableOrdersByDriverId(int driverId) async {
+  Future<List<Order>> getAvailableOrders() async {
 
     final response = await dioClient.get(
-      "/orders",
+      "/orders?status=PENDING",
       options: Options(
         headers: {
-          "Authorization": "Bearer ",
+          "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYW1lc0BnbWFpbC5jb20iLCJpYXQiOjE3NTAxMTc3MzIsImV4cCI6MTc1MDIwNDEzMn0.ePzaA4oY78eibgm2pgf48wFUblOOOLNueP6C9gOF8AhAK9gyOkr10P2V4_EPzd1k5_CMXXXF84R14tYXbIiXHw",
         },
       ),
     );
+
+    final orders = (response.data as List)
+        .map((item) => Order.fromJson(item))
+        .toList();
+
+    return orders;
 
   }
 

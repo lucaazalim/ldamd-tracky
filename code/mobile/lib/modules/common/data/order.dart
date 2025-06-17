@@ -10,7 +10,8 @@ class Order {
   final int customerId;
   final int driverId;
   final OrderStatus status;
-  final String address;
+  final String originAddress;
+  final String destinationAddress;
   final String description;
   final String imageUrl;
   User? costumer;
@@ -21,7 +22,8 @@ class Order {
     required this.customerId,
     required this.driverId,
     required this.status,
-    required this.address,
+    required this.destinationAddress,
+    required this.originAddress,
     required this.description,
     required this.imageUrl,
   });
@@ -32,7 +34,8 @@ class Order {
       customerId: json['customer_id'],
       driverId: json['driver_id'],
       status: OrderStatus.fromString(json['status']),
-      address: json['address'],
+      destinationAddress: json['destination_address'],
+      originAddress: json['origin_address'],
       description: json['description'],
       imageUrl: json['image_url'],
     );
@@ -44,7 +47,8 @@ class Order {
       'customer_id': customerId,
       'driver_id': driverId,
       'status': status.toJson(),
-      'address': address,
+      'origin_address': originAddress,
+      'destination_address': destinationAddress,
       'description': description,
       'image_url': imageUrl,
     };

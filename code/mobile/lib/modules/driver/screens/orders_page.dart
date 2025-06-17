@@ -33,7 +33,7 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
   }
 
   Future<List<Order>> _loadAvailableOrders() async {
-    final availableOrders = OrdersService().getAvailableOrdersByDriverId(2);
+    final availableOrders = OrdersService().getAvailableOrders();
     return availableOrders;
   }
 
