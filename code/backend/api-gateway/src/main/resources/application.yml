@@ -28,24 +28,24 @@ spring:
       on-profile: local
   cloud:
     gateway:
-      globalcors:
-        cors-configurations:
-          "[/**]":
-            allowedOriginPatterns: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-              - HEAD
-              - PATCH
-            allowedHeaders:
-              - "*"
-            allowCredentials: true
-            maxAge: 3600
       server:
         webflux:
+          globalcors:
+            cors-configurations:
+              "[/**]":
+                allowedOriginPatterns: "*"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                  - HEAD
+                  - PATCH
+                allowedHeaders:
+                  - "*"
+                allowCredentials: true
+                maxAge: 3600
           discovery:
             locator:
               enabled: true
@@ -103,24 +103,24 @@ spring:
         hostname: api-gateway
         prefer-ip-address: true
     gateway:
-      globalcors:
-        cors-configurations:
-          "[/**]":
-            allowedOriginPatterns: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-              - HEAD
-              - PATCH
-            allowedHeaders:
-              - "*"
-            allowCredentials: true
-            maxAge: 3600
       server:
         webflux:
+          globalcors:
+            cors-configurations:
+              "[/**]":
+                allowedOriginPatterns: "*"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                  - HEAD
+                  - PATCH
+                allowedHeaders:
+                  - "*"
+                allowCredentials: true
+                maxAge: 3600
           discovery:
             locator:
               enabled: true
