@@ -1,35 +1,26 @@
-import 'dart:convert';
-import 'package:camera/camera.dart';
-import 'package:flutter/services.dart';
-import 'package:mobile/modules/common/data/enum/order_status.dart';
-import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/data/user.dart';
+import 'package:mobile/modules/common/dio.dart';
 
-/// A service that provides user-related operations.
-///
-/// This service includes methods to fetch user data from mock data files.
 class UserService {
+  final dioClient = DioClient().dioUserService;
 
-  Future<Map<String, dynamic>> _loadMockData() async {
-    final String response = await rootBundle.loadString('assets/mock/data.json');
-    return json.decode(response);
-  }
-
-  Future<User?> getUserById(String userId) async {
-
-    final Map<String, dynamic> decodedData = await _loadMockData();
-    final List<dynamic> usersData = decodedData['users'] as List<dynamic>? ?? [];
-
-    User user;
-
-    for (var userData in usersData) {
-      if (userData['id'] == userId) {
-        return user = (User.fromJson(userData));
+  Future<User?> login(String email, String password) async {
+    try {
+      final response = await dioClient.post(
+        '/users/login',
+        data: {
+          'email': email,
+          'password': password,
+        },
+      );
+      if (response.statusCode == 200 && response.data != null) {
+        DioClient().setAuthTokenUserService(response.data['token']);
+        return User.fromJson(response.data['user']);
       }
+      return null;
+    } catch (e) {
+      print('Error doing login: $e');
+      return null;
     }
-
-    throw Exception('User with ID $userId not found.');
-
   }
-
 }

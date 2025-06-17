@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/modules/common/data/enum/user_type.dart';
+import 'package:mobile/modules/common/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/components/theme_provider.dart';
-import '../common/services/auth_service.dart';
 
-/// A page that handles user login.
-///
-/// This page allows users to log in by providing their email and password. Depending on the user type (CUSTOMER or DRIVER),
-/// they are redirected to the appropriate section of the app.
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -19,25 +16,25 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final AuthService _authService = AuthService();
+  final UserService _userService = UserService();
   Future<void> _login(BuildContext context) async {
     final String email = _emailController.text;
     final String password = _passwordController.text;
 
-    final user = await _authService.login(email, password);
+    final user = await _userService.login(email, password);
 
     if (user != null) {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt('userId', user['id']);
+      await prefs.setString('userId', user.id);
       await prefs.setString('email', email);
-      await prefs.setString('type', user['type']);
+      await prefs.setString('type', user.type.toJson());
 
-      if (user['type'] == 'CUSTOMER') {
+      if (user.type == UserType.customer) {
         Navigator.pushReplacementNamed(
           context,
           '/customer/orders',
         );
-      } else if (user['type'] == 'DRIVER') {
+      } else if (user.type == UserType.driver) {
         Navigator.pushReplacementNamed(context, '/driver/pending-deliveries');
       }
     } else {

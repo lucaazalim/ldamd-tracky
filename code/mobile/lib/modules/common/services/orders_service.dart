@@ -1,11 +1,7 @@
-import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/order.dart';
-import 'package:mobile/modules/common/services/user_service.dart';
-import 'package:mobile/modules/common/services/database_service.dart';
 import 'package:mobile/modules/common/dio.dart';
 
 /// A service that provides operations related to orders.

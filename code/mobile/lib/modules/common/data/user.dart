@@ -6,7 +6,7 @@ import 'package:mobile/modules/common/data/enum/user_type.dart';
 /// email, name, password, and user type. It also provides methods for JSON
 /// serialization and deserialization.
 class User {
-  final int id;
+  final String id;
   final String name;
   final String email;
   final String password;
@@ -22,11 +22,11 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      password: json['password'],
-      type: UserType.fromString(json['type']),
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      password: json['password'] ?? '',
+      type: UserType.fromString(json['type'] ?? ''),
     );
   }
 
