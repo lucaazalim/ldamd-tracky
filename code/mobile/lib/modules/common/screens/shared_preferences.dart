@@ -6,7 +6,7 @@ import '../../common/components/bottom_bar.dart';
 
 /// A page for displaying and managing user preferences.
 ///
-/// This page shows the username, user type, and allows toggling the theme mode.
+/// This page shows the email, user type, and allows toggling the theme mode.
 class PreferencesPage extends StatefulWidget {
   const PreferencesPage({Key? key}) : super(key: key);
 
@@ -15,7 +15,7 @@ class PreferencesPage extends StatefulWidget {
 }
 
 class _PreferencesPageState extends State<PreferencesPage> {
-  String _username = '';
+  String _email = '';
   String _userType = '';
   int _bottomNavIndex = 2;
 
@@ -28,7 +28,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _username = prefs.getString('username') ?? 'No username found';
+      _email = prefs.getString('email') ?? 'No email found';
       _userType = prefs.getString('type') ?? 'Unknown user type';
       _bottomNavIndex = _userType == 'CUSTOMER' ? 2 : 1;
     });
@@ -64,7 +64,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
               ],
             ),
             const SizedBox(height: 20),
-            Text('Username: $_username', style: const TextStyle(fontSize: 18)),
+            Text('Email: $_email', style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 30),
             Text('User type: ${(_userType).toLowerCase()}', style: const TextStyle(fontSize: 18)),
           ],

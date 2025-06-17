@@ -6,7 +6,7 @@ import '../common/services/auth_service.dart';
 
 /// A page that handles user login.
 ///
-/// This page allows users to log in by providing their username. Depending on the user type (CUSTOMER or DRIVER),
+/// This page allows users to log in by providing their email and password. Depending on the user type (CUSTOMER or DRIVER),
 /// they are redirected to the appropriate section of the app.
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -16,18 +16,20 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   final AuthService _authService = AuthService();
   Future<void> _login(BuildContext context) async {
-    final String username = _usernameController.text;
+    final String email = _emailController.text;
+    final String password = _passwordController.text;
 
-    final user = await _authService.login(username);
+    final user = await _authService.login(email, password);
 
     if (user != null) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt('userId', user['id']);
-      await prefs.setString('username', username);
+      await prefs.setString('email', email);
       await prefs.setString('type', user['type']);
 
       if (user['type'] == 'CUSTOMER') {
@@ -40,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('User not found.')),
+        const SnackBar(content: Text('User not found or invalid credentials.')),
       );
     }
   }
@@ -75,12 +77,41 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _usernameController,
+              controller: _emailController,
               style: TextStyle(
                 color: themeProvider.isDarkMode ? Colors.white : Colors.black,
               ),
               decoration: InputDecoration(
-                labelText: 'Username',
+                labelText: 'Email',
+                labelStyle: TextStyle(
+                  color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              style: TextStyle(
+                color: themeProvider.isDarkMode ? Colors.white : Colors.black,
+              ),
+              decoration: InputDecoration(
+                labelText: 'Password',
                 labelStyle: TextStyle(
                   color: themeProvider.isDarkMode ? Colors.white : Colors.black,
                 ),
