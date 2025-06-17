@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_map/flutter_map.dart'; // Import flutter_map
-import 'package:latlong2/latlong.dart'; // Import LatLng from latlong2
+import 'package:flutter_map/flutter_map.dart'; 
+import 'package:latlong2/latlong.dart'; 
 import 'package:mobile/modules/common/services/location_service.dart';
 import 'package:mobile/modules/common/services/tracking_service.dart';
+import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:mobile/modules/common/data/tracking.dart';
 import '../../common/components/theme_provider.dart';
 import 'package:mobile/modules/common/data/order.dart';
-import 'package:intl/intl.dart'; // Ensure intl is imported for date formatting if used in InfoWindow
 
-/// A page that displays detailed information about a specific order.
-///
-/// This page includes a map showing the order's location and the user's current position.
-/// It fetches and displays data asynchronously.
+
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({Key? key}) : super(key: key);
 
@@ -24,35 +21,49 @@ class OrderDetailsPage extends StatefulWidget {
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
   final LocationService _userLocationService = LocationService();
   final TrackingService _orderLocationService = TrackingService();
-
-  Position? _userPosition;
-  String? _userLocationError;
+  final OrdersService _ordersService = OrdersService();
 
   Tracking? _orderLocation;
   bool _isLoadingOrderLocation = true;
   String? _orderLocationError;
 
-  List<Marker> _markers = []; // Use a List for flutter_map markers
-  final MapController _mapController = MapController(); // Controller for flutter_map
+  Order? _order;
+  bool _isLoadingOrder = true;
+  String? _orderError;
+
+  List<Marker> _markers = [];
+  final MapController _mapController = MapController();
 
   @override
   void initState() {
     super.initState();
-    _fetchUserLocation();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchOrderLocation();
+      _fetchOrder();
     });
   }
 
-  Future<void> _fetchUserLocation() async {
-    try {
-      final pos = await _userLocationService.getCurrentLocation();
+  Future<void> _fetchOrder() async {
+    final orderId = ModalRoute.of(context)?.settings.arguments as String?;
+    if (orderId == null) {
       setState(() {
-        _userPosition = pos;
+        _orderError = 'Order ID not provided.';
+        _isLoadingOrder = false;
       });
+      return;
+    }
+    try {
+      final orderData = await _ordersService.getOrderById(orderId);
+      setState(() {
+        _order = orderData;
+        _isLoadingOrder = false;
+      });
+      if (_order != null) {
+        _fetchOrderLocation();
+      }
     } catch (e) {
       setState(() {
-        _userLocationError = e.toString();
+        _orderError = 'Error fetching order: \\${e.toString()}';
+        _isLoadingOrder = false;
       });
     }
   }
@@ -100,19 +111,19 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   void _addOrderMarker(Tracking location) {
     final marker = Marker(
-      point: LatLng(location.latitude, location.longitude), // Use LatLng from latlong2
-      width: 80, // Width of the marker widget
-      height: 80, // Height of the marker widget
+      point: LatLng(location.latitude, location.longitude), 
+      width: 80, 
+      height: 80, 
       child: Icon(
-        Icons.location_pin, // Use a standard Flutter icon for the marker
-        color: Colors.red, // Customize marker color
+        Icons.location_pin, 
+        color: Colors.red, 
         size: 40,
       ),
 
     );
 
     setState(() {
-      _markers = [marker]; // Replace existing markers with the new one
+      _markers = [marker]; 
     });
   }
 
@@ -120,15 +131,23 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final order = ModalRoute.of(context)?.settings.arguments as Order?;
 
-    if (order == null) {
+    if (_isLoadingOrder) {
       return const Scaffold(
-        body: Center(
-          child: Text('Order data not provided.'),
-        ),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
+    if (_orderError != null) {
+      return Scaffold(
+        body: Center(child: Text(_orderError!, style: TextStyle(color: Colors.red))),
+      );
+    }
+    if (_order == null) {
+      return const Scaffold(
+        body: Center(child: Text('Order not found.')),
+      );
+    }
+    final order = _order!;
 
     // Default initial camera position if order location is not yet loaded
     final LatLng _initialMapCenter = LatLng(_orderLocation?.latitude ?? -19.9208, _orderLocation?.longitude ?? -43.9378); // Defaulting to a known location if _orderLocation is null initially
@@ -171,7 +190,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   color: _getStatusColor(order.status.name),
                 )),
             const Divider(height: 32),
-            if (order.imageUrl != null && order.imageUrl!.isNotEmpty) ...[
+            if (order.imageUrl.isNotEmpty) ...[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
