@@ -42,13 +42,13 @@ class OrderCard extends StatelessWidget {
             Navigator.pushNamed(
               context,
               '/customer/order/details',
-              arguments: order,
+              arguments: order.id, // Passe só o id
             );
           } else if (userType == 'DRIVER') {
             Navigator.pushNamed(
               context,
               '/driver/order/details',
-              arguments: order,
+              arguments: order.id,
             );
           } else {
             print('User type not found.');
