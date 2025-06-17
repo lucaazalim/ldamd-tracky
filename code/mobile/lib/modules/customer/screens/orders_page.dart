@@ -82,25 +82,22 @@ class _OrdersPageState extends State<OrdersPage> {
         automaticallyImplyLeading: false,
       ),
       body: FutureBuilder<List<Order>>(
-        // We use the _ordersFuture that was initialized in initState
-        // The FutureBuilder will manage the states (waiting, hasData, hasError)
+      
         future: _ordersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // Display the error message captured by the FutureBuilder
             return Center(child: Text('Error loading orders: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             final orders = snapshot.data!;
             if (orders.isEmpty) {
-              return const Center(child: Text('No orders found.')); // Adjusted message
+              return const Center(child: Text('No orders found.')); 
             }
             return ListView.builder(
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final order = orders[index];
-                // Uses the reused OrderCard
                 return OrderCard(
                   order: order,
 
@@ -108,9 +105,7 @@ class _OrdersPageState extends State<OrdersPage> {
               },
             );
           } else {
-            // This case (snapshot has no error, no data, and is not waiting)
-            // generally does not occur with FutureBuilder when the Future is provided in initState,
-            // but we can keep a fallback.
+            
             return const Center(child: Text('Loading orders...'));
           }
         },
