@@ -65,11 +65,19 @@ class _UpdateOrderStatusPageState extends State<UpdateOrderStatusPage> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         title: const Text('Change Order Status'),
         titleTextStyle: TextStyle(
-            color: const Color(0xFFBFF205),
-            fontSize: 24.0
-        )
+          color: const Color.fromARGB(255, 5, 242, 112),
+          fontSize: 24.0,
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(8),
+          child: Container(
+            color: Colors.black,
+            height: 8,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

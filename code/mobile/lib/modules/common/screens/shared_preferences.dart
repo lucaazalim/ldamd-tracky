@@ -40,8 +40,16 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
     return Scaffold(
       appBar: AppBar(
+         backgroundColor: Colors.black,
         title: const Text('Preferences'),
-        titleTextStyle: const TextStyle(color: Color(0xFFBFF205), fontSize: 20.0),
+        titleTextStyle: const TextStyle(color: Color.fromARGB(255, 5, 242, 112),fontSize: 24.0,),
+         bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(8),
+          child: Container(
+            color: Colors.black,
+            height: 8,
+          ),
+        ),
         automaticallyImplyLeading: false,
       ),
       body: Padding(

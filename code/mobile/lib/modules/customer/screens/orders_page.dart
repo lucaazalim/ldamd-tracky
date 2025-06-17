@@ -54,9 +54,10 @@ class _OrdersPageState extends State<OrdersPage> {
       appBar: AppBar(
         title: const Text('Orders'),
         titleTextStyle: TextStyle(
-            color: const Color(0xFFBFF205),
-            fontSize: 20.0
+            color: const Color.fromARGB(255, 5, 242, 112),
+            fontSize: 24.0
         ),
+        backgroundColor: Colors.black,
         actions: [
           IconButton(
             icon: Icon(
