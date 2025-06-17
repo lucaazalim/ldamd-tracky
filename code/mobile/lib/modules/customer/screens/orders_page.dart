@@ -68,36 +68,83 @@ class _OrdersPageState extends State<OrdersPage> {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: FutureBuilder<List<Order>>(
-      
-        future: _ordersFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error loading orders: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            final orders = snapshot.data!;
-            if (orders.isEmpty) {
-              return const Center(child: Text('No orders found.')); 
-            }
-            return ListView.builder(
-              itemCount: orders.length,
-              itemBuilder: (context, index) {
-                final order = orders[index];
-                return OrderCard(
-                  order: order,
-
-                );
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.add),
+                label: const Text('New Order'),
+                onPressed: () async {
+                  final result = await Navigator.pushNamed(context, '/customer/order/form');
+                  if (result == true) {
+                    setState(() {
+                      _ordersFuture = _fetchOrdersForCustomer();
+                    });
+                  }
+                },
+              ),
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Order>>(
+              future: _ordersFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error loading orders: \\${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  final orders = snapshot.data!;
+                  if (orders.isEmpty) {
+                    return const Center(child: Text('No orders found.'));
+                  }
+                  return ListView.builder(
+                    itemCount: orders.length,
+                    itemBuilder: (context, index) {
+                      final order = orders[index];
+                      return OrderCard(
+                        order: order,
+                        onDelete: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Confirm delete'),
+                              content: const Text('Are you sure that you wanna delete this order?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirm == true) {
+                            final success = await _ordersService.deleteOrder(order.id);
+                            if (success) {
+                              setState(() {
+                                _ordersFuture = _fetchOrdersForCustomer();
+                              });
+                            }
+                          }
+                        },
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(child: Text('Loading orders...'));
+                }
               },
-            );
-          } else {
-            
-            return const Center(child: Text('Loading orders...'));
-          }
-        },
+            ),
+          ),
+        ],
       ),
-      // Assuming BottomNavBar has the correct index for this page
       bottomNavigationBar: BottomNavBar(currentIndex: 0),
     );
   }

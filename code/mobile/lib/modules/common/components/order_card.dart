@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/modules/common/data/order.dart'; // Assumindo que Order está aqui
-import 'package:shared_preferences/shared_preferences.dart'; // Importe o SharedPreferences
+import 'package:mobile/modules/common/data/order.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-/// A widget that displays an order card with details such as ID, description, address, and status.
-///
-/// The card also provides navigation based on the user type (CUSTOMER or DRIVER).
-///
-/// Example:
-/// ```dart
-/// OrderCard(order: myOrder)
-/// ```
 class OrderCard extends StatelessWidget {
   final Order order;
+  final VoidCallback? onDelete;
 
-  const OrderCard({super.key, required this.order});
+  const OrderCard({super.key, required this.order, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +17,34 @@ class OrderCard extends StatelessWidget {
         title: Text('Order #${order.id}'),
         subtitle: Text(
           'Description: ${order.description}\n'
-              'Destination Address: ${order.destinationAddress}'
+              'Destination Address: ${order.destinationAddress}',
         ),
-        trailing: Text(
-          order.status.name,
-          style: TextStyle(
-            color: _statusColor(order.status.name),
-            fontWeight: FontWeight.bold,
-          ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                border: Border.all(color: _statusColor(order.status.name), width: 2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                order.status.name,
+                style: TextStyle(
+                  color: _statusColor(order.status.name),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            if (onDelete != null) ...[
+              const SizedBox(width: 8),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: onDelete,
+                tooltip: 'Delete order',
+              ),
+            ],
+          ],
         ),
         isThreeLine: true,
         onTap: () async {
@@ -42,7 +55,7 @@ class OrderCard extends StatelessWidget {
             Navigator.pushNamed(
               context,
               '/customer/order/details',
-              arguments: order.id, // Passe só o id
+              arguments: order.id,
             );
           } else if (userType == 'DRIVER') {
             Navigator.pushNamed(
