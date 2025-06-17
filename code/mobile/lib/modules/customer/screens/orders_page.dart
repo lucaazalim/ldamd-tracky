@@ -68,193 +68,37 @@ class _OrdersPageState extends State<OrdersPage> {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.add),
-                label: const Text('New Order'),
-                onPressed: () async {
-                  final result = await Navigator.pushNamed(context, '/customer/order/form');
-                  if (result == true) {
-                    setState(() {
-                      _ordersFuture = _fetchOrdersForCustomer();
-                    });
-                  }
-                },
-              ),
-            ),
-          ),
-          Expanded(
-            child: FutureBuilder<List<Order>>(
-              future: _ordersFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error loading orders: \\${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  final orders = snapshot.data!;
-                  if (orders.isEmpty) {
-                    return const Center(child: Text('No orders found.'));
-                  }
-                  return ListView.builder(
-                    itemCount: orders.length,
-                    itemBuilder: (context, index) {
-                      final order = orders[index];
-                      return OrderCard(
-                        order: order,
-                        onDelete: () async {
-                          final confirm = await showDialog<bool>(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text('Confirm delete'),
-                              content: const Text('Are you sure that you wanna delete this order?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, false),
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, true),
-                                  child: const Text('Delete'),
-                                ),
-                              ],
-                            ),
-                          );
-                          if (confirm == true) {
-                            final success = await _ordersService.deleteOrder(order.id);
-                            if (success) {
-                              setState(() {
-                                _ordersFuture = _fetchOrdersForCustomer();
-                              });
-                            }
-                          }
-                        },
-                        onEdit: () async {
-                          final result = await showDialog<bool>(
-                            context: context,
-                            builder: (ctx) => EditOrderDialog(
-                              order: order,
-                              onSave: (updatedOrder) async {
-                                final success = await _ordersService.updateOrder(order.id, updatedOrder);
-                                if (success != null) {
-                                  Navigator.pop(ctx, true);
-                                }
-                              },
-                            ),
-                          );
-                          if (result == true) {
-                            setState(() {
-                              _ordersFuture = _fetchOrdersForCustomer();
-                            });
-                          }
-                        },
-                      );
-                    },
-                  );
-                } else {
-                  return const Center(child: Text('Loading orders...'));
-                }
+      body: FutureBuilder<List<Order>>(
+      
+        future: _ordersFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error loading orders: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            final orders = snapshot.data!;
+            if (orders.isEmpty) {
+              return const Center(child: Text('No orders found.')); 
+            }
+            return ListView.builder(
+              itemCount: orders.length,
+              itemBuilder: (context, index) {
+                final order = orders[index];
+                return OrderCard(
+                  order: order,
+
+                );
               },
-            ),
-          ),
-        ],
+            );
+          } else {
+            
+            return const Center(child: Text('Loading orders...'));
+          }
+        },
       ),
+      // Assuming BottomNavBar has the correct index for this page
       bottomNavigationBar: BottomNavBar(currentIndex: 0),
-    );
-  }
-}
-
-// Adiciona o widget EditOrderDialog abaixo da classe OrdersPage
-class EditOrderDialog extends StatefulWidget {
-  final Order order;
-  final Future<void> Function(Map<String, dynamic>) onSave;
-  const EditOrderDialog({Key? key, required this.order, required this.onSave}) : super(key: key);
-
-  @override
-  State<EditOrderDialog> createState() => _EditOrderDialogState();
-}
-
-class _EditOrderDialogState extends State<EditOrderDialog> {
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _originController;
-  late TextEditingController _destinationController;
-  late TextEditingController _descriptionController;
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _originController = TextEditingController(text: widget.order.originAddress);
-    _destinationController = TextEditingController(text: widget.order.destinationAddress);
-    _descriptionController = TextEditingController(text: widget.order.description);
-  }
-
-  @override
-  void dispose() {
-    _originController.dispose();
-    _destinationController.dispose();
-    _descriptionController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() => _isLoading = true);
-    final data = {
-      'originAddress': _originController.text,
-      'destinationAddress': _destinationController.text,
-      'description': _descriptionController.text,
-    };
-    await widget.onSave(data);
-    setState(() => _isLoading = false);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Edit Order'),
-      content: _isLoading
-          ? const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))
-          : Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: _originController,
-                    decoration: const InputDecoration(labelText: 'Origin Address'),
-                    validator: (v) => v == null || v.isEmpty ? 'Required field' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _destinationController,
-                    decoration: const InputDecoration(labelText: 'Destination Address'),
-                    validator: (v) => v == null || v.isEmpty ? 'Required field' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: const InputDecoration(labelText: 'Description'),
-                    validator: (v) => v == null || v.isEmpty ? 'Required field' : null,
-                  ),
-                ],
-              ),
-            ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: _isLoading ? null : _submit,
-          child: const Text('Save'),
-        ),
-      ],
     );
   }
 }

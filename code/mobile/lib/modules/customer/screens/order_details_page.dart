@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart'; 
 import 'package:latlong2/latlong.dart'; 
+import 'package:mobile/modules/common/services/location_service.dart';
 import 'package:mobile/modules/common/services/tracking_service.dart';
 import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:mobile/modules/common/data/tracking.dart';
@@ -17,6 +19,7 @@ class OrderDetailsPage extends StatefulWidget {
 }
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
+  final LocationService _userLocationService = LocationService();
   final TrackingService _orderLocationService = TrackingService();
   final OrdersService _ordersService = OrdersService();
 
@@ -66,17 +69,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   }
 
   Future<void> _fetchOrderLocation() async {
-  if (_order == null) {
-    setState(() {
-      _orderLocationError = 'Order data not provided.';
-      _isLoadingOrderLocation = false;
-    });
-    return;
-  }
-  // use _order!.id para buscar localização
+    final order = ModalRoute.of(context)?.settings.arguments as Order?;
+    if (order == null) {
+      setState(() {
+        _orderLocationError = 'Order data not provided.';
+        _isLoadingOrderLocation = false;
+      });
+      return;
+    }
 
     try {
-      final location = await _orderLocationService.getLatestLocationForOrder(_order!.id);
+      final location = await _orderLocationService.getLatestLocationForOrder(order.id);
 
       setState(() {
         _orderLocation = location;

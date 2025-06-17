@@ -10,9 +10,10 @@ import 'modules/customer/screens/order_details_page.dart';
 import 'modules/customer/screens/notifications_page.dart';
 import 'modules/lobby/login_page.dart';
 import 'modules/driver/screens/orders_page.dart';
-import 'modules/customer/screens/order_form_page.dart';
 
-
+/// The main entry point of the Tracky application.
+///
+/// This file initializes the app, sets up the theme provider, and defines the routes for navigation.
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -50,7 +51,6 @@ class MyApp extends StatelessWidget {
         '/preferences': (context) => const PreferencesPage(),
         '/customer/orders': (context) => const OrdersPage(),
         '/customer/order/details': (context) => const OrderDetailsPage(),
-        '/customer/order/form': (context) => const OrderFormPage(), 
         '/customer/notifications': (context) => const NotificationsPage(),
         '/driver/pending-deliveries': (context) => PendingOrdersScreen(),
         '/driver/order/details': (context) => OrderDetailsScreen(),

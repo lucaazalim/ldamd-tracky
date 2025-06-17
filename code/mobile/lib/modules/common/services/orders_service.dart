@@ -5,7 +5,7 @@ import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/dio.dart';
 
 class OrdersService {
-  final dioClient = DioClient().dio;
+  final dioClient = DioClient().dioOrderService;
 
   Future<List<Order>> getOrdersForCustomer(String customerId) async {
     try {
@@ -75,9 +75,11 @@ class OrdersService {
       final response = await dioClient.get(
         "/orders/$orderId",
       );
-      return Order.fromJson(response.data);
+
+      return response.data;
     } catch (e) {
       print('Erro ao buscar pedidos: $e');
+
       return null;
     }
   }
@@ -102,42 +104,6 @@ class OrdersService {
     } catch (e) {
       print('Erro ao atualizar pedido: $e');
       return null;
-    }
-  }
-
-  Future<Order?> createOrder(Map<String, dynamic> data) async {
-    try {
-      final response = await dioClient.post(
-        "/orders",
-        data: data,
-      );
-      return Order.fromJson(response.data);
-    } catch (e) {
-      print('Erro ao criar pedido: $e');
-      return null;
-    }
-  }
-
-  Future<Order?> updateOrder(String id, Map<String, dynamic> data) async {
-    try {
-      final response = await dioClient.put(
-        "/orders/$id",
-        data: data,
-      );
-      return Order.fromJson(response.data);
-    } catch (e) {
-      print('Erro ao editar pedido: $e');
-      return null;
-    }
-  }
-
-  Future<bool> deleteOrder(String id) async {
-    try {
-      await dioClient.delete("/orders/$id");
-      return true;
-    } catch (e) {
-      print('Erro ao deletar pedido: $e');
-      return false;
     }
   }
 }
