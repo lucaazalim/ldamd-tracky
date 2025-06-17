@@ -24,7 +24,7 @@ class OrderCard extends StatelessWidget {
         title: Text('Order #${order.id}'),
         subtitle: Text(
           'Description: ${order.description}\n'
-              'Address: ${order.address}',
+              'Destination Address: ${order.destinationAddress}'
         ),
         trailing: Text(
           order.status.name,
