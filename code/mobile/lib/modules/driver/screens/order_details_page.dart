@@ -10,6 +10,7 @@ import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/services/location_service.dart';
 import 'package:mobile/modules/common/services/tracking_service.dart';
 import 'package:mobile/modules/common/data/tracking.dart';
+import 'package:mobile/modules/common/services/orders_service.dart';
 
 import '../../common/components/theme_provider.dart';
 
@@ -27,6 +28,11 @@ class OrderDetailsScreen extends StatefulWidget {
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   final LocationService _userLocationService = LocationService();
   final TrackingService _orderLocationService = TrackingService();
+  final OrdersService _ordersService = OrdersService();
+
+  Order? _order;
+  bool _isLoadingOrder = true;
+  String? _orderError;
 
   Position? _driverPosition;
   String? _locationError;
@@ -42,23 +48,41 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initRouteFlow());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fetchOrderAndInitRoute());
   }
 
-  Future<void> _initRouteFlow() async {
-    final order = ModalRoute.of(context)?.settings.arguments as Order?;
-    if (order == null) {
+  Future<void> _fetchOrderAndInitRoute() async {
+    final orderId = ModalRoute.of(context)?.settings.arguments as String?;
+    if (orderId == null) {
       setState(() {
-        _routeError = 'Order data not provided.';
+        _orderError = 'Order ID not provided.';
+        _isLoadingOrder = false;
         _isLoadingRoute = false;
       });
       return;
     }
+    try {
+      final orderData = await _ordersService.getOrderById(orderId);
+      setState(() {
+        _order = orderData;
+        _isLoadingOrder = false;
+      });
+      if (_order != null) {
+        await _initRouteFlow(_order!);
+      }
+    } catch (e) {
+      setState(() {
+        _orderError = 'Error loading order.';
+        _isLoadingOrder = false;
+        _isLoadingRoute = false;
+      });
+    }
+  }
 
+  Future<void> _initRouteFlow(Order order) async {
     // 1. Get driver position
     try {
       final pos = await _userLocationService.getCurrentLocation();
-      if (pos == null) throw Exception('Location service returned null position.');
       setState(() {
         _driverPosition = pos;
         _markers = [
@@ -70,7 +94,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           ),
         ];
       });
-
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _mapController.move(LatLng(pos.latitude, pos.longitude), 15.0);
@@ -165,18 +188,24 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final args = ModalRoute.of(context)?.settings.arguments;
 
-    if (args == null || args is! Order) {
+    if (_isLoadingOrder) {
       return const Scaffold(
-        body: Center(child: Text('Order data not provided.')),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
-    final order = args;
-
+    if (_orderError != null) {
+      return Scaffold(
+        body: Center(child: Text(_orderError!)),
+      );
+    }
+    if (_order == null) {
+      return const Scaffold(
+        body: Center(child: Text('Order not found.')),
+      );
+    }
+    final order = _order!;
     bool isConfirmed = order.status == OrderStatus.pending;
-
-
     final initialCenter = _driverPosition != null
         ? LatLng(_driverPosition!.latitude, _driverPosition!.longitude)
         : const LatLng(-19.9208, -43.9378);

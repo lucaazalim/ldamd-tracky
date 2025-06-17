@@ -70,7 +70,7 @@ class OrderCard extends StatelessWidget {
             Navigator.pushNamed(
               context,
               '/driver/order/details',
-              arguments: order.id,
+              arguments: order.id, // Passa apenas o ID, igual ao customer
             );
           } else {
             print('User type not found.');
