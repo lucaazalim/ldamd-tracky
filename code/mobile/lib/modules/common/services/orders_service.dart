@@ -35,6 +35,7 @@ class OrdersService {
 
       print(response.data);
       if ((response.data as List).isEmpty) {
+        print("Retorno Vazio");
         return [];
       }
 
@@ -43,6 +44,7 @@ class OrdersService {
 
       return orders;
     } catch (e) {
+      print("Erro na requisição");
       print('Erro ao buscar pedidos: $e');
       return [];
     }

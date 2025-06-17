@@ -29,6 +29,7 @@ class _OrdersPageState extends State<OrdersPage> {
 
   Future<List<Order>> _fetchOrdersForCustomer() async {
     try {
+
       final prefs = await SharedPreferences.getInstance();
       final String customerId = prefs.getString('userId') ?? "";
 

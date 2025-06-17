@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/modules/common/data/order.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/components/bottom_bar.dart';
 import 'package:mobile/modules/common/components/order_card.dart';
 import '../../common/components/theme_provider.dart';
@@ -28,9 +29,29 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
   }
 
   Future<List<Order>> _loadPendingOrders() async {
-      final currentOrders = OrdersService().getCurrentOrdersByDriverId("f93f0f89-0920-4466-ba09-08ce178e77a0"); //identificador
-    return currentOrders;
+
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final String driverId = prefs.getString('userId') ?? "";
+
+      if (driverId.isEmpty) {
+        return [];
+      } else {
+
+        final List<Order> currentOrders = await OrdersService().getCurrentOrdersByDriverId(driverId);
+        return currentOrders;
+
+      }
+
+    }catch(e){
+
+      print('Error fetching orders: $e'); // Optional: log the error
+      throw e; // Throws the error to the FutureBuilder
+
+    }
+
   }
+
 
   Future<List<Order>> _loadAvailableOrders() async {
     final availableOrders = OrdersService().getAvailableOrders();
