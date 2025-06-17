@@ -1,8 +1,9 @@
 import 'package:mobile/modules/common/data/user.dart';
 import 'package:mobile/modules/common/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
-  final dioClient = DioClient().dioUserService;
+  final dioClient = DioClient().dio;
 
   Future<User?> login(String email, String password) async {
     try {
@@ -14,15 +15,24 @@ class UserService {
         },
       );
       if (response.statusCode == 200 && response.data != null) {
-        //DioClient().setAuthToken(response.data['token']);
-        DioClient().setAuthTokenUserService(response.data['token']); // Remover quando nao tiver erro de cors no api gateway
-        DioClient().setOrderServiceAuthToken(response.data['token']); // Remover quando nao tiver erro de cors no api gateway
+        final token = response.data['token'];
+        DioClient().setAuthToken(token);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
         return User.fromJson(response.data['user']);
       }
       return null;
     } catch (e) {
       print('Error doing login: $e');
       return null;
+    }
+  }
+
+  static Future<void> setAuthTokenFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token != null && token.isNotEmpty) {
+      DioClient().setAuthToken(token);
     }
   }
 }
