@@ -5,7 +5,7 @@ import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/dio.dart';
 
 class OrdersService {
-  final dioClient = DioClient().dioOrderService;
+  final dioClient = DioClient().dio;
 
   Future<List<Order>> getOrdersForCustomer(String customerId) async {
     try {
