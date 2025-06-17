@@ -141,7 +141,7 @@ class _UpdateOrderStatusPageState extends State<UpdateOrderStatusPage> {
 
                   XFile image = await _cameraController.takePicture();
 
-                  await OrdersService().updateOrderStatus(order.id, image, _selectedStatus!);
+                  await OrdersService().updateOrderStatus(order.id, _selectedStatus!.name);
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Status changed to: ${_selectedStatus!.name}')),
