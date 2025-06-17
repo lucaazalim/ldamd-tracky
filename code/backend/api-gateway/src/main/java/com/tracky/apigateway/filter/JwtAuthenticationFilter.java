@@ -30,6 +30,12 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
         return (exchange, chain) -> {
             String path = exchange.getRequest().getURI().getPath();
 
+            // Allow OPTIONS requests (CORS preflight) to pass through without JWT
+            // validation
+            if ("OPTIONS".equals(exchange.getRequest().getMethod().name())) {
+                return chain.filter(exchange);
+            }
+
             // Check if the path should be excluded from JWT validation
             if (config.getExcludePatterns() != null) {
                 for (String excludePattern : config.getExcludePatterns()) {
