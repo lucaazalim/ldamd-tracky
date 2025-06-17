@@ -61,7 +61,7 @@
       "image_url": "https://exemplo.com/imagem1.jpg"
     }
   ],
-  "locations": [
+  "tracking": [
     {
       "order_id": 108,
       "created_at": "2025-05-07T18:30:00Z",

@@ -8,8 +8,8 @@ import 'package:open_route_service/open_route_service.dart';
 import 'package:mobile/modules/common/data/route_data.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/services/location_service.dart';
-import 'package:mobile/modules/common/services/location_tracking_service.dart';
-import 'package:mobile/modules/common/data/location.dart';
+import 'package:mobile/modules/common/services/tracking_service.dart';
+import 'package:mobile/modules/common/data/tracking.dart';
 
 import '../../common/components/theme_provider.dart';
 
@@ -26,7 +26,7 @@ class OrderDetailsScreen extends StatefulWidget {
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   final LocationService _userLocationService = LocationService();
-  final LocationTrackingService _orderLocationService = LocationTrackingService();
+  final TrackingService _orderLocationService = TrackingService();
 
   Position? _driverPosition;
   String? _locationError;
@@ -86,7 +86,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     }
 
     // 2. Get latest order location
-    Location? orderLoc;
+    Tracking? orderLoc;
     try {
       orderLoc = await _orderLocationService.getLatestLocationForOrder(order.id);
       if (orderLoc == null) throw Exception('No location found for order.');

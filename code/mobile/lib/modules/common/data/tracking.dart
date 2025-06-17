@@ -5,21 +5,21 @@ import 'package:intl/intl.dart';
 /// This class is used to store and manage the latitude, longitude, and timestamp
 /// of a specific location related to an order. It also provides methods for
 /// JSON serialization and deserialization.
-class Location {
+class Tracking {
   final int orderId;
   final DateTime createdAt;
   final double latitude;
   final double longitude;
 
-  Location({
+  Tracking({
     required this.orderId,
     required this.createdAt,
     required this.latitude,
     required this.longitude,
   });
 
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return Location(
+  factory Tracking.fromJson(Map<String, dynamic> json) {
+    return Tracking(
       orderId: json['order_id'],
       createdAt: DateTime.parse(json['created_at']),
       latitude: (json['latitude'] as num).toDouble(),

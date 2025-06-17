@@ -1,24 +1,24 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:mobile/modules/common/data/location.dart'; // Import the new model
+import 'package:mobile/modules/common/data/tracking.dart'; // Import the new model
 
 /// A service that provides location tracking for orders.
 ///
 /// This service fetches the latest location data for a specific order from mock data files.
-class LocationTrackingService {
+class TrackingService {
   Future<Map<String, dynamic>> _loadMockData() async {
     final String response = await rootBundle.loadString('assets/mock/data.json');
     return json.decode(response);
   }
 
 
-  Future<Location?> getLatestLocationForOrder(String orderId) async {
+  Future<Tracking?> getLatestLocationForOrder(String orderId) async {
     try {
       final mockData = await _loadMockData();
-      final locations = (mockData['locations'] as List<dynamic>?) ?? [];
+      final locations = (mockData['tracking'] as List<dynamic>?) ?? [];
 
       final orderLocations = locations
-          .map((json) => Location.fromJson(json))
+          .map((json) => Tracking.fromJson(json))
           .where((location) => location.orderId == orderId)
           .toList();
 

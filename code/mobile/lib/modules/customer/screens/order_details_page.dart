@@ -4,8 +4,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart'; // Import flutter_map
 import 'package:latlong2/latlong.dart'; // Import LatLng from latlong2
 import 'package:mobile/modules/common/services/location_service.dart';
-import 'package:mobile/modules/common/services/location_tracking_service.dart';
-import 'package:mobile/modules/common/data/location.dart';
+import 'package:mobile/modules/common/services/tracking_service.dart';
+import 'package:mobile/modules/common/data/tracking.dart';
 import '../../common/components/theme_provider.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:intl/intl.dart'; // Ensure intl is imported for date formatting if used in InfoWindow
@@ -23,12 +23,12 @@ class OrderDetailsPage extends StatefulWidget {
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
   final LocationService _userLocationService = LocationService();
-  final LocationTrackingService _orderLocationService = LocationTrackingService();
+  final TrackingService _orderLocationService = TrackingService();
 
   Position? _userPosition;
   String? _userLocationError;
 
-  Location? _orderLocation;
+  Tracking? _orderLocation;
   bool _isLoadingOrderLocation = true;
   String? _orderLocationError;
 
@@ -98,7 +98,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     }
   }
 
-  void _addOrderMarker(Location location) {
+  void _addOrderMarker(Tracking location) {
     final marker = Marker(
       point: LatLng(location.latitude, location.longitude), // Use LatLng from latlong2
       width: 80, // Width of the marker widget
