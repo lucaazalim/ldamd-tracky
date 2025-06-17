@@ -1,6 +1,3 @@
-import 'package:camera/camera.dart';
-import 'package:dio/dio.dart';
-import 'package:mobile/modules/common/data/enum/order_status.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/dio.dart';
 
@@ -22,7 +19,6 @@ class OrdersService {
 
       return orders;
     } catch (e) {
-      print('Error loading orders: $e');
       return [];
     }
   }
@@ -33,9 +29,8 @@ class OrdersService {
         "/orders?driver=$driverId",
       );
 
-      print(response.data);
+      
       if ((response.data as List).isEmpty) {
-        print("Retorno Vazio");
         return [];
       }
 
@@ -44,8 +39,7 @@ class OrdersService {
 
       return orders;
     } catch (e) {
-      print("Erro na requisição");
-      print('Erro ao buscar pedidos: $e');
+      
       return [];
     }
   }
@@ -98,7 +92,7 @@ class OrdersService {
       print('Erro on editing order: $e');
       return null;
 
-    };
+    }
   }
 
   Future<Order?> createOrder(Map<String, dynamic> data) async {
@@ -109,7 +103,6 @@ class OrdersService {
       );
       return Order.fromJson(response.data);
     } catch (e) {
-      print('Erro ao criar pedido: $e');
       return null;
     }
   }
@@ -122,7 +115,6 @@ class OrdersService {
       );
       return Order.fromJson(response.data);
     } catch (e) {
-      print('Erro ao editar pedido: $e');
       return null;
     }
   }
@@ -132,7 +124,6 @@ class OrdersService {
       await dioClient.delete("/orders/$id");
       return true;
     } catch (e) {
-      print('Erro ao deletar pedido: $e');
       return false;
     }
   }
@@ -150,10 +141,9 @@ class OrdersService {
       return Order.fromJson(response.data);
     } catch (e) {
 
-      print('Erro on editing order: $e');
       return null;
 
-    };
+    }
 
   }
 
@@ -170,10 +160,9 @@ class OrdersService {
       return Order.fromJson(response.data);
     } catch (e) {
 
-      print('Erro on editing order: $e');
       return null;
 
-    };
+    }
 
 }
 }
