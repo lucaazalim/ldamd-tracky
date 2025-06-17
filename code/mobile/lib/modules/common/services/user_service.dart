@@ -14,7 +14,9 @@ class UserService {
         },
       );
       if (response.statusCode == 200 && response.data != null) {
-        DioClient().setAuthTokenUserService(response.data['token']);
+        //DioClient().setAuthToken(response.data['token']);
+        DioClient().setAuthTokenUserService(response.data['token']); // Remover quando nao tiver erro de cors no api gateway
+        DioClient().setOrderServiceAuthToken(response.data['token']); // Remover quando nao tiver erro de cors no api gateway
         return User.fromJson(response.data['user']);
       }
       return null;

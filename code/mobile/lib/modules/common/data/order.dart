@@ -30,16 +30,17 @@ class Order {
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      id: json['id'],
-      customerId: json['customerId'],
-      driverId: json['driverId'],
+      id: json['id'] ?? '',
+      customerId: json['customerId'] ?? '',
+      driverId: json['driverId'] ?? '',
       status: OrderStatus.fromString(json['status']),
-      destinationAddress: json['destinationAddress'],
-      originAddress: json['originAddress'],
-      description: json['description'],
-      imageUrl: json['image_url'],
+      destinationAddress: json['destinationAddress'] ?? '',
+      originAddress: json['originAddress'] ?? '',
+      description: json['description'] ?? '',
+      imageUrl: json['imageUrl'] ?? json['image_url'] ?? '',
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

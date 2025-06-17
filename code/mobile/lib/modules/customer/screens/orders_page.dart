@@ -42,13 +42,12 @@ class _OrdersPageState extends State<OrdersPage> {
       // We obtain the customerId here
       final String customerId = prefs.getString('userId') ?? "";
 
-      if (customerId == 0) {
-        // If customerId is 0, we return an empty list directly
+      if (customerId.isEmpty) {
+        // If customerId is empty, we return an empty list directly
         return [];
       } else {
         // Otherwise, we fetch the orders
         final List<Order> ordersData = await _ordersService.getOrdersForCustomer(customerId);
-        //final List<Order> orders = ordersData.map((orderMap) => Order.fromJson(orderMap)).toList();
         return ordersData;
       }
     } catch (e) {
