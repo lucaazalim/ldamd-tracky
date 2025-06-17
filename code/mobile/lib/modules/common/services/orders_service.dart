@@ -79,10 +79,14 @@ class OrdersService {
 
   Future<Order?> updateOrderStatus(String id, String status) async {
     try {
+      
+      if(status == "ONCOURSE"){
+        status = "ON_COURSE";
+      }
       final response = await dioClient.put(
         "/orders/$id",
         data: {
-          status: status
+          "status": status
         },
       );
 
@@ -133,8 +137,8 @@ class OrdersService {
       final response = await dioClient.put(
         "/orders/$id",
         data: {
-          driverId: driverId,
-          status: status
+          "driverId": driverId,
+          "status": status
         },
       );
 
@@ -148,21 +152,4 @@ class OrdersService {
   }
 
 
-  Future<Order?> changeOrderStatus(String id, String status) async {
-    try {
-      final response = await dioClient.put(
-        "/orders/$id",
-        data: {
-          status: status
-        },
-      );
-
-      return Order.fromJson(response.data);
-    } catch (e) {
-
-      return null;
-
-    }
-
-}
 }
