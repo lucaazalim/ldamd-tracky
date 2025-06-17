@@ -98,21 +98,6 @@ class _LoginPageState extends State<LoginPage> {
                     labelStyle: TextStyle(
                       color: themeProvider.isDarkMode ? Colors.white : Colors.black,
                     ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                      ),
-                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -126,21 +111,6 @@ class _LoginPageState extends State<LoginPage> {
                     labelText: 'Password',
                     labelStyle: TextStyle(
                       color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: themeProvider.isDarkMode ? Colors.white : Colors.black,
-                      ),
                     ),
                   ),
                 ),
