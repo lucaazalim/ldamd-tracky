@@ -83,27 +83,22 @@ class OrdersService {
     }
   }
 
-  Future<Order?> updateOrderStatus(
-    String orderId,
-    XFile image,
-    OrderStatus orderStatus,
-  ) async {
+  Future<Order?> updateOrderStatus(String id, String status) async {
     try {
-      FormData formData = FormData.fromMap({
-        'image': await MultipartFile.fromFile(image.path),
-        'status': orderStatus.toString(), // ou o que seu backend espera
-      });
-
       final response = await dioClient.put(
-        "/orders/$orderId",
-        data: formData,
+        "/orders/$id",
+        data: {
+          status: status
+        },
       );
 
       return Order.fromJson(response.data);
     } catch (e) {
-      print('Erro ao atualizar pedido: $e');
+
+      print('Erro on editing order: $e');
       return null;
-    }
+
+    };
   }
 
   Future<Order?> createOrder(Map<String, dynamic> data) async {
@@ -162,22 +157,5 @@ class OrdersService {
 
   }
 
-
-  Future<Order?> changeOrderStatus(String id, String status) async {
-    try {
-      final response = await dioClient.put(
-        "/orders/$id",
-        data: {
-          status: status
-        },
-      );
-
-      return Order.fromJson(response.data);
-    } catch (e) {
-
-      print('Erro on editing order: $e');
-      return null;
-
-    };
 
 }
