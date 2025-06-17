@@ -2,7 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:convert';
-import 'package:mobile/modules/common/data/order.dart';
 import 'package:mobile/modules/common/data/enum/order_status.dart';
 
 class OrderDTO {

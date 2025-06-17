@@ -13,7 +13,6 @@ class OrdersService {
         "/orders?customer=$customerId",
       );
 
-      print(response.data);
       if ((response.data as List).isEmpty) {
         return [];
       }

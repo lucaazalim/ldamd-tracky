@@ -1,12 +1,7 @@
 import 'package:intl/intl.dart';
 
-/// Represents a geographical location associated with an order.
-/// 
-/// This class is used to store and manage the latitude, longitude, and timestamp
-/// of a specific location related to an order. It also provides methods for
-/// JSON serialization and deserialization.
 class Tracking {
-  final int orderId;
+  final String orderId;
   final DateTime createdAt;
   final double latitude;
   final double longitude;
@@ -20,8 +15,8 @@ class Tracking {
 
   factory Tracking.fromJson(Map<String, dynamic> json) {
     return Tracking(
-      orderId: json['order_id'],
-      createdAt: DateTime.parse(json['created_at']),
+      orderId: json['order_id'] ?? json['orderId'] ?? '',
+      createdAt: DateTime.parse(json['created_at'] ?? json['createdAt']),
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
     );
@@ -30,7 +25,7 @@ class Tracking {
   @override
   String toString() {
     final formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    return 'LocationPoint(orderId: $orderId, createdAt: ${formatter.format(createdAt)}, latitude: $latitude, longitude: $longitude)';
+    return 'LocationPoint(orderId: $orderId, createdAt: \\${formatter.format(createdAt)}, latitude: $latitude, longitude: $longitude)';
   }
 
   Map<String, dynamic> toJson() {
