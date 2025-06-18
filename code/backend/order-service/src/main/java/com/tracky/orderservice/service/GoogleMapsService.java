@@ -14,21 +14,47 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tracky.orderservice.dto.RouteResponse;
 
+/**
+ * Service for interacting with the Google Maps API to get route information.
+ * Provides functionality to get directions between two addresses.
+ */
 @Service
 public class GoogleMapsService {
 
+    /**
+     * API key for authenticating with Google Maps API.
+     * Loaded from application properties with a default value for testing.
+     */
     @Value("${google.maps.api.key:AIzaSyDu9ndl3FCCcfY1j04gAEQLO--XxuUxRBA}")
     private String apiKey;
 
+    /**
+     * RestTemplate for making HTTP requests to the Google Maps API.
+     */
     @Autowired
     private RestTemplate restTemplate;
 
+    /**
+     * Object mapper for parsing JSON responses from the API.
+     */
     private final ObjectMapper objectMapper;
 
+    /**
+     * Constructs a new GoogleMapsService with a default ObjectMapper.
+     */
     public GoogleMapsService() {
         this.objectMapper = new ObjectMapper();
     }
 
+    /**
+     * Gets directions between two addresses using the Google Maps Directions API.
+     * 
+     * @param origin      the starting address
+     * @param destination the ending address
+     * @return a RouteResponse object containing route information
+     * @throws RuntimeException if there's an error fetching or parsing the
+     *                          directions
+     */
     public RouteResponse getDirections(String origin, String destination) {
         try {
             String encodedOrigin = URLEncoder.encode(origin, StandardCharsets.UTF_8);
@@ -51,6 +77,14 @@ public class GoogleMapsService {
         }
     }
 
+    /**
+     * Parses the JSON response from the Google Maps Directions API.
+     * 
+     * @param jsonResponse the JSON string response from the API
+     * @return a RouteResponse object containing the parsed route information
+     * @throws RuntimeException if there's an error parsing the response or if the
+     *                          API returned an error
+     */
     private RouteResponse parseDirectionsResponse(String jsonResponse) {
         try {
             JsonNode root = objectMapper.readTree(jsonResponse);

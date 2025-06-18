@@ -14,15 +14,32 @@ import com.tracky.orderservice.dto.UpdateOrderRequest;
 import com.tracky.orderservice.model.Order;
 import com.tracky.orderservice.repository.OrderRepository;
 
+/**
+ * Service class that provides business logic for managing orders.
+ * Handles CRUD operations for orders and acts as an intermediary between
+ * controllers and repositories.
+ */
 @Service
 public class OrderService {
 
+    /**
+     * Repository for data access operations related to orders.
+     */
     @Autowired
     private OrderRepository orderRepository;
 
+    /**
+     * Service for interacting with Google Maps API to get route information.
+     */
     @Autowired
     private GoogleMapsService googleMapsService;
 
+    /**
+     * Creates a new order in the system.
+     * 
+     * @param request DTO containing information for the new order
+     * @return DTO with details of the created order
+     */
     public OrderResponse createOrder(CreateOrderRequest request) {
         Order order = new Order();
         order.setCustomerId(request.getCustomerId());
@@ -35,12 +52,25 @@ public class OrderService {
         return OrderResponse.fromOrder(savedOrder);
     }
 
+    /**
+     * Retrieves an order by its unique identifier.
+     * 
+     * @param id the ID of the order to retrieve
+     * @return DTO with details of the requested order
+     * @throws RuntimeException if the order is not found
+     */
     public OrderResponse getOrderById(UUID id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         return OrderResponse.fromOrder(order);
     }
 
+    /**
+     * Retrieves all orders associated with a specific customer.
+     * 
+     * @param customerId the ID of the customer
+     * @return list of DTOs with details of the customer's orders
+     */
     public List<OrderResponse> getOrdersByCustomer(UUID customerId) {
         List<Order> orders = orderRepository.findByCustomerId(customerId);
         return orders.stream()
@@ -48,6 +78,12 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all orders with a specific status.
+     * 
+     * @param status the order status to filter by
+     * @return list of DTOs with details of orders with the requested status
+     */
     public List<OrderResponse> getOrdersByStatus(Order.OrderStatus status) {
         List<Order> orders = orderRepository.findByStatus(status);
         return orders.stream()
@@ -55,6 +91,12 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all orders assigned to a specific driver.
+     * 
+     * @param driverId the ID of the driver
+     * @return list of DTOs with details of the driver's assigned orders
+     */
     public List<OrderResponse> getOrdersByDriver(UUID driverId) {
         List<Order> orders = orderRepository.findByDriverId(driverId);
         return orders.stream()
@@ -62,6 +104,15 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Updates an existing order with new information.
+     * Only provided fields in the request will be updated.
+     * 
+     * @param id      the ID of the order to update
+     * @param request DTO containing fields to update
+     * @return DTO with details of the updated order
+     * @throws RuntimeException if the order is not found
+     */
     public OrderResponse updateOrder(UUID id, UpdateOrderRequest request) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -89,6 +140,12 @@ public class OrderService {
         return OrderResponse.fromOrder(updatedOrder);
     }
 
+    /**
+     * Deletes an order from the system.
+     * 
+     * @param id the ID of the order to delete
+     * @throws RuntimeException if the order is not found
+     */
     public void deleteOrder(UUID id) {
         if (!orderRepository.existsById(id)) {
             throw new RuntimeException("Order not found");
@@ -96,6 +153,16 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
+    /**
+     * Gets route information between the origin and destination addresses of an
+     * order.
+     * 
+     * @param orderId the ID of the order
+     * @return DTO with route details including distance, duration, and turn-by-turn
+     *         directions
+     * @throws RuntimeException if the order is not found or if there's an issue
+     *                          getting directions
+     */
     public RouteResponse getOrderRoute(UUID orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
