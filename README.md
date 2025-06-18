@@ -12,4 +12,16 @@ This project was developed as an assignment for the Laboratory for Mobile and Di
 
 ## Screenshots
 
-![Screenshots](/assets/screenshots.png)
+|               **Login/Register screen**                |                **Customer orders list**                |
+| :----------------------------------------------------: | :----------------------------------------------------: |
+|  ![Screenshot 1](assets/screenshots/screenshot_1.png)  |  ![Screenshot 2](assets/screenshots/screenshot_2.png)  |
+|                  **Create new order**                  |                **Edit existing order**                 |
+|  ![Screenshot 5](assets/screenshots/screenshot_5.png)  |  ![Screenshot 3](assets/screenshots/screenshot_3.png)  |
+|                **Delete confirmation**                 |               **Order details with map**               |
+|  ![Screenshot 4](assets/screenshots/screenshot_4.png)  |  ![Screenshot 6](assets/screenshots/screenshot_6.png)  |
+|                   **Notifications**                    |                 **Preferences screen**                 |
+|  ![Screenshot 7](assets/screenshots/screenshot_7.png)  |  ![Screenshot 8](assets/screenshots/screenshot_8.png)  |
+|         **List of assigned/available orders**          |     **Order details (with "Accept order" button)**     |
+|  ![Screenshot 9](assets/screenshots/screenshot_9.png)  | ![Screenshot 12](assets/screenshots/screenshot_12.png) |
+|                **Change order status**                 |       **Order details with full delivery route**       |
+| ![Screenshot 11](assets/screenshots/screenshot_11.png) | ![Screenshot 10](assets/screenshots/screenshot_10.png) |
