@@ -17,10 +17,92 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info, metrics
+        include: health, info, metrics, circuitbreakers, circuitbreakerevents, retries, retryevents
   endpoint:
     health:
       show-details: always
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
+    retries:
+      enabled: true
+    retryevents:
+      enabled: true
+
+# Resilience4j Configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      userServiceCircuitBreaker:
+        register-health-indicator: true
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+        slow-call-rate-threshold: 100
+        slow-call-duration-threshold: 5s
+        record-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+      orderServiceCircuitBreaker:
+        register-health-indicator: true
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+        slow-call-rate-threshold: 100
+        slow-call-duration-threshold: 5s
+        record-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+      trackingServiceCircuitBreaker:
+        register-health-indicator: true
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+        slow-call-rate-threshold: 100
+        slow-call-duration-threshold: 5s
+        record-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+  retry:
+    instances:
+      userServiceRetry:
+        max-attempts: 3
+        wait-duration: 100ms
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+      orderServiceRetry:
+        max-attempts: 3
+        wait-duration: 100ms
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+      trackingServiceRetry:
+        max-attempts: 3
+        wait-duration: 100ms
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+
 ---
 spring:
   config:
@@ -60,6 +142,20 @@ spring:
                 - name: JwtAuthenticationFilter
                   args:
                     exclude-patterns: "/users,/users/login"
+                - name: CircuitBreaker
+                  args:
+                    name: userServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/user-service
+                - name: Retry
+                  args:
+                    retries: 3
+                    series: SERVER_ERROR
+                    methods: GET,POST,PUT,DELETE
+                    backoff:
+                      firstBackoff: 50ms
+                      maxBackoff: 500ms
+                      factor: 2
+                      basedOnPreviousValue: false
             - id: order-service
               uri: lb://order-service
               predicates:
@@ -67,6 +163,20 @@ spring:
               filters:
                 - StripPrefix=1
                 - name: JwtAuthenticationFilter
+                - name: CircuitBreaker
+                  args:
+                    name: orderServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/order-service
+                - name: Retry
+                  args:
+                    retries: 3
+                    series: SERVER_ERROR
+                    methods: GET,POST,PUT,DELETE
+                    backoff:
+                      firstBackoff: 50ms
+                      maxBackoff: 500ms
+                      factor: 2
+                      basedOnPreviousValue: false
             - id: tracking-service
               uri: lb://tracking-service
               predicates:
@@ -74,6 +184,20 @@ spring:
               filters:
                 - StripPrefix=1
                 - name: JwtAuthenticationFilter
+                - name: CircuitBreaker
+                  args:
+                    name: trackingServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/tracking-service
+                - name: Retry
+                  args:
+                    retries: 3
+                    series: SERVER_ERROR
+                    methods: GET,POST,PUT,DELETE
+                    backoff:
+                      firstBackoff: 50ms
+                      maxBackoff: 500ms
+                      factor: 2
+                      basedOnPreviousValue: false
 
 server:
   port: 8080
@@ -85,6 +209,7 @@ logging:
   level:
     com.tracky.apigateway: DEBUG
     org.springframework.cloud.gateway: DEBUG
+    io.github.resilience4j: DEBUG
 
 ---
 spring:
@@ -135,6 +260,20 @@ spring:
                 - name: JwtAuthenticationFilter
                   args:
                     exclude-patterns: "/users,/users/login"
+                - name: CircuitBreaker
+                  args:
+                    name: userServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/user-service
+                - name: Retry
+                  args:
+                    retries: 3
+                    series: SERVER_ERROR
+                    methods: GET,POST,PUT,DELETE
+                    backoff:
+                      firstBackoff: 50ms
+                      maxBackoff: 500ms
+                      factor: 2
+                      basedOnPreviousValue: false
             - id: order-service
               uri: lb://order-service
               predicates:
@@ -142,6 +281,20 @@ spring:
               filters:
                 - StripPrefix=1
                 - name: JwtAuthenticationFilter
+                - name: CircuitBreaker
+                  args:
+                    name: orderServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/order-service
+                - name: Retry
+                  args:
+                    retries: 3
+                    series: SERVER_ERROR
+                    methods: GET,POST,PUT,DELETE
+                    backoff:
+                      firstBackoff: 50ms
+                      maxBackoff: 500ms
+                      factor: 2
+                      basedOnPreviousValue: false
             - id: tracking-service
               uri: lb://tracking-service
               predicates:
@@ -149,6 +302,20 @@ spring:
               filters:
                 - StripPrefix=1
                 - name: JwtAuthenticationFilter
+                - name: CircuitBreaker
+                  args:
+                    name: trackingServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/tracking-service
+                - name: Retry
+                  args:
+                    retries: 3
+                    series: SERVER_ERROR
+                    methods: GET,POST,PUT,DELETE
+                    backoff:
+                      firstBackoff: 50ms
+                      maxBackoff: 500ms
+                      factor: 2
+                      basedOnPreviousValue: false
 
 server:
   port: 8080

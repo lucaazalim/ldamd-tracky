@@ -107,49 +107,6 @@ For Docker deployment, the following environment variables are used:
 - `DB_PASSWORD`: Database password
 - `JWT_SECRET`: JWT signing secret
 
-## Troubleshooting
-
-### Common Issues
-
-1. **Services not registering with Consul**
-
-   - Check Consul is running and accessible
-   - Verify CONSUL_HOST and CONSUL_PORT environment variables
-   - Check service logs for connection errors
-
-2. **API Gateway can't find services**
-
-   - Ensure services are registered in Consul UI
-   - Check load balancer configuration in gateway routes
-   - Verify service names match in Consul and gateway routes
-
-3. **Database connection issues**
-   - Ensure PostgreSQL containers are running
-   - Check database environment variables
-   - Verify network connectivity
-
-### Useful Commands
-
-```bash
-# View service logs
-docker-compose logs -f <service-name>
-
-# Restart a specific service
-docker-compose restart <service-name>
-
-# Check Consul members
-docker exec consul consul members
-
-# View Consul services
-curl http://localhost:8500/v1/agent/services | jq
-
-# Stop all services
-docker-compose down
-
-# Stop and remove volumes
-docker-compose down -v
-```
-
 ## Configuration
 
 Each service manages its own configuration through `application.yml` files with support for different profiles (local, docker). This provides:
@@ -179,3 +136,59 @@ This system uses a modern microservices architecture with:
   - Independent service scaling
 
 The architecture maintains API compatibility while providing excellent operational features and improved resilience.
+
+## Resilience Patterns
+
+The API Gateway implements modern resilience patterns using Resilience4j:
+
+### Circuit Breaker
+
+- **Purpose**: Prevents cascading failures by stopping calls to failing services
+- **Configuration**: Per-service circuit breakers with configurable thresholds
+- **States**: CLOSED (normal) → OPEN (failing) → HALF_OPEN (testing recovery)
+- **Fallback**: Graceful degradation with meaningful error responses
+
+### Retry Mechanism
+
+- **Purpose**: Automatically retries failed requests with exponential backoff
+- **Configuration**: 3 retry attempts with exponential backoff (50ms to 500ms)
+- **Scope**: Applied to all service calls through the gateway
+
+### Monitoring
+
+- **Health Endpoints**: `/actuator/health`, `/actuator/circuitbreakers`, `/actuator/retries`
+- **Custom Endpoints**: `/actuator/resilience/circuit-breakers`, `/actuator/resilience/retries`
+- **Metrics**: Real-time circuit breaker state and retry statistics
+
+## API Routes Summary
+
+Below is a summarized list of all available routes for each microservice:
+
+### User Service (`/api/users/*`)
+
+| Method | Endpoint       | Description                             |
+| ------ | -------------- | --------------------------------------- |
+| POST   | `/users`       | Register a new customer or driver       |
+| POST   | `/users/login` | Authenticate user and receive JWT token |
+
+### Order Service (`/api/orders/*`)
+
+| Method | Endpoint                  | Description                                     |
+| ------ | ------------------------- | ----------------------------------------------- |
+| GET    | `/orders/{id}`            | Get order details by ID                         |
+| PUT    | `/orders/{id}`            | Update order details                            |
+| DELETE | `/orders/{id}`            | Delete an order                                 |
+| GET    | `/orders`                 | Get orders by customer ID, driver ID, or status |
+| POST   | `/orders`                 | Create a new delivery order                     |
+| GET    | `/orders/{orderId}/route` | Get the fastest route for an order              |
+
+### Tracking Service (`/api/tracking/*`)
+
+| Method | Endpoint                     | Description                               |
+| ------ | ---------------------------- | ----------------------------------------- |
+| POST   | `/tracking`                  | Add new tracking location for an order    |
+| GET    | `/tracking/{orderId}/latest` | Get the latest tracking info for an order |
+
+**Note**: All these endpoints should be accessed through the API Gateway at `http://localhost:8080/api/*`. The service-specific base URLs (e.g., `http://localhost:8081`) are for internal use only.
+
+For detailed API documentation, refer to the Swagger UI for each service at the URLs listed in the [Service URLs](#service-urls) section.
