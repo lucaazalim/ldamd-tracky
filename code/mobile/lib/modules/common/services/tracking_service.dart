@@ -16,4 +16,26 @@ class TrackingService {
       return null;
     }
   }
+
+  Future<Tracking?> createTracking(Tracking newTracking) async {
+    try {
+      final response = await _dio.post(
+        '/tracking',
+        data: {
+          'orderId': newTracking.orderId,
+          'latitude': newTracking.latitude,
+          'longitude': newTracking.longitude
+        }
+      );
+
+      if (response.statusCode == 201 && response.data != null) {
+        return Tracking.fromJson(response.data);
+      }
+      return null;
+    } catch (e) {
+      print('Error creating tracking from API: $e');
+      return null;
+    }
+
+  }
 }

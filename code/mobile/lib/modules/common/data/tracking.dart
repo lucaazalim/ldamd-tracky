@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 class Tracking {
   final String orderId;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final double latitude;
   final double longitude;
 
@@ -25,13 +25,13 @@ class Tracking {
   @override
   String toString() {
     final formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    return 'LocationPoint(orderId: $orderId, createdAt: \\${formatter.format(createdAt)}, latitude: $latitude, longitude: $longitude)';
+    return 'LocationPoint(orderId: $orderId, createdAt: \\${formatter.format(createdAt!)}, latitude: $latitude, longitude: $longitude)';
   }
 
   Map<String, dynamic> toJson() {
     return {
       'order_id': orderId,
-      'created_at': createdAt.toIso8601String(),
+      'created_at': createdAt?.toIso8601String(),
       'latitude': latitude,
       'longitude': longitude,
     };

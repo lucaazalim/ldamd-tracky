@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_map/flutter_map.dart'; 
@@ -7,6 +9,8 @@ import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:mobile/modules/common/data/tracking.dart';
 import '../../common/components/theme_provider.dart';
 import 'package:mobile/modules/common/data/order.dart';
+
+import '../../common/services/location_service.dart';
 
 
 class OrderDetailsPage extends StatefulWidget {
@@ -24,6 +28,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   bool _isLoadingOrderLocation = true;
   String? _orderLocationError;
 
+  final LocationService _locationService = LocationService();
+  Timer? _trackingTimer;
+
   Order? _order;
   bool _isLoadingOrder = true;
   String? _orderError;
@@ -37,32 +44,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchOrder();
     });
-  }
-
-  Future<void> _fetchOrder() async {
-    final orderId = ModalRoute.of(context)?.settings.arguments as String?;
-    if (orderId == null) {
-      setState(() {
-        _orderError = 'Order ID not provided.';
-        _isLoadingOrder = false;
-      });
-      return;
-    }
-    try {
-      final orderData = await _ordersService.getOrderById(orderId);
-      setState(() {
-        _order = orderData;
-        _isLoadingOrder = false;
-      });
-      if (_order != null) {
-        _fetchOrderLocation();
-      }
-    } catch (e) {
-      setState(() {
-        _orderError = 'Error fetching order: \\${e.toString()}';
-        _isLoadingOrder = false;
-      });
-    }
   }
 
   Future<void> _fetchOrderLocation() async {
@@ -104,6 +85,66 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     }
   }
 
+  Future<void> _fetchOrder() async {
+    final orderId = ModalRoute.of(context)?.settings.arguments as String?;
+    if (orderId == null) {
+      setState(() {
+        _orderError = 'Order ID not provided.';
+        _isLoadingOrder = false;
+      });
+      return;
+    }
+    try {
+      final orderData = await _ordersService.getOrderById(orderId);
+      setState(() {
+        _order = orderData;
+        _isLoadingOrder = false;
+      });
+      if (_order != null) {
+        _fetchOrderLocation();
+      }
+    } catch (e) {
+      setState(() {
+        _orderError = 'Error fetching order: \\${e.toString()}';
+        _isLoadingOrder = false;
+      });
+    }
+
+    if (_order != null) {
+      _fetchOrderLocation();
+
+      if (_order!.status.name.toUpperCase() == 'ON_COURSE') {
+        _startTrackingLoop(_order!.id);
+      }
+    }
+
+  }
+
+
+  void _startTrackingLoop(String orderId) {
+    _trackingTimer?.cancel(); // Garante que não há timer anterior rodando
+
+    _trackingTimer = Timer.periodic(const Duration(seconds: 15), (timer) async {
+      try {
+        final position = await _locationService.getCurrentLocation();
+
+        final newTracking = Tracking(
+          orderId: orderId,
+          latitude: position.latitude,
+          longitude: position.longitude,
+          createdAt: null,
+        );
+
+        final result = await _orderLocationService.createTracking(newTracking);
+        if (result != null) {
+          print('Location sent: ${result.latitude}, ${result.longitude}');
+        }
+      } catch (e) {
+        print('Tracking error: $e');
+      }
+    });
+  }
+
   void _addOrderMarker(Tracking location) {
     final marker = Marker(
       point: LatLng(location.latitude, location.longitude), 
@@ -121,7 +162,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       _markers = [marker]; 
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -278,6 +318,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   @override
   void dispose() {
     _mapController.dispose(); // Dispose the map controller
+    _trackingTimer?.cancel();
     super.dispose();
   }
 }
