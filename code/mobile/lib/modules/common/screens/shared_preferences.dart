@@ -41,6 +41,9 @@ class _PreferencesPageState extends State<PreferencesPage> {
     return Scaffold(
       appBar: AppBar(
          backgroundColor: Colors.black,
+         iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 5, 242, 112), // seta verde
+        ),
         title: const Text('Preferences'),
         titleTextStyle: const TextStyle(color: Color.fromARGB(255, 5, 242, 112),fontSize: 24.0,),
          bottom: PreferredSize(

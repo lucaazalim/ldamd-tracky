@@ -7,7 +7,6 @@ import '../../common/services/orders_service.dart';
 import 'package:mobile/modules/common/data/order.dart';
 import '../../common/components/order_card.dart';
 
-
 class OrdersPage extends StatefulWidget {
   const OrdersPage({Key? key}) : super(key: key);
 
@@ -17,30 +16,29 @@ class OrdersPage extends StatefulWidget {
 
 class _OrdersPageState extends State<OrdersPage> {
   final OrdersService _ordersService = OrdersService();
-  Future<List<Order>>? _ordersFuture; // Made nullable in case CustomerID cannot be loaded immediately
-
+  Future<List<Order>>?
+  _ordersFuture; // Made nullable in case CustomerID cannot be loaded immediately
 
   @override
   void initState() {
     super.initState();
-    
+
     _ordersFuture = _fetchOrdersForCustomer();
   }
 
   Future<List<Order>> _fetchOrdersForCustomer() async {
     try {
-
       final prefs = await SharedPreferences.getInstance();
       final String customerId = prefs.getString('userId') ?? "";
 
       if (customerId.isEmpty) {
         return [];
       } else {
-        final List<Order> ordersData = await _ordersService.getOrdersForCustomer(customerId);
+        final List<Order> ordersData = await _ordersService
+            .getOrdersForCustomer(customerId);
         return ordersData;
       }
     } catch (e) {
-      
       print('Error fetching orders: $e'); // Optional: log the error
       throw e; // Throws the error to the FutureBuilder
     }
@@ -53,9 +51,12 @@ class _OrdersPageState extends State<OrdersPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Orders'),
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 5, 242, 112), // seta verde
+        ),
         titleTextStyle: TextStyle(
-            color: const Color.fromARGB(255, 5, 242, 112),
-            fontSize: 24.0
+          color: const Color.fromARGB(255, 5, 242, 112),
+          fontSize: 24.0,
         ),
         backgroundColor: Colors.black,
         actions: [
@@ -88,7 +89,10 @@ class _OrdersPageState extends State<OrdersPage> {
                   style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
                 onPressed: () async {
-                  final result = await Navigator.pushNamed(context, '/customer/order/form');
+                  final result = await Navigator.pushNamed(
+                    context,
+                    '/customer/order/form',
+                  );
                   if (result == true) {
                     setState(() {
                       _ordersFuture = _fetchOrdersForCustomer();
@@ -105,7 +109,9 @@ class _OrdersPageState extends State<OrdersPage> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Error loading orders: \\${snapshot.error}'));
+                  return Center(
+                    child: Text('Error loading orders: \\${snapshot.error}'),
+                  );
                 } else if (snapshot.hasData) {
                   final orders = snapshot.data!;
                   if (orders.isEmpty) {
@@ -120,23 +126,55 @@ class _OrdersPageState extends State<OrdersPage> {
                         onDelete: () async {
                           final confirm = await showDialog<bool>(
                             context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text('Confirm delete'),
-                              content: const Text('Are you sure that you wanna delete this order?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, false),
-                                  child: const Text('Cancel'),
+                            builder:
+                                (ctx) => AlertDialog(
+                                  title: const Text('Confirm Delete'),
+                                  content: const Text(
+                                    'Are you sure that you wanna delete this order?',
+                                  ),
+                                  actions: [
+                                    OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(
+                                          color: Color.fromARGB(
+                                            255,
+                                            5,
+                                            242,
+                                            112,
+                                          ),
+                                          width: 2,
+                                        ),
+                                        foregroundColor: Color.fromARGB(
+                                          255,
+                                          5,
+                                          242,
+                                          112,
+                                        ),
+                                      ),
+                                      onPressed:
+                                          () => Navigator.pop(ctx, false),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color.fromARGB(
+                                          255,
+                                          5,
+                                          242,
+                                          112,
+                                        ),
+                                        foregroundColor: Colors.black,
+                                      ),
+                                      onPressed: () => Navigator.pop(ctx, true),
+                                      child: const Text('Delete'),
+                                    ),
+                                  ],
                                 ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, true),
-                                  child: const Text('Delete'),
-                                ),
-                              ],
-                            ),
                           );
                           if (confirm == true) {
-                            final success = await _ordersService.deleteOrder(order.id);
+                            final success = await _ordersService.deleteOrder(
+                              order.id,
+                            );
                             if (success) {
                               setState(() {
                                 _ordersFuture = _fetchOrdersForCustomer();
@@ -147,15 +185,17 @@ class _OrdersPageState extends State<OrdersPage> {
                         onEdit: () async {
                           final result = await showDialog<bool>(
                             context: context,
-                            builder: (ctx) => EditOrderDialog(
-                              order: order,
-                              onSave: (updatedOrder) async {
-                                final success = await _ordersService.updateOrder(order.id, updatedOrder);
-                                if (success != null) {
-                                  Navigator.pop(ctx, true);
-                                }
-                              },
-                            ),
+                            builder:
+                                (ctx) => EditOrderDialog(
+                                  order: order,
+                                  onSave: (updatedOrder) async {
+                                    final success = await _ordersService
+                                        .updateOrder(order.id, updatedOrder);
+                                    if (success != null) {
+                                      Navigator.pop(ctx, true);
+                                    }
+                                  },
+                                ),
                           );
                           if (result == true) {
                             setState(() {
@@ -183,7 +223,8 @@ class _OrdersPageState extends State<OrdersPage> {
 class EditOrderDialog extends StatefulWidget {
   final Order order;
   final Future<void> Function(Map<String, dynamic>) onSave;
-  const EditOrderDialog({Key? key, required this.order, required this.onSave}) : super(key: key);
+  const EditOrderDialog({Key? key, required this.order, required this.onSave})
+    : super(key: key);
 
   @override
   State<EditOrderDialog> createState() => _EditOrderDialogState();
@@ -200,8 +241,12 @@ class _EditOrderDialogState extends State<EditOrderDialog> {
   void initState() {
     super.initState();
     _originController = TextEditingController(text: widget.order.originAddress);
-    _destinationController = TextEditingController(text: widget.order.destinationAddress);
-    _descriptionController = TextEditingController(text: widget.order.description);
+    _destinationController = TextEditingController(
+      text: widget.order.destinationAddress,
+    );
+    _descriptionController = TextEditingController(
+      text: widget.order.description,
+    );
   }
 
   @override
@@ -228,39 +273,66 @@ class _EditOrderDialogState extends State<EditOrderDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Edit Order'),
-      content: _isLoading
-          ? const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))
-          : Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: _originController,
-                    decoration: const InputDecoration(labelText: 'Origin Address'),
-                    validator: (v) => v == null || v.isEmpty ? 'Required field' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _destinationController,
-                    decoration: const InputDecoration(labelText: 'Destination Address'),
-                    validator: (v) => v == null || v.isEmpty ? 'Required field' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: const InputDecoration(labelText: 'Description'),
-                    validator: (v) => v == null || v.isEmpty ? 'Required field' : null,
-                  ),
-                ],
+      content:
+          _isLoading
+              ? const SizedBox(
+                height: 100,
+                child: Center(child: CircularProgressIndicator()),
+              )
+              : Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      controller: _originController,
+                      decoration: const InputDecoration(
+                        labelText: 'Origin Address',
+                      ),
+                      validator:
+                          (v) =>
+                              v == null || v.isEmpty ? 'Required field' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _destinationController,
+                      decoration: const InputDecoration(
+                        labelText: 'Destination Address',
+                      ),
+                      validator:
+                          (v) =>
+                              v == null || v.isEmpty ? 'Required field' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _descriptionController,
+                      decoration: const InputDecoration(
+                        labelText: 'Description',
+                      ),
+                      validator:
+                          (v) =>
+                              v == null || v.isEmpty ? 'Required field' : null,
+                    ),
+                  ],
+                ),
               ),
-            ),
       actions: [
-        TextButton(
+        OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(
+              color: Color.fromARGB(255, 5, 242, 112),
+              width: 2,
+            ),
+            foregroundColor: Color.fromARGB(255, 5, 242, 112),
+          ),
           onPressed: () => Navigator.pop(context, false),
           child: const Text('Cancel'),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 5, 242, 112),
+            foregroundColor: Colors.black,
+          ),
           onPressed: _isLoading ? null : _submit,
           child: const Text('Save'),
         ),

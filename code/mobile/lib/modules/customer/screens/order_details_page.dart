@@ -222,34 +222,19 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Text('Order ID: ${order.id}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Order: ${order.id.substring(0,5)}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            Text('Origin Address: ${order.originAddress}',),
+            Text('Origin address: ${order.originAddress}',),
             const SizedBox(height: 8),
-            Text('Destination Address: ${order.destinationAddress}',),
+            Text('Destination address: ${order.destinationAddress}',),
             const SizedBox(height: 8),
             Text('Description: ${order.description}'),
             const SizedBox(height: 8),
-            Text('Order Status: ${order.status.name}',
+            Text('Order status: ${order.status.name}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: _getStatusColor(order.status.name),
                 )),
-            const Divider(height: 32),
-            if (order.imageUrl.isNotEmpty) ...[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Order image:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Image.asset(
-                    'assets/images/delivery.jpg', // Caminho da imagem local
-                    height: 150,
-                    fit: BoxFit.cover,
-                  ),
-                ],
-              ),
-            ],
             const Divider(height: 32),
             const Text('Order Location:', style: TextStyle(fontWeight: FontWeight.bold)),
 

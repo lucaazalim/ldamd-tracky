@@ -13,7 +13,6 @@ class Order {
   final String originAddress;
   final String destinationAddress;
   final String description;
-  final String imageUrl;
   User? costumer;
   User? driver;
 
@@ -25,7 +24,6 @@ class Order {
     required this.destinationAddress,
     required this.originAddress,
     required this.description,
-    required this.imageUrl,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -37,7 +35,6 @@ class Order {
       destinationAddress: json['destinationAddress'] ?? '',
       originAddress: json['originAddress'] ?? '',
       description: json['description'] ?? '',
-      imageUrl: json['imageUrl'] ?? json['image_url'] ?? '',
     );
   }
 
@@ -50,7 +47,6 @@ class Order {
       'originAddress': originAddress,
       'destinationAddress': destinationAddress,
       'description': description,
-      'image_url': imageUrl,
     };
   }
 }

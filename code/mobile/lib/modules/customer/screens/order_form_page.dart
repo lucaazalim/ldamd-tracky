@@ -68,13 +68,13 @@ class _OrderFormPageState extends State<OrderFormPage> {
                   children: [
                     TextFormField(
                       controller: _originController,
-                      decoration: const InputDecoration(labelText: 'Origin Address'),
+                      decoration: const InputDecoration(labelText: 'Origin address'),
                       validator: (v) => v == null || v.isEmpty ? 'Required field' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _destinationController,
-                      decoration: const InputDecoration(labelText: 'Destination Address'),
+                      decoration: const InputDecoration(labelText: 'Destination address'),
                       validator: (v) => v == null || v.isEmpty ? 'Required field' : null,
                     ),
                     const SizedBox(height: 16),

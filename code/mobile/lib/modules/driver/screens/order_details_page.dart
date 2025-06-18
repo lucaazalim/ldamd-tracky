@@ -12,6 +12,7 @@ import 'package:mobile/modules/common/services/tracking_service.dart';
 import 'package:mobile/modules/common/data/tracking.dart';
 import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 import '../../common/components/theme_provider.dart';
 
@@ -48,11 +49,48 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   String? _driverID;
 
+  Timer? _trackingTimer;
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetchOrderAndInitRoute());
+  }
+
+  @override
+  void dispose() {
+    _trackingTimer?.cancel();
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  void _startTracking() {
+    _trackingTimer?.cancel();
+    _trackingTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
+      if (_order == null || _driverPosition == null) return;
+      if (_order!.status != OrderStatus.onCourse) {
+        timer.cancel();
+        return;
+      }
+      try {
+        final pos = await _userLocationService.getCurrentLocation();
+        setState(() {
+          _driverPosition = pos;
+        });
+        await _orderLocationService.sendTracking(
+          orderId: _order!.id,
+          latitude: pos.latitude,
+          longitude: pos.longitude,
+        );
+      } catch (e) {
+        // ignore errors for now
+      }
+    });
+  }
+
+  void _stopTracking() {
+    _trackingTimer?.cancel();
   }
 
   Future<void> _fetchOrderAndInitRoute() async {
@@ -77,6 +115,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       });
       if (_order != null) {
         await _initRouteFlow(_order!);
+        if (_order!.status == OrderStatus.onCourse) {
+          _startTracking();
+        } else {
+          _stopTracking();
+        }
       }
     } catch (e) {
       setState(() {
@@ -88,7 +131,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 
   Future<void> _initRouteFlow(Order order) async {
-    // 1. Get driver position
     try {
       final pos = await _userLocationService.getCurrentLocation();
       setState(() {
@@ -116,7 +158,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       return;
     }
 
-    // 2. Get latest order location
     Tracking? orderLoc;
     try {
       orderLoc = await _orderLocationService.getLatestLocationForOrder(order.id);
@@ -129,7 +170,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       return;
     }
 
-    // 3. Fetch and draw route
     await _fetchRouteBetween(
       driverPos: _driverPosition!,
       destination: LatLng(orderLoc.latitude, orderLoc.longitude),
@@ -149,22 +189,21 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
     try {
       final client = OpenRouteService(apiKey: '5b3ce3597851110001cf6248fe6e4e794c9247b599ab35ed87100e77');
-
       final List<ORSCoordinate> routeCoordinates = await client.directionsRouteCoordsGet(
         startCoordinate: ORSCoordinate(latitude: driverPos.latitude, longitude: driverPos.longitude),
         endCoordinate: ORSCoordinate(latitude: destination.latitude, longitude: destination.longitude),
         profileOverride: ORSProfile.drivingCar,
       );
-
       final routePoints = routeCoordinates
           .map((coord) => LatLng(coord.latitude, coord.longitude))
           .toList();
 
+      // Apenas exibe distância e duração como "-" (não disponíveis)
       final route = AppRoute(
-        distance: 'To do',
-        duration: 'To do',
-        startAddress: 'To do',
-        endAddress: 'To do',
+        distance: '-',
+        duration: '-',
+        startAddress: null,
+        endAddress: null,
         polylinePoints: routePoints,
       );
 
@@ -244,46 +283,62 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            Text('Order ID: ${order.id}', style: const TextStyle(fontSize: 18)),
-            Text('Client: ${order.costumer?.name ?? 'Unknown'}'),
-            Text('Driver: ${order.driver?.name ?? 'Unknown'}'),
-            Text('Address: ${order.originAddress}'),
-            Text('Address: ${order.destinationAddress}'),
-            Text('Description: ${order.description}'),
-            Text('Status: ${order.status.name}'),
+            Text('Order: ${order.id.substring(0, 5)}', style: const TextStyle(fontSize: 18)),
+            Text('Origin address: ${order.originAddress}'),
+            Text('Destination address: ${order.destinationAddress}'),
+            Text('Order description: ${order.description}'),
+            Text('Order status: ${order.status.name}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: _getStatusColor(order.status.name),
+                )),
             const Divider(height: 32),
 
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 15),
+                
                 isConfirmed
-                    ? ElevatedButton(
-                  onPressed: () {
-                    OrdersService().acceptOrder(order.id, _driverID!);
-                  },
-                  child: const Text('Accept order'),
-                )
-                    : ElevatedButton(
-                  onPressed: () {
-
-                    Navigator.pushNamed(
-                      context,
-                      '/driver/order/update-status',
-                      arguments: order,
-                    );
-
-                  },
-                  child: const Text('Change order status'),
-                ),
-                const SizedBox(height: 15),
-                const Text('Order image:', style: TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                Image.asset(
-                  'assets/images/delivery.jpg', // Caminho da imagem local
-                  height: 150,
-                  fit: BoxFit.cover,
-                ),
+                    ? SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(255, 5, 242, 112),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            minimumSize: const Size.fromHeight(46),
+                          ),
+                          icon: const Icon(Icons.check_circle, color: Colors.black),
+                          label: const Text(
+                            'Accept order',
+                            style: TextStyle(color: Colors.black, fontSize: 18),
+                          ),
+                          onPressed: () {
+                            OrdersService().acceptOrder(order.id, _driverID!);
+                          },
+                        ),
+                      )
+                    : SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(255, 5, 242, 112),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            minimumSize: const Size.fromHeight(46),
+                          ),
+                          icon: const Icon(Icons.edit, color: Colors.black),
+                          label: const Text(
+                            'Change order status',
+                            style: TextStyle(color: Colors.black, fontSize: 18),
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/driver/order/update-status',
+                              arguments: order,
+                            );
+                          },
+                        ),
+                      ),
               ],
             ),
             const Divider(height: 32),
@@ -291,74 +346,48 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             const SizedBox(height: 8),
             Container(
               height: 300,
-              child: _driverPosition == null && _locationError == null
+              child: _isLoadingRoute
                   ? const Center(child: CircularProgressIndicator())
-                  : _locationError != null
-                  ? Center(
-                child: Text(
-                  'Error getting driver location: $_locationError',
-                  style: const TextStyle(color: Colors.red),
-                ),
-              )
-                  : FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(center: initialCenter, zoom: 15.0),
-                children: [
-                  TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.yourcompany.yourappname',
-                  ),
-                  MarkerLayer(markers: _markers),
-                  if (_polylines.isNotEmpty) PolylineLayer(polylines: _polylines),
-                ],
-              ),
+                  : _driverPosition == null && _locationError == null
+                      ? const Center(child: CircularProgressIndicator())
+                      : _locationError != null
+                          ? Center(
+                              child: Text(
+                                'Error getting driver location: [38;5;9m$_locationError[0m',
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            )
+                          : FlutterMap(
+                              mapController: _mapController,
+                              options: MapOptions(center: initialCenter, zoom: 15.0),
+                              children: [
+                                TileLayer(
+                                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                  userAgentPackageName: 'com.yourcompany.yourappname',
+                                ),
+                                MarkerLayer(markers: _markers),
+                                if (_polylines.isNotEmpty) PolylineLayer(polylines: _polylines),
+                              ],
+                            ),
             ),
-            const SizedBox(height: 16),
-            const Text('Route Information:', style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            if (_isLoadingRoute)
-              const Center(child: CircularProgressIndicator())
-            else if (_routeError != null)
-              Center(
-                child: Text(
-                  'Error loading route: $_routeError',
-                  style: const TextStyle(color: Colors.red),
-                ),
-              )
-            else if (_routeSummary != null && _routeSummary!.routes?.isNotEmpty == true)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Origin: ${_routeSummary!.routes!.first.startAddress}'),
-                    Text('Destination: ${_routeSummary!.routes!.first.endAddress}'),
-                    Text('Distance: ${_routeSummary!.routes!.first.distance}'),
-                    Text('Duration: ${_routeSummary!.routes!.first.duration}'),
-                    if (_routeSummary!.mapUrl != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: InkWell(
-                          onTap: () {
-                            // TODO: launch _routeSummary!.mapUrl com url_launcher
-                          },
-                          child: const Text(
-                            'View on external map',
-                            style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
-                          ),
-                        ),
-                      ),
-                  ],
-                )
-              else
-                const Text('Could not find a route for this order.'),
           ],
         ),
       ),
     );
   }
-
-  @override
-  void dispose() {
-    _mapController.dispose();
-    super.dispose();
-  }
 }
+
+  Color _getStatusColor(String status) {
+    switch (status.toUpperCase()) {
+      case 'PENDING':
+        return Colors.red;
+      case 'ACCEPTED':
+        return Colors.blue;
+      case 'ON_COURSE':
+        return Colors.orange;
+      case 'DELIVERED':
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
+  }

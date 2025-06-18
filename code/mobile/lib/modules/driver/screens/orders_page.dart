@@ -69,6 +69,9 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: const Text('Orders'),
+          iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 5, 242, 112), // seta verde
+        ),
           titleTextStyle: TextStyle(
               color: const Color.fromARGB(255, 5, 242, 112),
               fontSize: 24.0
@@ -156,7 +159,7 @@ class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
                     } else if (snapshot.hasError) {
                       return Text('Error loading deliveries: ${snapshot.error}');
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Text('No completed deliveries.');
+                      return const Center(child: Text('No deliveries.'));
                     } else {
                       return ListView.builder(
                         shrinkWrap: true,

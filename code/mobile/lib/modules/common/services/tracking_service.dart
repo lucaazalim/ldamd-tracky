@@ -38,4 +38,15 @@ class TrackingService {
     }
 
   }
+  Future<void> sendTracking({required String orderId, required double latitude, required double longitude}) async {
+    try {
+      await _dio.post('/tracking', data: {
+        'order_id': orderId,
+        'latitude': latitude,
+        'longitude': longitude,
+      });
+    } catch (e) {
+      print('Error sending tracking: $e');
+    }
+  }
 }

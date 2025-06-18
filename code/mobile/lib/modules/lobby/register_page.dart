@@ -94,6 +94,9 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tracky'),
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 5, 242, 112), // seta verde
+        ),
         titleTextStyle: const TextStyle(
             color: Color.fromARGB(255, 5, 242, 112),
             fontSize: 20.0

@@ -26,6 +26,9 @@ class NotificationsPage extends StatelessWidget {
           color: const Color.fromARGB(255, 5, 242, 112),
           fontSize: 24.0,
         ),
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 5, 242, 112), // seta verde
+        ),
         actions: [
           IconButton(
             icon: Icon(

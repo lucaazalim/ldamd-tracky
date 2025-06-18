@@ -15,10 +15,11 @@ class OrderCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
         leading: const Icon(Icons.local_shipping),
-        title: Text('Order #${order.id}'),
+        title: Text('Order ${order.id.substring(0, 5)}'),
         subtitle: Text(
           'Description: ${order.description}\n'
-              'Destination Address: ${order.destinationAddress}',
+          'Destination address: ${order.destinationAddress} \n'
+          'Origin address: ${order.originAddress}',
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

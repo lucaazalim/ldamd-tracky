@@ -55,6 +55,9 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tracky'),
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 5, 242, 112), // seta verde
+        ),
         titleTextStyle: TextStyle(
             color: const Color.fromARGB(255, 5, 242, 112),
             fontSize: 20.0
