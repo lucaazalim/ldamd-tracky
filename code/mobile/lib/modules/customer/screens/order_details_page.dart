@@ -9,9 +9,9 @@ import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:mobile/modules/common/data/tracking.dart';
 import '../../common/components/theme_provider.dart';
 import 'package:mobile/modules/common/data/order.dart';
-
-import '../../common/services/location_service.dart';
-
+import 'package:geocoding/geocoding.dart';
+import 'package:geocoding/geocoding.dart' show locationFromAddress, Location;
+import 'package:open_route_service/open_route_service.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({Key? key}) : super(key: key);
@@ -28,14 +28,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   bool _isLoadingOrderLocation = true;
   String? _orderLocationError;
 
-  final LocationService _locationService = LocationService();
   Timer? _trackingTimer;
+  Timer? _orderLocationPollingTimer;
 
   Order? _order;
   bool _isLoadingOrder = true;
   String? _orderError;
 
   List<Marker> _markers = [];
+  List<Polyline> _polylines = [];
   final MapController _mapController = MapController();
 
   @override
@@ -44,6 +45,21 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchOrder();
     });
+  }
+
+  void _startOrderLocationPolling() {
+    _orderLocationPollingTimer?.cancel();
+    _orderLocationPollingTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
+      if (_order != null && _order!.status.name.toUpperCase() == 'ON_COURSE') {
+        await _fetchOrderLocation();
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void _stopOrderLocationPolling() {
+    _orderLocationPollingTimer?.cancel();
   }
 
   Future<void> _fetchOrderLocation() async {
@@ -56,7 +72,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     }
     try {
       final location = await _orderLocationService.getLatestLocationForOrder(_order!.id);
-
       setState(() {
         _orderLocation = location;
         _isLoadingOrderLocation = false;
@@ -66,17 +81,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           _orderLocationError = 'Location data not available for this order.';
         }
       });
-
       if (location != null) {
-
         WidgetsBinding.instance.addPostFrameCallback((_) {
-
           if (mounted) {
             _mapController.move(LatLng(location.latitude, location.longitude), 13.0);
           }
         });
+        // Calcula rota do motorista até o destino
+        await _fetchRouteToDestination(location);
       }
-
     } catch (e) {
       setState(() {
         _orderLocationError = 'Error fetching order location: \\${e.toString()}';
@@ -84,6 +97,43 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       });
     }
   }
+
+Future<LatLng?> addressToLatLng(String address) async {
+  try {
+    List<Location> locations = await locationFromAddress(address);
+    if (locations.isNotEmpty) {
+      return LatLng(locations.first.latitude, locations.first.longitude);
+    }
+  } catch (e) {
+    print('Erro ao converter endereço: $e');
+  }
+  return null;
+}
+
+Future<void> _fetchRouteToDestination(Tracking driverLocation) async {
+  if (_order == null) return;
+
+  // Usa o endereço do pedido, não do tracking
+  final originLatLng = await addressToLatLng(_order!.originAddress);
+  final destLatLng = await addressToLatLng(_order!.destinationAddress);
+
+  if (originLatLng != null && destLatLng != null) {
+    try {
+      final client = OpenRouteService(apiKey: 'SUA_API_KEY'); // Substitua pela sua API KEY
+      final List<ORSCoordinate> routeCoordinates = await client.directionsRouteCoordsGet(
+        startCoordinate: ORSCoordinate(latitude: originLatLng.latitude, longitude: originLatLng.longitude),
+        endCoordinate: ORSCoordinate(latitude: destLatLng.latitude, longitude: destLatLng.longitude),
+        profileOverride: ORSProfile.drivingCar,
+      );
+      final routePoints = routeCoordinates.map((coord) => LatLng(coord.latitude, coord.longitude)).toList();
+      setState(() {
+        _polylines = [Polyline(points: routePoints, strokeWidth: 4.0, color: Colors.blue)];
+      });
+    } catch (e) {
+      print('Erro ao buscar rota: $e');
+    }
+  }
+}
 
   Future<void> _fetchOrder() async {
     final orderId = ModalRoute.of(context)?.settings.arguments as String?;
@@ -101,7 +151,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         _isLoadingOrder = false;
       });
       if (_order != null) {
-        _fetchOrderLocation();
+        await _fetchOrderLocation();
+        if (_order!.status.name.toUpperCase() == 'ON_COURSE') {
+          _startOrderLocationPolling();
+        } else {
+          _stopOrderLocationPolling();
+        }
       }
     } catch (e) {
       setState(() {
@@ -109,41 +164,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         _isLoadingOrder = false;
       });
     }
-
-    if (_order != null) {
-      _fetchOrderLocation();
-
-      if (_order!.status.name.toUpperCase() == 'ON_COURSE') {
-        _startTrackingLoop(_order!.id);
-      }
-    }
-
   }
 
-
-  void _startTrackingLoop(String orderId) {
-    _trackingTimer?.cancel(); // Garante que não há timer anterior rodando
-
-    _trackingTimer = Timer.periodic(const Duration(seconds: 15), (timer) async {
-      try {
-        final position = await _locationService.getCurrentLocation();
-
-        final newTracking = Tracking(
-          orderId: orderId,
-          latitude: position.latitude,
-          longitude: position.longitude,
-          createdAt: null,
-        );
-
-        final result = await _orderLocationService.createTracking(newTracking);
-        if (result != null) {
-          print('Location sent: ${result.latitude}, ${result.longitude}');
-        }
-      } catch (e) {
-        print('Tracking error: $e');
-      }
-    });
-  }
 
   void _addOrderMarker(Tracking location) {
     final marker = Marker(
@@ -270,6 +292,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           MarkerLayer(
                             markers: _markers, // Pass the list of markers
                           ),
+                          if (_polylines.isNotEmpty) PolylineLayer(polylines: _polylines),
                         ],
                       ),
                     ),
@@ -304,6 +327,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   void dispose() {
     _mapController.dispose(); // Dispose the map controller
     _trackingTimer?.cancel();
+    _orderLocationPollingTimer?.cancel();
     super.dispose();
   }
 }

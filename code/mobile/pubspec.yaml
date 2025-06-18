@@ -47,6 +47,7 @@ dependencies:
   url_launcher: ^6.3.1
   dio: ^5.8.0+1
   dotenv: ^4.2.0
+  geocoding: ^2.1.0
 
 dev_dependencies:
   flutter_test:

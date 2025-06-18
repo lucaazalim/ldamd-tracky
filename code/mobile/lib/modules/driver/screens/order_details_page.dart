@@ -169,13 +169,28 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with RouteAware
       return;
     }
 
+    // Usa o destino do pedido como destino da rota
+    final destination = _order?.destinationAddress;
+    if (destination == null || destination.isEmpty) {
+      setState(() {
+        _routeError = 'Order destination not set.';
+        _isLoadingRoute = false;
+      });
+      return;
+    }
+
     Tracking? orderLoc;
     try {
       orderLoc = await _orderLocationService.getLatestLocationForOrder(order.id);
-      if (orderLoc == null) throw Exception('No location found for order.');
     } catch (e) {
+      // ignora
+    }
+    LatLng? destinationLatLng;
+    if (orderLoc != null) {
+      destinationLatLng = LatLng(orderLoc.latitude, orderLoc.longitude);
+    } else {
       setState(() {
-        _routeError = 'Could not get the order location.';
+        _routeError = 'No destination location available.';
         _isLoadingRoute = false;
       });
       return;
@@ -183,7 +198,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with RouteAware
 
     await _fetchRouteBetween(
       driverPos: _driverPosition!,
-      destination: LatLng(orderLoc.latitude, orderLoc.longitude),
+      destination: destinationLatLng,
     );
   }
 
@@ -209,7 +224,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with RouteAware
           .map((coord) => LatLng(coord.latitude, coord.longitude))
           .toList();
 
-      // Apenas exibe distância e duração como "-" (não disponíveis)
       final route = AppRoute(
         distance: '-',
         duration: '-',
@@ -355,10 +369,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with RouteAware
                                     _order = updatedOrder;
                                     _isAcceptingOrder = false;
                                   });
-                                  // Força refetch na tela anterior
-                                  // if (mounted) {
-                                  //   Navigator.pop(context, true);
-                                  // }
                                 },
                         ),
                       )
@@ -398,7 +408,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with RouteAware
                       : _locationError != null
                           ? Center(
                               child: Text(
-                                'Error getting driver location: [38;5;9m$_locationError[0m',
+                                'Error getting driver location: [38;5;9m$_locationError[0m',
                                 style: const TextStyle(color: Colors.red),
                               ),
                             )
