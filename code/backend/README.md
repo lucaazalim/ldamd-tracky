@@ -179,3 +179,26 @@ This system uses a modern microservices architecture with:
   - Independent service scaling
 
 The architecture maintains API compatibility while providing excellent operational features and improved resilience.
+
+## Resilience Patterns
+
+The API Gateway implements modern resilience patterns using Resilience4j:
+
+### Circuit Breaker
+
+- **Purpose**: Prevents cascading failures by stopping calls to failing services
+- **Configuration**: Per-service circuit breakers with configurable thresholds
+- **States**: CLOSED (normal) → OPEN (failing) → HALF_OPEN (testing recovery)
+- **Fallback**: Graceful degradation with meaningful error responses
+
+### Retry Mechanism
+
+- **Purpose**: Automatically retries failed requests with exponential backoff
+- **Configuration**: 3 retry attempts with exponential backoff (50ms to 500ms)
+- **Scope**: Applied to all service calls through the gateway
+
+### Monitoring
+
+- **Health Endpoints**: `/actuator/health`, `/actuator/circuitbreakers`, `/actuator/retries`
+- **Custom Endpoints**: `/actuator/resilience/circuit-breakers`, `/actuator/resilience/retries`
+- **Metrics**: Real-time circuit breaker state and retry statistics
