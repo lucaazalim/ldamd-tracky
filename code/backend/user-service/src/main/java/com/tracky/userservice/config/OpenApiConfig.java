@@ -6,9 +6,17 @@ import io.swagger.v3.oas.models.info.Contact;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration for OpenAPI documentation.
+ */
 @Configuration
 public class OpenApiConfig {
 
+    /**
+     * Creates and configures the OpenAPI documentation for the user service.
+     * 
+     * @return Configured OpenAPI instance
+     */
     @Bean
     public OpenAPI userServiceOpenAPI() {
         return new OpenAPI()

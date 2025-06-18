@@ -18,14 +18,26 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+/**
+ * REST controller for handling user registration and authentication.
+ */
 @RestController
 @RequestMapping("/users")
 @Tag(name = "User Management", description = "APIs for user registration and authentication")
 public class UserController {
 
+    /**
+     * Service for user management operations.
+     */
     @Autowired
     private UserService userService;
 
+    /**
+     * Registers a new user in the system.
+     * 
+     * @param request User registration data
+     * @return Response with created user information
+     */
     @PostMapping
     @Operation(summary = "Register new user", description = "Register a new customer or driver")
     public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserRegistrationRequest request) {
@@ -37,6 +49,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Authenticates a user and provides a JWT token.
+     * 
+     * @param request Login credentials
+     * @return Response with authentication token and user information
+     */
     @PostMapping("/login")
     @Operation(summary = "Authenticate user", description = "Authenticate user and return JWT token")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest request) {
