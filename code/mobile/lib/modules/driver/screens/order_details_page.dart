@@ -59,6 +59,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with RouteAware
   void initState() {
     super.initState();
 
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetchOrderAndInitRoute());
   }
 
@@ -77,8 +78,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with RouteAware
   }
 
   void _startTracking() {
+
     _trackingTimer?.cancel();
-    _trackingTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
+    _trackingTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (_order == null || _driverPosition == null) return;
       if (_order!.status != OrderStatus.onCourse) {
         timer.cancel();
@@ -89,13 +91,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with RouteAware
         setState(() {
           _driverPosition = pos;
         });
+
         await _orderLocationService.sendTracking(
           orderId: _order!.id,
           latitude: pos.latitude,
           longitude: pos.longitude,
         );
       } catch (e) {
-        // ignore errors for now
+        print(e);
       }
     });
   }
