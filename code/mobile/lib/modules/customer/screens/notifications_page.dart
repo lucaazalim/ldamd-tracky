@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../common/components/theme_provider.dart';
 import '../../common/components/bottom_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../common/components/theme_provider.dart';
+import '../../common/components/bottom_bar.dart';
 
 /// A page that displays a list of notifications for the user.
 ///

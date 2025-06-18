@@ -8,27 +8,21 @@ class TrackingService {
 
   Future<Tracking?> getLatestLocationForOrder(String orderId) async {
     try {
+
       final response = await _dio.get('/tracking/$orderId/latest');
-      if (response.data == null) {
-        return Tracking(
-          orderId: orderId,
-          createdAt: DateTime.now(),
-          latitude: -19.9321, 
-          longitude: -43.9378,
-        );
-      }
-      return Tracking.fromJson(response.data);
+        return Tracking.fromJson(response.data);
+
     } catch (e) {
-      return Tracking(
-        orderId: orderId,
-        createdAt: DateTime.now(),
-        latitude: -19.9321,
-        longitude: -43.9378,
-      );
+
+        print(e);
+
     }
   }
 
   Future<Tracking?> createTracking(Tracking newTracking) async {
+
+    print(newTracking);
+
     try {
       final response = await _dio.post(
         '/tracking',
@@ -42,7 +36,9 @@ class TrackingService {
       if (response.statusCode == 201 && response.data != null) {
         return Tracking.fromJson(response.data);
       }
+
       return null;
+
     } catch (e) {
       print('Error creating tracking from API: $e');
       return null;
@@ -51,11 +47,14 @@ class TrackingService {
   }
   Future<void> sendTracking({required String orderId, required double latitude, required double longitude}) async {
     try {
-      await _dio.post('/tracking', data: {
-        'order_id': orderId,
+      final response = await _dio.post('/tracking', data: {
+        'orderId': orderId,
         'latitude': latitude,
         'longitude': longitude,
       });
+
+      print("resposta da api $response");
+
     } catch (e) {
       print('Error sending tracking: $e');
     }
