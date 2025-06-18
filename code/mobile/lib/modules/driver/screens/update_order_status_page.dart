@@ -73,7 +73,7 @@ class _UpdateOrderStatusPageState extends State<UpdateOrderStatusPage> {
               items: _statuses.map((OrderStatus status) {
                 return DropdownMenuItem<OrderStatus>(
                   value: status,
-                  child: Text(status.name),
+                  child: Text(status.displayName),
                 );
               }).toList(),
             ),
@@ -98,19 +98,17 @@ class _UpdateOrderStatusPageState extends State<UpdateOrderStatusPage> {
                 }
 
                 try {
-
                   await OrdersService().updateOrderStatus(order.id, _selectedStatus!.name.toUpperCase());
-
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Status changed to: ${_selectedStatus!.name}')),
+                    SnackBar(content: Text('Status changed to: ${_selectedStatus!.displayName}')),
                   );
-
+                  if (mounted) {
+                    Navigator.pop(context, true);
+                  }
                 } catch (e) {
-
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Failed to update status: $e')),
                   );
-
                 }
               },
             ),

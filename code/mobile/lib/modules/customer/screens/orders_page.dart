@@ -39,7 +39,6 @@ class _OrdersPageState extends State<OrdersPage> {
         return ordersData;
       }
     } catch (e) {
-      print('Error fetching orders: $e'); // Optional: log the error
       throw e; // Throws the error to the FutureBuilder
     }
   }

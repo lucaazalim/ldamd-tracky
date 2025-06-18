@@ -14,6 +14,7 @@ import 'modules/driver/screens/orders_page.dart';
 import 'modules/customer/screens/order_form_page.dart';
 import 'package:mobile/modules/common/services/user_service.dart';
 
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
       initialRoute: '/',
+      navigatorObservers: [routeObserver],
       routes: {
         '/': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),

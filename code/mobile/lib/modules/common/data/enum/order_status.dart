@@ -11,6 +11,19 @@ enum OrderStatus {
   onCourse,
   delivered;
 
+  String get displayName {
+    switch (this) {
+      case OrderStatus.pending:
+        return 'Pending';
+      case OrderStatus.accepted:
+        return 'Accepted';
+      case OrderStatus.onCourse:
+        return 'On course';
+      case OrderStatus.delivered:
+        return 'Delivered';
+    }
+  }
+
   factory OrderStatus.fromString(String value) {
     switch (value.toUpperCase()) {
       case 'PENDING':
@@ -25,8 +38,6 @@ enum OrderStatus {
         throw ArgumentError('Invalid status: $value');
     }
   }
-
-
 
   String toJson() => name.toUpperCase();
 }

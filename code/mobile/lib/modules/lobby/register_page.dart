@@ -46,8 +46,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
       final user = await _userService.registerUser(newUser);
 
-      print('user: $user');
-
       if (user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

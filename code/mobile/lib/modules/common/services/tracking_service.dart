@@ -12,7 +12,6 @@ class TrackingService {
       if (response.data == null) return null;
       return Tracking.fromJson(response.data);
     } catch (e) {
-      print('Error fetching order location from API: $e');
       return null;
     }
   }

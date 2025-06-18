@@ -230,7 +230,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             const SizedBox(height: 8),
             Text('Description: ${order.description}'),
             const SizedBox(height: 8),
-            Text('Order status: ${order.status.name}',
+            Text('Order status: ${order.status.displayName}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: _getStatusColor(order.status.name),

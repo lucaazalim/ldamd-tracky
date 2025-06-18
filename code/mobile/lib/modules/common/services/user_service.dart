@@ -47,8 +47,6 @@ class UserService {
           'type': user.type
         },
       );
-      print('response: $response');
-      print('response: ${response.statusCode}');
       if (response.statusCode == 201 && response.data != null) {
         return User.fromJson(response.data);
       }

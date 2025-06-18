@@ -17,15 +17,39 @@ class PendingOrdersScreen extends StatefulWidget {
   State<PendingOrdersScreen> createState() => _PendingOrdersScreenState();
 }
 
-class _PendingOrdersScreenState extends State<PendingOrdersScreen> {
+class _PendingOrdersScreenState extends State<PendingOrdersScreen> with RouteAware {
   late Future<List<Order>> _currentOrders;
   late Future<List<Order>> _availableOrders;
+  RouteObserver<ModalRoute<void>>? _routeObserver;
 
   @override
   void initState() {
     super.initState();
     _currentOrders = _loadPendingOrders();
     _availableOrders = _loadAvailableOrders();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _routeObserver ??= ModalRoute.of(context)?.navigator?.widget.observers.whereType<RouteObserver<ModalRoute<void>>>().firstOrNull;
+    _routeObserver?.subscribe(this, ModalRoute.of(context)!);
+    _currentOrders = _loadPendingOrders();
+    _availableOrders = _loadAvailableOrders();
+  }
+
+  @override
+  void dispose() {
+    _routeObserver?.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    setState(() {
+      _currentOrders = _loadPendingOrders();
+      _availableOrders = _loadAvailableOrders();
+    });
   }
 
   Future<List<Order>> _loadPendingOrders() async {

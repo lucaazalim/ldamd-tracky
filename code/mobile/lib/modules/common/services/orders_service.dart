@@ -50,7 +50,6 @@ class OrdersService {
         "/orders?status=PENDING",
       );
 
-      print(response.data);
       if ((response.data as List).isEmpty) {
         return [];
       }
@@ -60,8 +59,7 @@ class OrdersService {
 
       return orders;
     } catch (e) {
-      print('Erro ao buscar pedidos: $e');
-      return []; // Retorna uma lista vazia pra não dar erro no App
+      return []; 
     }
   }
 
@@ -72,7 +70,6 @@ class OrdersService {
       );
       return Order.fromJson(response.data);
     } catch (e) {
-      print('Erro ao buscar pedidos: $e');
       return null;
     }
   }
@@ -93,7 +90,6 @@ class OrdersService {
       return Order.fromJson(response.data);
     } catch (e) {
 
-      print('Erro on editing order: $e');
       return null;
 
     }

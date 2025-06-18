@@ -13,8 +13,8 @@ import 'package:mobile/modules/common/data/tracking.dart';
 import 'package:mobile/modules/common/services/orders_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
-
 import '../../common/components/theme_provider.dart';
+import 'package:mobile/main.dart';
 
 /// A page that displays detailed information about a specific order for drivers.
 ///
@@ -27,7 +27,7 @@ class OrderDetailsScreen extends StatefulWidget {
   State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
 }
 
-class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> with RouteAware {
   final LocationService _userLocationService = LocationService();
   final TrackingService _orderLocationService = TrackingService();
   final OrdersService _ordersService = OrdersService();
@@ -51,6 +51,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   Timer? _trackingTimer;
 
+  bool _isAcceptingOrder = false;
+  RouteObserver<ModalRoute<void>>? _routeObserver;
+  bool _isRefreshing = false;
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +63,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
   void dispose() {
+    routeObserver.unsubscribe(this);
     _trackingTimer?.cancel();
     _mapController.dispose();
     super.dispose();
@@ -233,10 +244,21 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   }
 
   @override
+  void didPopNext() async {
+    setState(() {
+      _isRefreshing = true;
+    });
+    await _fetchOrderAndInitRoute();
+    setState(() {
+      _isRefreshing = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    if (_isLoadingOrder) {
+    if (_isLoadingOrder || _isRefreshing) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
@@ -287,7 +309,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             Text('Origin address: ${order.originAddress}'),
             Text('Destination address: ${order.destinationAddress}'),
             Text('Order description: ${order.description}'),
-            Text('Order status: ${order.status.name}',
+            Text('Order status: ${order.status.displayName}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: _getStatusColor(order.status.name),
@@ -307,14 +329,37 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             minimumSize: const Size.fromHeight(46),
                           ),
-                          icon: const Icon(Icons.check_circle, color: Colors.black),
+                          icon: _isAcceptingOrder
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(Icons.check_circle, color: Colors.black),
                           label: const Text(
                             'Accept order',
                             style: TextStyle(color: Colors.black, fontSize: 18),
                           ),
-                          onPressed: () {
-                            OrdersService().acceptOrder(order.id, _driverID!);
-                          },
+                          onPressed: _isAcceptingOrder
+                              ? null
+                              : () async {
+                                  setState(() {
+                                    _isAcceptingOrder = true;
+                                  });
+                                  await OrdersService().acceptOrder(order.id, _driverID!);
+                                  final updatedOrder = await _ordersService.getOrderById(order.id);
+                                  setState(() {
+                                    _order = updatedOrder;
+                                    _isAcceptingOrder = false;
+                                  });
+                                  // Força refetch na tela anterior
+                                  // if (mounted) {
+                                  //   Navigator.pop(context, true);
+                                  // }
+                                },
                         ),
                       )
                     : SizedBox(
