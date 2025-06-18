@@ -17,6 +17,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity representing a tracking record for an order's location.
+ */
 @Entity
 @Table(name = "tracking")
 @Data
@@ -24,28 +27,48 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Tracking {
 
+    /**
+     * Unique identifier for the tracking record.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    /**
+     * Reference to the order being tracked.
+     */
     @NotNull(message = "Order ID is required")
     @Column(name = "order_id", nullable = false)
     private UUID orderId;
 
+    /**
+     * Geographic latitude coordinate of the order's current location.
+     */
     @NotNull(message = "Latitude is required")
     @Column(nullable = false, precision = 10, scale = 8)
     private BigDecimal latitude;
 
+    /**
+     * Geographic longitude coordinate of the order's current location.
+     */
     @NotNull(message = "Longitude is required")
     @Column(nullable = false, precision = 11, scale = 8)
     private BigDecimal longitude;
 
+    /**
+     * Timestamp when the tracking record was created.
+     */
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // Custom constructor for creating tracking without timestamp (it's
-    // auto-generated)
+    /**
+     * Creates a new tracking record with location data for an order.
+     * 
+     * @param orderId The ID of the order being tracked
+     * @param latitude The current latitude coordinate
+     * @param longitude The current longitude coordinate
+     */
     public Tracking(UUID orderId, BigDecimal latitude, BigDecimal longitude) {
         this.orderId = orderId;
         this.latitude = latitude;

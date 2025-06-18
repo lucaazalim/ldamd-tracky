@@ -20,14 +20,26 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+/**
+ * REST controller for handling order tracking operations.
+ */
 @RestController
 @RequestMapping("/tracking")
 @Tag(name = "Tracking Management", description = "APIs for order tracking")
 public class TrackingController {
 
+    /**
+     * Service for tracking-related operations.
+     */
     @Autowired
     private TrackingService trackingService;
 
+    /**
+     * Creates a new tracking update for an order.
+     * 
+     * @param request The tracking update data
+     * @return Response with created tracking information
+     */
     @PostMapping
     @Operation(summary = "Create tracking update", description = "Add new tracking location for an order")
     public ResponseEntity<TrackingResponse> createTrackingUpdate(@Valid @RequestBody TrackingUpdateRequest request) {
@@ -39,6 +51,12 @@ public class TrackingController {
         }
     }
 
+    /**
+     * Retrieves the latest tracking information for an order.
+     * 
+     * @param orderId The ID of the order to get tracking for
+     * @return Response with the latest tracking information
+     */
     @GetMapping("/{orderId}/latest")
     @Operation(summary = "Get latest tracking", description = "Get the latest tracking information for an order")
     public ResponseEntity<TrackingResponse> getLatestTracking(@PathVariable UUID orderId) {
