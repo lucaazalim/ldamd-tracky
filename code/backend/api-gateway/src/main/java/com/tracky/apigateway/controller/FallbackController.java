@@ -14,11 +14,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controller that provides fallback responses when downstream services are
+ * unavailable.
+ * This controller is used by the circuit breaker patterns to return
+ * user-friendly error messages
+ * instead of propagating service failures to the client.
+ */
 @RestController
 @RequestMapping("/fallback")
 @Slf4j
 public class FallbackController {
 
+    /**
+     * Fallback endpoint for the User Service.
+     * Handles requests when the User Service is unavailable.
+     * 
+     * @return a ResponseEntity with an informative error message
+     */
     @GetMapping("/user-service")
     @PostMapping("/user-service")
     @PutMapping("/user-service")
@@ -29,6 +42,12 @@ public class FallbackController {
                 "User management operations are temporarily unavailable. Please try again later.");
     }
 
+    /**
+     * Fallback endpoint for the Order Service.
+     * Handles requests when the Order Service is unavailable.
+     * 
+     * @return a ResponseEntity with an informative error message
+     */
     @GetMapping("/order-service")
     @PostMapping("/order-service")
     @PutMapping("/order-service")
@@ -39,6 +58,12 @@ public class FallbackController {
                 "Order operations are temporarily unavailable. Please try again later.");
     }
 
+    /**
+     * Fallback endpoint for the Tracking Service.
+     * Handles requests when the Tracking Service is unavailable.
+     * 
+     * @return a ResponseEntity with an informative error message
+     */
     @GetMapping("/tracking-service")
     @PostMapping("/tracking-service")
     @PutMapping("/tracking-service")
@@ -49,6 +74,13 @@ public class FallbackController {
                 "Tracking operations are temporarily unavailable. Please try again later.");
     }
 
+    /**
+     * Creates a standardized fallback response for unavailable services.
+     * 
+     * @param serviceName the name of the unavailable service
+     * @param message     a user-friendly error message
+     * @return a ResponseEntity with a structured error response
+     */
     private ResponseEntity<Map<String, Object>> createFallbackResponse(String serviceName, String message) {
         Map<String, Object> response = Map.of(
                 "error", "Service Unavailable",

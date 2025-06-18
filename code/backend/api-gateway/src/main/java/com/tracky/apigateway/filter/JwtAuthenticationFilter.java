@@ -15,16 +15,31 @@ import com.tracky.apigateway.security.JwtTokenValidator;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * JWT Authentication Filter for Spring Cloud Gateway.
+ */
 @Component
 public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAuthenticationFilter.Config> {
 
+    /**
+     * JWT token validator used to validate and extract information from tokens.
+     */
     @Autowired
     private JwtTokenValidator jwtTokenValidator;
 
+    /**
+     * Constructs a new JwtAuthenticationFilter.
+     */
     public JwtAuthenticationFilter() {
         super(Config.class);
     }
 
+    /**
+     * Applies the JWT authentication filter to incoming requests.
+     * 
+     * @param config the filter configuration
+     * @return a GatewayFilter that performs JWT authentication
+     */
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
@@ -69,18 +84,42 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
         };
     }
 
+    /**
+     * Returns an unauthorized response.
+     * 
+     * @param exchange the current server web exchange
+     * @return a Mono completing with void when the response has been written
+     */
     private Mono<Void> unauthorized(ServerWebExchange exchange) {
         exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         return exchange.getResponse().setComplete();
     }
 
+    /**
+     * Configuration class for the JWT Authentication Filter.
+     * Holds configuration properties like paths to exclude from authentication.
+     */
     public static class Config {
+        /**
+         * List of path patterns to exclude from JWT authentication.
+         */
         private List<String> excludePatterns;
 
+        /**
+         * Gets the list of path patterns excluded from JWT authentication.
+         * 
+         * @return list of excluded path patterns
+         */
         public List<String> getExcludePatterns() {
             return excludePatterns;
         }
 
+        /**
+         * Sets the list of path patterns to exclude from JWT authentication.
+         * Input string is split by commas to create the list.
+         * 
+         * @param excludePatterns comma-separated list of path patterns
+         */
         public void setExcludePatterns(String excludePatterns) {
             this.excludePatterns = Arrays.asList(excludePatterns.split(","));
         }
