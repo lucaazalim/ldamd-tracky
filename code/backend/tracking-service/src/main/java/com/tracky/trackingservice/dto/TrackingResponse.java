@@ -22,22 +22,22 @@ public class TrackingResponse {
      * Unique identifier of the tracking record.
      */
     private UUID id;
-    
+
     /**
      * The ID of the order being tracked.
      */
     private UUID orderId;
-    
+
     /**
      * The latitude coordinate of the order's location.
      */
     private BigDecimal latitude;
-    
+
     /**
      * The longitude coordinate of the order's location.
      */
     private BigDecimal longitude;
-    
+
     /**
      * When the tracking record was created.
      */

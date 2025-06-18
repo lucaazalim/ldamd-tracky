@@ -16,7 +16,7 @@ public class LoginResponse {
      * JWT authentication token.
      */
     private String token;
-    
+
     /**
      * User information.
      */

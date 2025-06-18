@@ -20,17 +20,17 @@ public class UserResponse {
      * Unique identifier of the user.
      */
     private UUID id;
-    
+
     /**
      * Full name of the user.
      */
     private String name;
-    
+
     /**
      * Email address of the user.
      */
     private String email;
-    
+
     /**
      * Type of the user (customer or driver).
      */

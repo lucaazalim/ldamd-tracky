@@ -1,13 +1,14 @@
 package com.tracky.trackingservice.service;
 
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.tracky.trackingservice.dto.TrackingResponse;
 import com.tracky.trackingservice.dto.TrackingUpdateRequest;
 import com.tracky.trackingservice.model.Tracking;
 import com.tracky.trackingservice.repository.TrackingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 /**
  * Service for managing order tracking operations.

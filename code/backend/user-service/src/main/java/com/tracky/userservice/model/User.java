@@ -90,10 +90,10 @@ public class User {
     /**
      * Creates a new user with basic information.
      * 
-     * @param name The user's full name
-     * @param email The user's email address
+     * @param name     The user's full name
+     * @param email    The user's email address
      * @param password The user's password (will be encrypted)
-     * @param type The user's role type
+     * @param type     The user's role type
      */
     public User(String name, String email, String password, UserType type) {
         this.name = name;

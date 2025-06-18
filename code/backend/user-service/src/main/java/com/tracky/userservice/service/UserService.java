@@ -1,15 +1,20 @@
 package com.tracky.userservice.service;
 
-import com.tracky.userservice.dto.*;
-import com.tracky.userservice.model.User;
-import com.tracky.userservice.repository.UserRepository;
-import com.tracky.userservice.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tracky.userservice.dto.LoginRequest;
+import com.tracky.userservice.dto.LoginResponse;
+import com.tracky.userservice.dto.UserRegistrationRequest;
+import com.tracky.userservice.dto.UserResponse;
+import com.tracky.userservice.model.User;
+import com.tracky.userservice.repository.UserRepository;
+import com.tracky.userservice.security.JwtTokenProvider;
+
 /**
- * Service for managing user-related operations including registration and authentication.
+ * Service for managing user-related operations including registration and
+ * authentication.
  */
 @Service
 public class UserService {

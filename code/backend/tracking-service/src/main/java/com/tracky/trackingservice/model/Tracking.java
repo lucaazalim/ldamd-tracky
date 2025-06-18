@@ -65,8 +65,8 @@ public class Tracking {
     /**
      * Creates a new tracking record with location data for an order.
      * 
-     * @param orderId The ID of the order being tracked
-     * @param latitude The current latitude coordinate
+     * @param orderId   The ID of the order being tracked
+     * @param latitude  The current latitude coordinate
      * @param longitude The current longitude coordinate
      */
     public Tracking(UUID orderId, BigDecimal latitude, BigDecimal longitude) {
