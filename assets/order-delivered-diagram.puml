@@ -1,0 +1,35 @@
+@startuml TrackyCloudSequence
+title Tracky
+
+actor User as U
+actor Admin as ADM
+
+participant "Mobile App" as MA
+participant "User Service" as US
+participant "Order Service" as OS
+participant "Notification Service" as NS
+
+participant "Database" as DB
+participant "RabbitMQ" as RMQ
+
+participant "Firebase Cloud (Push Notif.)" as FCM
+participant "Sendgrid (Email)" as SG
+
+== Order Delivered Notification ==
+
+MA -> OS: Driver confirm delivery
+
+activate OS
+OS -> DB: Update order status to delivered
+OS -> RMQ: Publishes order delivered event
+deactivate OS
+
+RMQ -> NS: Triggers order delivered notification
+
+activate NS
+NS -> FCM: Send push notification to customer
+NS -> SG: Send email notification to customer
+NS -> SG: Send email notification to driver
+deactivate NS
+
+@enduml

@@ -1,0 +1,35 @@
+@startuml TrackyCloudSequence
+title Tracky
+
+actor User as U
+actor Admin as ADM
+
+participant "Mobile App" as MA
+participant "User Service" as US
+participant "Order Service" as OS
+participant "Notification Service" as NS
+participant "Campaign Service" as CS
+
+participant "Database" as DB
+participant "RabbitMQ" as RMQ
+
+participant "Firebase Cloud (Push Notif.)" as FCM
+participant "Sendgrid (Email)" as SG
+
+== Campaigns ==
+
+ADM -> CS: Triggers a campaign, providing\nmessage and filter (type of user and/or state)
+activate CS
+CS -> US: GET /users?type={DRIVER or CUSTOMER}&state={MG, SP, RJ etc.}
+US --> CS: List of matched users
+loop users matched
+CS -> NS: Send notification
+activate NS
+NS -> FCM: Send push notification
+NS -> SG: Send email notification
+deactivate NS
+end
+CS -> Database: Register campaign trigger
+deactivate CS
+
+@enduml
