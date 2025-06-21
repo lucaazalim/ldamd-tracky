@@ -10,6 +10,11 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+# Environment files with sensitive data
+.env
+.env.local
+.env.production
+
 # Gradle
 .gradle
 build/

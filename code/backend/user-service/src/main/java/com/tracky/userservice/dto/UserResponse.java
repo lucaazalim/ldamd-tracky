@@ -37,12 +37,17 @@ public class UserResponse {
     private User.UserType type;
 
     /**
+     * Device token for push notifications.
+     */
+    private String deviceToken;
+
+    /**
      * Creates a UserResponse from a User entity.
      * 
      * @param user The user entity to convert
      * @return A UserResponse object with basic user information
      */
     public static UserResponse fromUser(User user) {
-        return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getType());
+        return new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getType(), user.getDeviceToken());
     }
 }

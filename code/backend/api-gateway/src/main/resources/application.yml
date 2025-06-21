@@ -203,7 +203,7 @@ server:
   port: 8080
 
 jwt:
-  secret: 962f8f793fad33fe370eda6ce556c53ae458d6b55f57e27baf7ff43dba3435d1
+  secret: ${JWT_SECRET}
 
 logging:
   level:

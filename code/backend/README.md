@@ -8,6 +8,29 @@ This guide will help you get the Tracky microservices backend up and running wit
 - Java 17+ (for local development)
 - Maven 3.6+ (for local development)
 
+## Environment Configuration
+
+Before running the services, you need to set up your environment variables:
+
+1. **Copy the environment template**:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Configure your `.env` file**: Edit the `.env` file with your actual values. The `.env.example` file contains all required environment variables with placeholder values and descriptions for:
+
+   - JWT authentication configuration
+   - Firebase Cloud Messaging for push notifications
+   - Gmail SMTP settings for email notifications
+   - Google Maps API for route calculations
+   - Database passwords for each microservice
+   - RabbitMQ credentials for message queuing
+
+3. **Security Note**: Never commit your `.env` file to version control. It contains sensitive credentials and is already included in `.gitignore`.
+
+The Docker Compose setup will automatically load these environment variables when starting the services.
+
 ## Architecture Overview
 
 The Tracky backend consists of the following services:
@@ -17,10 +40,15 @@ The Tracky backend consists of the following services:
 - **User Service**: User management and authentication
 - **Order Service**: Order processing and management
 - **Tracking Service**: Package tracking functionality
+- **Notification Service**: Push notifications and email notifications for order events
 
 ## Quick Start (Docker)
 
-### 1. Build All Services
+### 1. Set Up Environment
+
+First, configure your environment variables as described in the [Environment Configuration](#environment-configuration) section above.
+
+### 2. Build All Services
 
 ```bash
 # Make the build script executable
@@ -30,7 +58,7 @@ chmod +x build-all.sh
 ./build-all.sh
 ```
 
-### 2. Start the Stack
+### 3. Start the Stack
 
 ```bash
 # Start all services in detached mode
@@ -43,20 +71,21 @@ docker-compose ps
 docker-compose logs -f
 ```
 
-### 3. Verify Services
+### 4. Verify Services
 
 - **Consul UI**: <http://localhost:8500/ui>
 - **API Gateway**: <http://localhost:8080>
 
 ## Service URLs
 
-| Service          | Port | URL                                | Swagger UI                                    |
-| ---------------- | ---- | ---------------------------------- | --------------------------------------------- |
-| Consul           | 8500 | <http://localhost:8500>            | N/A                                           |
-| API Gateway      | 8080 | <http://localhost:8080>            | <http://localhost:8080/swagger-ui/index.html> |
-| User Service     | 8081 | <http://localhost:8081> (internal) | <http://localhost:8081/swagger-ui/index.html> |
-| Order Service    | 8082 | <http://localhost:8082> (internal) | <http://localhost:8082/swagger-ui/index.html> |
-| Tracking Service | 8083 | <http://localhost:8083> (internal) | <http://localhost:8083/swagger-ui/index.html> |
+| Service              | Port | URL                                | Swagger UI                                    |
+| -------------------- | ---- | ---------------------------------- | --------------------------------------------- |
+| Consul               | 8500 | <http://localhost:8500>            | N/A                                           |
+| API Gateway          | 8080 | <http://localhost:8080>            | <http://localhost:8080/swagger-ui/index.html> |
+| User Service         | 8081 | <http://localhost:8081> (internal) | <http://localhost:8081/swagger-ui/index.html> |
+| Order Service        | 8082 | <http://localhost:8082> (internal) | <http://localhost:8082/swagger-ui/index.html> |
+| Tracking Service     | 8083 | <http://localhost:8083> (internal) | <http://localhost:8083/swagger-ui/index.html> |
+| Notification Service | 8084 | <http://localhost:8084> (internal) | <http://localhost:8084/swagger-ui/index.html> |
 
 ### API Gateway Routes
 
@@ -93,19 +122,6 @@ docker run -d --name consul -p 8500:8500 consul:1.15.2 agent -server -bootstrap 
 cd user-service
 mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
-
-### Environment Variables
-
-For Docker deployment, the following environment variables are used:
-
-- `CONSUL_HOST`: Consul server hostname (default: consul)
-- `CONSUL_PORT`: Consul server port (default: 8500)
-- `DB_HOST`: Database hostname
-- `DB_PORT`: Database port
-- `DB_NAME`: Database name
-- `DB_USERNAME`: Database username
-- `DB_PASSWORD`: Database password
-- `JWT_SECRET`: JWT signing secret
 
 ## Configuration
 
@@ -188,6 +204,14 @@ Below is a summarized list of all available routes for each microservice:
 | ------ | ---------------------------- | ----------------------------------------- |
 | POST   | `/tracking`                  | Add new tracking location for an order    |
 | GET    | `/tracking/{orderId}/latest` | Get the latest tracking info for an order |
+
+### Notification Service
+
+The Notification Service is an event-driven service that doesn't expose REST endpoints. It processes events via RabbitMQ and handles:
+
+- **Push Notifications**: Sends FCM push notifications to mobile apps
+- **Email Notifications**: Sends email notifications for order events
+- **Event Processing**: Listens to order events (e.g., order delivered) and triggers appropriate notifications
 
 **Note**: All these endpoints should be accessed through the API Gateway at `http://localhost:8080/api/*`. The service-specific base URLs (e.g., `http://localhost:8081`) are for internal use only.
 

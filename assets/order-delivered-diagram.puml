@@ -13,7 +13,7 @@ participant "Database" as DB
 participant "RabbitMQ" as RMQ
 
 participant "Firebase Cloud (Push Notif.)" as FCM
-participant "Sendgrid (Email)" as SG
+participant "Gmail" as GM
 
 == Order Delivered Notification ==
 
@@ -28,8 +28,8 @@ RMQ -> NS: Triggers order delivered notification
 
 activate NS
 NS -> FCM: Send push notification to customer
-NS -> SG: Send email notification to customer
-NS -> SG: Send email notification to driver
+NS -> GM: Send email notification to customer
+NS -> GM: Send email notification to driver
 deactivate NS
 
 @enduml

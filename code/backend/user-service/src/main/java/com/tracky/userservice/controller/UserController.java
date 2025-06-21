@@ -1,13 +1,19 @@
 package com.tracky.userservice.controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tracky.userservice.dto.DeviceTokenUpdateRequest;
 import com.tracky.userservice.dto.LoginRequest;
 import com.tracky.userservice.dto.LoginResponse;
 import com.tracky.userservice.dto.UserRegistrationRequest;
@@ -64,6 +70,43 @@ public class UserController {
         } catch (RuntimeException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    /**
+     * Retrieves user information by user ID.
+     * 
+     * @param userId The ID of the user to retrieve
+     * @return Response with user information
+     */
+    @GetMapping("/{userId}")
+    @Operation(summary = "Get user by ID", description = "Retrieve user information by user ID")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable UUID userId) {
+        try {
+            UserResponse response = userService.getUserById(userId);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Updates the device token for a user.
+     * 
+     * @param userId  The ID of the user to update
+     * @param request The device token update request
+     * @return Response with updated user information
+     */
+    @PutMapping("/{userId}/device-token")
+    @Operation(summary = "Update device token", description = "Update device token for push notifications")
+    public ResponseEntity<UserResponse> updateDeviceToken(
+            @PathVariable UUID userId,
+            @Valid @RequestBody DeviceTokenUpdateRequest request) {
+        try {
+            UserResponse response = userService.updateDeviceToken(userId, request.getDeviceToken());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

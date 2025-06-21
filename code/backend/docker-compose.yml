@@ -1,4 +1,18 @@
 services:
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JWT_SECRET: ${JWT_SECRET}
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+
   # Consul Service Discovery
   consul:
     image: consul:1.15.2
@@ -29,6 +43,24 @@ services:
       timeout: 10s
       retries: 5
 
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # AMQP port
+      - "15672:15672" # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: tracky
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   # PostgreSQL for User Service
   user-db:
     image: postgres:15-alpine
@@ -36,7 +68,7 @@ services:
     environment:
       POSTGRES_DB: userdb
       POSTGRES_USER: userservice
-      POSTGRES_PASSWORD: userpass123
+      POSTGRES_PASSWORD: ${USER_DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -49,7 +81,7 @@ services:
     environment:
       POSTGRES_DB: orderdb
       POSTGRES_USER: orderservice
-      POSTGRES_PASSWORD: orderpass123
+      POSTGRES_PASSWORD: ${ORDER_DB_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
@@ -62,11 +94,24 @@ services:
     environment:
       POSTGRES_DB: trackingdb
       POSTGRES_USER: trackingservice
-      POSTGRES_PASSWORD: trackingpass123
+      POSTGRES_PASSWORD: ${TRACKING_DB_PASSWORD}
     ports:
       - "5434:5432"
     volumes:
       - tracking_db_data:/var/lib/postgresql/data
+
+  # PostgreSQL for Notification Service
+  notification-db:
+    image: postgres:15-alpine
+    container_name: notification-db
+    environment:
+      POSTGRES_DB: notificationdb
+      POSTGRES_USER: notificationservice
+      POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+    ports:
+      - "5435:5432"
+    volumes:
+      - notification_db_data:/var/lib/postgresql/data
 
   # User Service
   user-service:
@@ -82,8 +127,8 @@ services:
       DB_PORT: 5432
       DB_NAME: userdb
       DB_USERNAME: userservice
-      DB_PASSWORD: userpass123
-      JWT_SECRET: 962f8f793fad33fe370eda6ce556c53ae458d6b55f57e27baf7ff43dba3435d1
+      DB_PASSWORD: ${USER_DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
     depends_on:
@@ -106,14 +151,21 @@ services:
       DB_PORT: 5432
       DB_NAME: orderdb
       DB_USERNAME: orderservice
-      DB_PASSWORD: orderpass123
+      DB_PASSWORD: ${ORDER_DB_PASSWORD}
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: tracky
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
     depends_on:
       consul:
         condition: service_healthy
       order-db:
         condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
   # Tracking Service
   tracking-service:
@@ -129,7 +181,7 @@ services:
       DB_PORT: 5432
       DB_NAME: trackingdb
       DB_USERNAME: trackingservice
-      DB_PASSWORD: trackingpass123
+      DB_PASSWORD: ${TRACKING_DB_PASSWORD}
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
     depends_on:
@@ -138,31 +190,46 @@ services:
       tracking-db:
         condition: service_started
 
-  # API Gateway
-  api-gateway:
+  # Notification Service
+  notification-service:
     build:
-      context: ./api-gateway
+      context: ./notification-service
       dockerfile: Dockerfile
-    container_name: api-gateway
+    container_name: notification-service
     ports:
-      - "8080:8080"
+      - "8084:8084"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      JWT_SECRET: 962f8f793fad33fe370eda6ce556c53ae458d6b55f57e27baf7ff43dba3435d1
+      DB_HOST: notification-db
+      DB_PORT: 5432
+      DB_NAME: notificationdb
+      DB_USERNAME: notificationservice
+      DB_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
-    # depends_on:
-    #   consul:
-    #     condition: service_healthy
-    #   user-service:
-    #     condition: service_started
-    #   order-service:
-    #     condition: service_started
-    #   tracking-service:
-    #     condition: service_started
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: tracky
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      # Firebase Cloud Messaging configuration
+      FCM_SERVER_KEY: ${FCM_SERVER_KEY}
+      # Gmail SMTP configuration
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+    depends_on:
+      consul:
+        condition: service_healthy
+      notification-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
 
 volumes:
   consul_data:
   user_db_data:
   order_db_data:
   tracking_db_data:
+  notification_db_data:
+  rabbitmq_data:

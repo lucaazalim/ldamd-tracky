@@ -1,5 +1,7 @@
 package com.tracky.userservice.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,6 +56,7 @@ public class UserService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setType(request.getType());
+        user.setDeviceToken(request.getDeviceToken());
 
         User savedUser = userRepository.save(user);
         return UserResponse.fromUser(savedUser);
@@ -78,5 +81,35 @@ public class UserService {
         UserResponse userResponse = UserResponse.fromUser(user);
 
         return new LoginResponse(token, userResponse);
+    }
+
+    /**
+     * Retrieves user information by user ID.
+     * 
+     * @param userId The ID of the user to retrieve
+     * @return User information response
+     * @throws RuntimeException If the user is not found
+     */
+    public UserResponse getUserById(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return UserResponse.fromUser(user);
+    }
+
+    /**
+     * Updates the device token for a user.
+     * 
+     * @param userId      The ID of the user to update
+     * @param deviceToken The new device token
+     * @return Updated user information response
+     * @throws RuntimeException If the user is not found
+     */
+    public UserResponse updateDeviceToken(UUID userId, String deviceToken) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setDeviceToken(deviceToken);
+        User updatedUser = userRepository.save(user);
+        return UserResponse.fromUser(updatedUser);
     }
 }

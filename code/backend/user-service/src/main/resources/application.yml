@@ -33,7 +33,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/userdb
     username: userservice
-    password: userpass123
+    password: ${USER_DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -47,7 +47,7 @@ spring:
     port: 8081
 
 jwt:
-  secret: 962f8f793fad33fe370eda6ce556c53ae458d6b55f57e27baf7ff43dba3435d1
+  secret: ${JWT_SECRET}
   expiration: 86400000 # 24 hours
 
 logging:
@@ -63,7 +63,7 @@ spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:user-db}:${DB_PORT:5432}/${DB_NAME:userdb}
     username: ${DB_USERNAME:userservice}
-    password: ${DB_PASSWORD:userpass123}
+    password: ${DB_PASSWORD:${USER_DB_PASSWORD}}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -90,7 +90,7 @@ server:
   port: 8081
 
 jwt:
-  secret: ${JWT_SECRET:962f8f793fad33fe370eda6ce556c53ae458d6b55f57e27baf7ff43dba3435d1}
+  secret: ${JWT_SECRET}
   expiration: 86400000
 
 logging:

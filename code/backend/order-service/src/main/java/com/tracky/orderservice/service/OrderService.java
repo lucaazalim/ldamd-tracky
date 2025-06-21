@@ -1,5 +1,6 @@
 package com.tracky.orderservice.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import com.tracky.orderservice.dto.CreateOrderRequest;
 import com.tracky.orderservice.dto.OrderResponse;
 import com.tracky.orderservice.dto.RouteResponse;
 import com.tracky.orderservice.dto.UpdateOrderRequest;
+import com.tracky.orderservice.event.OrderDeliveredEvent;
 import com.tracky.orderservice.model.Order;
 import com.tracky.orderservice.repository.OrderRepository;
 
@@ -33,6 +35,9 @@ public class OrderService {
      */
     @Autowired
     private GoogleMapsService googleMapsService;
+
+    @Autowired
+    private OrderEventPublisher orderEventPublisher;
 
     /**
      * Creates a new order in the system.
@@ -117,6 +122,8 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
+        Order.OrderStatus previousStatus = order.getStatus();
+
         if (request.getDriverId() != null) {
             order.setDriverId(request.getDriverId());
         }
@@ -137,6 +144,24 @@ public class OrderService {
         }
 
         Order updatedOrder = orderRepository.save(order);
+
+        // Publish event if order status was updated to DELIVERED
+        if (request.getStatus() != null &&
+                request.getStatus() == Order.OrderStatus.DELIVERED &&
+                previousStatus != Order.OrderStatus.DELIVERED) {
+
+            OrderDeliveredEvent event = new OrderDeliveredEvent(
+                    updatedOrder.getId(),
+                    updatedOrder.getCustomerId(),
+                    updatedOrder.getDriverId(),
+                    updatedOrder.getOriginAddress(),
+                    updatedOrder.getDestinationAddress(),
+                    updatedOrder.getDescription(),
+                    LocalDateTime.now());
+
+            orderEventPublisher.publishOrderDeliveredEvent(event);
+        }
+
         return OrderResponse.fromOrder(updatedOrder);
     }
 

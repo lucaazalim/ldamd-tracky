@@ -12,10 +12,10 @@
     </parent>
 
     <groupId>com.tracky</groupId>
-    <artifactId>order-service</artifactId>
+    <artifactId>notification-service</artifactId>
     <version>1.0.0</version>
-    <name>order-service</name>
-    <description>Order management microservice for Tracky</description>
+    <name>notification-service</name>
+    <description>Notification microservice for Tracky</description>
 
     <properties>
         <java.version>21</java.version>
@@ -34,6 +34,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -55,10 +63,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!-- Spring Boot AMQP for RabbitMQ -->
+        <!-- Firebase Admin SDK for FCM -->
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.4.1</version>
+        </dependency>
+        <!-- HTTP Client for FCM -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

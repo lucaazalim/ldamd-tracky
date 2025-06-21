@@ -1,6 +1,6 @@
 spring:
   application:
-    name: order-service
+    name: notification-service
   profiles:
     active: local
   cloud:
@@ -8,16 +8,10 @@ spring:
       host: localhost
       port: 8500
       discovery:
-        service-name: order-service
+        service-name: notification-service
         instance-id: ${spring.application.name}:${server.port}
         health-check-path: /actuator/health
         health-check-interval: 15s
-
-# Google Maps API Configuration
-google:
-  maps:
-    api:
-      key: ${GOOGLE_MAPS_API_KEY}
 
 management:
   endpoints:
@@ -27,15 +21,16 @@ management:
   endpoint:
     health:
       show-details: always
+
 ---
 spring:
   config:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:postgresql://localhost:5433/orderdb
-    username: orderservice
-    password: ${ORDER_DB_PASSWORD}
+    url: jdbc:postgresql://localhost:5435/notificationdb
+    username: notificationservice
+    password: ${NOTIFICATION_DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -50,8 +45,20 @@ spring:
     port: 5672
     username: tracky
     password: ${RABBITMQ_PASSWORD}
+  mail:
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:your-email@gmail.com}
+    password: ${SMTP_PASSWORD:your-app-password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 server:
-  port: 8082
+  port: 8084
 
 app:
   rabbitmq:
@@ -60,10 +67,12 @@ app:
       order-delivered: order.delivered.queue
     routing-key:
       order-delivered: order.delivered
+  fcm:
+    server-key: ${FCM_SERVER_KEY:your-fcm-server-key-here}
 
 logging:
   level:
-    com.tracky.orderservice: DEBUG
+    com.tracky.notificationservice: DEBUG
 
 ---
 spring:
@@ -75,16 +84,16 @@ spring:
       host: ${CONSUL_HOST:consul}
       port: ${CONSUL_PORT:8500}
       discovery:
-        service-name: order-service
+        service-name: notification-service
         instance-id: ${spring.application.name}:${server.port}
         health-check-path: /actuator/health
         health-check-interval: 15s
-        hostname: order-service
+        hostname: notification-service
         prefer-ip-address: true
   datasource:
-    url: jdbc:postgresql://${DB_HOST:order-db}:${DB_PORT:5432}/${DB_NAME:orderdb}
-    username: ${DB_USERNAME:orderservice}
-    password: ${DB_PASSWORD:${ORDER_DB_PASSWORD}}
+    url: jdbc:postgresql://${DB_HOST:notification-db}:${DB_PORT:5432}/${DB_NAME:notificationdb}
+    username: ${DB_USERNAME:notificationservice}
+    password: ${DB_PASSWORD:${NOTIFICATION_DB_PASSWORD}}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -99,9 +108,20 @@ spring:
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USERNAME:tracky}
     password: ${RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD}}
+  mail:
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:your-email@gmail.com}
+    password: ${SMTP_PASSWORD:your-app-password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 server:
-  port: 8082
+  port: 8084
 
 app:
   rabbitmq:
@@ -110,13 +130,9 @@ app:
       order-delivered: order.delivered.queue
     routing-key:
       order-delivered: order.delivered
+  fcm:
+    server-key: ${FCM_SERVER_KEY:your-fcm-server-key-here}
 
 logging:
   level:
-    com.tracky.orderservice: INFO
-
-# Google Maps API Configuration for Docker profile
-google:
-  maps:
-    api:
-      key: ${GOOGLE_MAPS_API_KEY}
+    com.tracky.notificationservice: INFO

@@ -41,4 +41,9 @@ public class UserRegistrationRequest {
      */
     @NotNull(message = "User type is required")
     private User.UserType type;
+
+    /**
+     * Device token for push notifications (optional).
+     */
+    private String deviceToken;
 }

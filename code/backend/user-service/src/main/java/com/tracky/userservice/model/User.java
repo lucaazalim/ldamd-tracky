@@ -67,6 +67,12 @@ public class User {
     private UserType type;
 
     /**
+     * Device token for push notifications (FCM token).
+     */
+    @Column(name = "device_token")
+    private String deviceToken;
+
+    /**
      * Timestamp when the user record was created.
      */
     @CreationTimestamp

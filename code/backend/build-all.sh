@@ -62,6 +62,9 @@ build_maven_service "Order Service" "order-service"
 print_status "Building Tracking Service..."
 build_maven_service "Tracking Service" "tracking-service"
 
+print_status "Building Notification Service..."
+build_maven_service "Notification Service" "notification-service"
+
 print_status "Building API Gateway..."
 build_maven_service "API Gateway" "api-gateway"
 
@@ -75,4 +78,5 @@ echo "  3. View logs: docker-compose logs -f"
 echo ""
 echo "📋 Service URLs:"
 echo "  • Consul Dashboard: http://localhost:8500/ui"
+echo "  • RabbitMQ Management: http://localhost:15672"
 echo "  • API Gateway: http://localhost:8080"
