@@ -52,7 +52,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> with RouteAware
   Timer? _trackingTimer;
 
   bool _isAcceptingOrder = false;
-  RouteObserver<ModalRoute<void>>? _routeObserver;
   bool _isRefreshing = false;
 
   @override

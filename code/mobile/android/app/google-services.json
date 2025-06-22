@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "173484730276",
+    "project_id": "my-cloud-tracky-project",
+    "storage_bucket": "my-cloud-tracky-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173484730276:android:709abe18e09ceaf911c331",
+        "android_client_info": {
+          "package_name": "com.example.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPg7ztLQ5J0uhTOl0gko-2DbHGECKVB2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

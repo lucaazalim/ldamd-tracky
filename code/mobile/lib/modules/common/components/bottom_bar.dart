@@ -32,7 +32,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     if (_userType == 'CUSTOMER') {
       routes = [
         '/customer/orders',
-        '/customer/notifications',
         '/preferences',
         '/',
       ];
@@ -79,10 +78,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
         BottomNavigationBarItem(
           icon: Icon(Icons.local_shipping),
           label: 'Orders',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: 'Notifications',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),

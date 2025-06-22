@@ -8,17 +8,23 @@ import 'modules/common/screens/shared_preferences.dart';
 import 'modules/customer/screens/orders_page.dart';
 import 'modules/common/components/theme_provider.dart';
 import 'modules/customer/screens/order_details_page.dart';
-import 'modules/customer/screens/notifications_page.dart';
 import 'modules/lobby/login_page.dart';
 import 'modules/driver/screens/orders_page.dart';
 import 'modules/customer/screens/order_form_page.dart';
 import 'package:mobile/modules/common/services/user_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'modules/common/services/fcm_service.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await UserService.setAuthTokenFromPrefs();
+  await FCMService().initialize(); 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: const Color(0xFF060826),
     statusBarIconBrightness: Brightness.light,
@@ -57,7 +63,6 @@ class MyApp extends StatelessWidget {
         '/customer/orders': (context) => const OrdersPage(),
         '/customer/order/details': (context) => const OrderDetailsPage(),
         '/customer/order/form': (context) => const OrderFormPage(), 
-        '/customer/notifications': (context) => const NotificationsPage(),
         '/driver/pending-deliveries': (context) => PendingOrdersScreen(),
         '/driver/order/details': (context) => OrderDetailsScreen(),
         '/driver/order/update-status': (context) => UpdateOrderStatusPage()

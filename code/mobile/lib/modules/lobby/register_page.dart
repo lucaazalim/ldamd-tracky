@@ -3,8 +3,8 @@ import 'package:mobile/modules/common/services/user_service.dart';
 import 'package:provider/provider.dart';
 
 import '../common/components/theme_provider.dart';
-import '../common/data/enum/user_type.dart';
-import '../common/data/user.dart';
+import '../common/services/fcm_service.dart';
+import '../../modules/common/dio.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -36,16 +36,15 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     try {
-      final newUser = User(
+      await FCMService().initialize();
+      await FCMService().sendTokenOnRegister(
         name: username,
         email: email,
         password: password,
-        type: UserType.fromString(type),
-        id: '',
+        type: type,
+        dio: DioClient().dio,
       );
-
-      final user = await _userService.registerUser(newUser);
-
+      final user = await _userService.login(email, password);
       if (user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -53,8 +52,6 @@ class _RegisterPageState extends State<RegisterPage> {
             backgroundColor: Colors.green,
           ),
         );
-
-        // Redireciona após breve atraso para permitir leitura da mensagem
         Future.delayed(const Duration(seconds: 2), () {
           Navigator.pushReplacementNamed(context, '/');
         });
@@ -71,7 +68,6 @@ class _RegisterPageState extends State<RegisterPage> {
       if (e.toString().contains('email')) {
         errorMessage = 'This email is already in use.';
       }
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(errorMessage),

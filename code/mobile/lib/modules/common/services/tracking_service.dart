@@ -15,7 +15,7 @@ class TrackingService {
     } catch (e) {
 
         print(e);
-
+        return null;
     }
   }
 

@@ -4,6 +4,8 @@ import 'package:mobile/modules/common/services/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/components/theme_provider.dart';
+import '../common/services/fcm_service.dart';
+import '../../modules/common/dio.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -24,6 +26,11 @@ class _LoginPageState extends State<LoginPage> {
     final user = await _userService.login(email, password);
 
     if (user != null) {
+      await FCMService().initialize();
+      await FCMService().updateTokenOnLogin(
+        userId: user.id,
+        dio: DioClient().dio,
+      );
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('userId', user.id);
       await prefs.setString('email', email);
