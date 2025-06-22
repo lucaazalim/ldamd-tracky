@@ -41,26 +41,6 @@ class FCMService {
     });
   }
 
-  Future<void> sendTokenOnRegister({
-    required String name,
-    required String email,
-    required String password,
-    required String type,
-    required Dio dio,
-  }) async {
-    final payload = {
-      'name': name,
-      'email': email,
-      'password': password,
-      'type': type,
-      'deviceToken': _deviceToken,
-    };
-    final response = await dio.post('/users', data: payload);
-    if (kDebugMode) {
-      print('[FCM] Register response: \\${response.statusCode}');
-    }
-  }
-
   Future<void> updateTokenOnLogin({
     required String userId,
     required Dio dio,

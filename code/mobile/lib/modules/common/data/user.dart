@@ -11,6 +11,7 @@ class User {
   final String email;
   final String password;
   final UserType type;
+  final String? deviceToken;
 
   User({
     required this.id,
@@ -18,6 +19,7 @@ class User {
     required this.email,
     required this.password,
     required this.type,
+    this.deviceToken
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,7 @@ class User {
       email: json['email'] ?? '',
       password: json['password'] ?? '',
       type: UserType.fromString(json['type'] ?? ''),
+      deviceToken: json['deviceToken']
     );
   }
 
@@ -37,6 +40,7 @@ class User {
       'email': email,
       'password': password,
       'type': type.toJson(),
+      'deviceToken': deviceToken
     };
   }
 }
