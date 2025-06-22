@@ -73,6 +73,7 @@ services:
       - "5432:5432"
     volumes:
       - user_db_data:/var/lib/postgresql/data
+    command: -p 5432
 
   # PostgreSQL for Order Service
   order-db:
@@ -83,9 +84,10 @@ services:
       POSTGRES_USER: orderservice
       POSTGRES_PASSWORD: ${ORDER_DB_PASSWORD}
     ports:
-      - "5433:5432"
+      - "5433:5433"
     volumes:
       - order_db_data:/var/lib/postgresql/data
+    command: -p 5433
 
   # PostgreSQL for Tracking Service
   tracking-db:
@@ -96,9 +98,10 @@ services:
       POSTGRES_USER: trackingservice
       POSTGRES_PASSWORD: ${TRACKING_DB_PASSWORD}
     ports:
-      - "5434:5432"
+      - "5434:5434"
     volumes:
       - tracking_db_data:/var/lib/postgresql/data
+    command: -p 5434
 
   # PostgreSQL for Notification Service
   notification-db:
@@ -109,9 +112,24 @@ services:
       POSTGRES_USER: notificationservice
       POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
     ports:
-      - "5435:5432"
+      - "5435:5435"
     volumes:
       - notification_db_data:/var/lib/postgresql/data
+    command: -p 5435
+
+  # PostgreSQL for Campaign Service
+  campaign-db:
+    image: postgres:15-alpine
+    container_name: campaign-db
+    environment:
+      POSTGRES_DB: campaigndb
+      POSTGRES_USER: campaignservice
+      POSTGRES_PASSWORD: ${CAMPAIGN_DB_PASSWORD}
+    ports:
+      - "5436:5436"
+    volumes:
+      - campaign_db_data:/var/lib/postgresql/data
+    command: -p 5436
 
   # User Service
   user-service:
@@ -148,7 +166,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       DB_HOST: order-db
-      DB_PORT: 5432
+      DB_PORT: 5433
       DB_NAME: orderdb
       DB_USERNAME: orderservice
       DB_PASSWORD: ${ORDER_DB_PASSWORD}
@@ -178,7 +196,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       DB_HOST: tracking-db
-      DB_PORT: 5432
+      DB_PORT: 5434
       DB_NAME: trackingdb
       DB_USERNAME: trackingservice
       DB_PASSWORD: ${TRACKING_DB_PASSWORD}
@@ -201,7 +219,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       DB_HOST: notification-db
-      DB_PORT: 5432
+      DB_PORT: 5435
       DB_NAME: notificationdb
       DB_USERNAME: notificationservice
       DB_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
@@ -229,10 +247,42 @@ services:
       rabbitmq:
         condition: service_healthy
 
+  # Campaign Service
+  campaign-service:
+    build:
+      context: ./campaign-service
+      dockerfile: Dockerfile
+    container_name: campaign-service
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: campaign-db
+      DB_PORT: 5436
+      DB_NAME: campaigndb
+      DB_USERNAME: campaignservice
+      DB_PASSWORD: ${CAMPAIGN_DB_PASSWORD}
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: tracky
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      USER_SERVICE_HOST: user-service
+      USER_SERVICE_PORT: 8081
+    depends_on:
+      consul:
+        condition: service_healthy
+      campaign-db:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+
 volumes:
   consul_data:
   user_db_data:
   order_db_data:
   tracking_db_data:
   notification_db_data:
+  campaign_db_data:
   rabbitmq_data:

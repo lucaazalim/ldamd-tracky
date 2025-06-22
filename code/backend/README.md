@@ -40,6 +40,7 @@ The Tracky backend consists of the following services:
 - **User Service**: User management and authentication
 - **Order Service**: Order processing and management
 - **Tracking Service**: Package tracking functionality
+- **Campaign Service**: Marketing campaign management and execution
 - **Notification Service**: Push notifications and email notifications for order events
 
 ## Quick Start (Docker)
@@ -85,6 +86,7 @@ docker-compose logs -f
 | User Service         | 8081 | <http://localhost:8081> (internal) | <http://localhost:8081/swagger-ui/index.html> |
 | Order Service        | 8082 | <http://localhost:8082> (internal) | <http://localhost:8082/swagger-ui/index.html> |
 | Tracking Service     | 8083 | <http://localhost:8083> (internal) | <http://localhost:8083/swagger-ui/index.html> |
+| Campaign Service     | 8085 | <http://localhost:8085> (internal) | <http://localhost:8085/swagger-ui/index.html> |
 | Notification Service | 8084 | <http://localhost:8084> (internal) | <http://localhost:8084/swagger-ui/index.html> |
 
 ### API Gateway Routes
@@ -94,6 +96,7 @@ All external API requests should go through the API Gateway at `http://localhost
 - **User APIs**: `GET/POST/PUT/DELETE http://localhost:8080/api/users/**`
 - **Order APIs**: `GET/POST/PUT/DELETE http://localhost:8080/api/orders/**`
 - **Tracking APIs**: `GET/POST/PUT/DELETE http://localhost:8080/api/tracking/**`
+- **Campaign APIs**: `GET/POST/PUT/DELETE http://localhost:8080/api/campaigns/**`
 
 The API Gateway automatically routes requests to the appropriate microservice based on the path prefix.
 
@@ -204,6 +207,13 @@ Below is a summarized list of all available routes for each microservice:
 | ------ | ---------------------------- | ----------------------------------------- |
 | POST   | `/tracking`                  | Add new tracking location for an order    |
 | GET    | `/tracking/{orderId}/latest` | Get the latest tracking info for an order |
+
+### Campaign Service (`/api/campaigns/*`)
+
+| Method | Endpoint     | Description                                    |
+| ------ | ------------ | ---------------------------------------------- |
+| POST   | `/campaigns` | Create and execute a new marketing campaign    |
+| GET    | `/campaigns` | Get all campaigns with their execution details |
 
 ### Notification Service
 

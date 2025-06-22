@@ -76,6 +76,20 @@ resilience4j:
           - org.springframework.web.client.HttpServerErrorException
           - java.util.concurrent.TimeoutException
           - java.io.IOException
+      campaignServiceCircuitBreaker:
+        register-health-indicator: true
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+        slow-call-rate-threshold: 100
+        slow-call-duration-threshold: 5s
+        record-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
   retry:
     instances:
       userServiceRetry:
@@ -198,6 +212,27 @@ spring:
                       maxBackoff: 500ms
                       factor: 2
                       basedOnPreviousValue: false
+            - id: campaign-service
+              uri: lb://campaign-service
+              predicates:
+                - Path=/api/campaigns/**
+              filters:
+                - StripPrefix=1
+                - name: JwtAuthenticationFilter
+                - name: CircuitBreaker
+                  args:
+                    name: campaignServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/campaign-service
+                - name: Retry
+                  args:
+                    retries: 3
+                    series: SERVER_ERROR
+                    methods: GET,POST,PUT,DELETE
+                    backoff:
+                      firstBackoff: 50ms
+                      maxBackoff: 500ms
+                      factor: 2
+                      basedOnPreviousValue: false
 
 server:
   port: 8080
@@ -306,6 +341,27 @@ spring:
                   args:
                     name: trackingServiceCircuitBreaker
                     fallbackUri: forward:/fallback/tracking-service
+                - name: Retry
+                  args:
+                    retries: 3
+                    series: SERVER_ERROR
+                    methods: GET,POST,PUT,DELETE
+                    backoff:
+                      firstBackoff: 50ms
+                      maxBackoff: 500ms
+                      factor: 2
+                      basedOnPreviousValue: false
+            - id: campaign-service
+              uri: lb://campaign-service
+              predicates:
+                - Path=/api/campaigns/**
+              filters:
+                - StripPrefix=1
+                - name: JwtAuthenticationFilter
+                - name: CircuitBreaker
+                  args:
+                    name: campaignServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/campaign-service
                 - name: Retry
                   args:
                     retries: 3

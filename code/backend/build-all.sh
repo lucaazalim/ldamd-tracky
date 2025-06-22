@@ -65,6 +65,9 @@ build_maven_service "Tracking Service" "tracking-service"
 print_status "Building Notification Service..."
 build_maven_service "Notification Service" "notification-service"
 
+print_status "Building Campaign Service..."
+build_maven_service "Campaign Service" "campaign-service"
+
 print_status "Building API Gateway..."
 build_maven_service "API Gateway" "api-gateway"
 
