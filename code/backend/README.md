@@ -35,13 +35,16 @@ The Docker Compose setup will automatically load these environment variables whe
 
 The Tracky backend consists of the following services:
 
-- **Consul**: Service discovery and configuration management
 - **API Gateway**: Entry point for all client requests (routes to `/api/*` endpoints)
+- **Consul**: Service discovery and configuration management
+- **RabbitMQ**: Message broker for asynchronous communication
 - **User Service**: User management and authentication
 - **Order Service**: Order processing and management
 - **Tracking Service**: Package tracking functionality
 - **Campaign Service**: Marketing campaign management and execution
 - **Notification Service**: Push notifications and email notifications for order events
+
+![Diagram of Tracky Architecture](/assets/architecture.png)
 
 ## Quick Start (Docker)
 
