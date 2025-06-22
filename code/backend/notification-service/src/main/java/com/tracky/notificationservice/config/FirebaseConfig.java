@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.common.base.Preconditions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
@@ -22,6 +23,9 @@ public class FirebaseConfig {
 
     @PostConstruct
     public void initialize() {
+
+        Preconditions.checkNotNull(serviceAccountKeyPath, "Firebase service account key path must not be null");
+
         try {
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseOptions options;
