@@ -36,23 +36,26 @@ class UserService {
     }
   }
   
-  Future<User?> registerUser(User user) async {
+   Future<User?> registerUser(User user) async {
     try {
+      final data = {
+        'name': user.name,
+        'email': user.email,
+        'password': user.password,
+        'type': user.type,
+        'deviceToken': user.deviceToken
+      };
+      
       final response = await dioClient.post(
         '/users',
-        data: {
-          'name': user.name,
-          'email': user.email,
-          'password': user.password,
-          'type': user.type
-        },
+        data: data,
       );
       if (response.statusCode == 201 && response.data != null) {
         return User.fromJson(response.data);
       }
       return null;
     } catch (e) {
-      print('Error doing register: $e');
+      print('Erro ao fazer cadastro: $e');
       return null;
     }
   }

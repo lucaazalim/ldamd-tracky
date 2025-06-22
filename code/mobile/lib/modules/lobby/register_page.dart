@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/modules/common/data/enum/user_type.dart';
+import 'package:mobile/modules/common/data/user.dart';
 import 'package:mobile/modules/common/services/user_service.dart';
 import 'package:provider/provider.dart';
 
 import '../common/components/theme_provider.dart';
 import '../common/services/fcm_service.dart';
-import '../../modules/common/dio.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -37,14 +38,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
     try {
       await FCMService().initialize();
-      await FCMService().sendTokenOnRegister(
+      final deviceToken = FCMService().deviceToken;
+
+      final newUser = User(
         name: username,
         email: email,
         password: password,
-        type: type,
-        dio: DioClient().dio,
+        type: UserType.fromString(type),
+        id: '',
+        deviceToken: deviceToken
       );
-      final user = await _userService.login(email, password);
+      
+      final user = await _userService.registerUser(newUser);
+
       if (user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
