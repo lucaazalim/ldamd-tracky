@@ -23,6 +23,12 @@ public class RabbitMQConfig {
     @Value("${app.rabbitmq.routing-key.order-delivered:order.delivered}")
     private String orderDeliveredRoutingKey;
 
+    @Value("${app.rabbitmq.queue.campaign-notification:campaign.notification.queue}")
+    private String campaignNotificationQueue;
+
+    @Value("${app.rabbitmq.routing-key.campaign-notification:campaign.notification}")
+    private String campaignNotificationRoutingKey;
+
     @Bean
     public TopicExchange trackyExchange() {
         return new TopicExchange(exchange, true, false);
@@ -39,6 +45,19 @@ public class RabbitMQConfig {
                 .bind(orderDeliveredQueue())
                 .to(trackyExchange())
                 .with(orderDeliveredRoutingKey);
+    }
+
+    @Bean
+    public Queue campaignNotificationQueue() {
+        return new Queue(campaignNotificationQueue, true);
+    }
+
+    @Bean
+    public Binding campaignNotificationBinding() {
+        return BindingBuilder
+                .bind(campaignNotificationQueue())
+                .to(trackyExchange())
+                .with(campaignNotificationRoutingKey);
     }
 
     @Bean

@@ -1,5 +1,6 @@
 package com.tracky.userservice.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,5 +117,24 @@ public class UserService {
 
         User updatedUser = userRepository.save(user);
         return UserResponse.fromUser(updatedUser);
+    }
+
+    /**
+     * Retrieves users by their type.
+     * 
+     * @param type The user type to filter by
+     * @return List of users with the specified type
+     * @throws RuntimeException If the type is invalid
+     */
+    public List<UserResponse> getUsersByType(String type) {
+        try {
+            User.UserType userType = User.UserType.valueOf(type.toUpperCase());
+            List<User> users = userRepository.findByType(userType);
+            return users.stream()
+                    .map(UserResponse::fromUser)
+                    .toList();
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid user type: " + type);
+        }
     }
 }

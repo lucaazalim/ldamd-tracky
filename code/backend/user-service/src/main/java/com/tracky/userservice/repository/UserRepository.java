@@ -1,11 +1,13 @@
 package com.tracky.userservice.repository;
 
-import com.tracky.userservice.model.User;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-import java.util.UUID;
+import com.tracky.userservice.model.User;
 
 /**
  * Repository for managing User entity persistence.
@@ -28,4 +30,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      * @return true if a user with the email exists, false otherwise
      */
     boolean existsByEmail(String email);
+
+    /**
+     * Finds users by their type.
+     * 
+     * @param type The user type to search for
+     * @return List of users with the specified type
+     */
+    List<User> findByType(User.UserType type);
 }

@@ -201,4 +201,74 @@ public class NotificationService {
         notification.setStatus(Notification.NotificationStatus.PENDING);
         return notification;
     }
+
+    /**
+     * Processes campaign notification requests.
+     * 
+     * @param request Campaign notification request
+     */
+    public void processCampaignNotification(com.tracky.notificationservice.dto.CampaignNotificationRequest request) {
+        log.info("Processing campaign notification for user: {}", request.getUserName());
+
+        try {
+            // Send push notification if device token is available
+            if (request.getDeviceToken() != null && !request.getDeviceToken().trim().isEmpty()) {
+                sendCampaignPushNotification(request);
+            }
+
+            // Send email notification if email is available
+            if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
+                sendCampaignEmailNotification(request);
+            }
+
+        } catch (Exception e) {
+            log.error("Failed to process campaign notification for user: {}", request.getUserName(), e);
+        }
+    }
+
+    private void sendCampaignPushNotification(com.tracky.notificationservice.dto.CampaignNotificationRequest request) {
+        try {
+            Map<String, String> data = new HashMap<>();
+            data.put("type", "campaign");
+            data.put("message", request.getMessage());
+
+            fcmService.sendPushNotification(
+                    request.getDeviceToken(),
+                    "Tracky Campaign",
+                    request.getMessage(),
+                    data);
+
+            log.info("Campaign push notification sent to user: {}", request.getUserName());
+        } catch (Exception e) {
+            log.error("Failed to send campaign push notification to user: {}", request.getUserName(), e);
+        }
+    }
+
+    private void sendCampaignEmailNotification(com.tracky.notificationservice.dto.CampaignNotificationRequest request) {
+        try {
+            String subject = "Tracky Campaign - Special Message";
+            String body = createCampaignEmailBody(request);
+
+            emailService.sendEmail(request.getEmail(), subject, body);
+
+            log.info("Campaign email notification sent to user: {}", request.getUserName());
+        } catch (Exception e) {
+            log.error("Failed to send campaign email notification to user: {}", request.getUserName(), e);
+        }
+    }
+
+    private String createCampaignEmailBody(com.tracky.notificationservice.dto.CampaignNotificationRequest request) {
+        String userName = request.getUserName() != null ? request.getUserName() : "Valued Customer";
+
+        return String.format("""
+                Dear %s,
+
+                %s
+
+                Thank you for using Tracky!
+
+                Best regards,
+                The Tracky Team
+                """, userName, request.getMessage());
+    }
 }

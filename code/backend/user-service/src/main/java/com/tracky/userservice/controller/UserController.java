@@ -1,5 +1,6 @@
 package com.tracky.userservice.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tracky.userservice.dto.LoginRequest;
@@ -107,6 +109,23 @@ public class UserController {
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Retrieves users by type.
+     * 
+     * @param type The type of users to retrieve (CUSTOMER or DRIVER)
+     * @return List of users matching the specified type
+     */
+    @GetMapping
+    @Operation(summary = "Get users by type", description = "Retrieve users filtered by type")
+    public ResponseEntity<List<UserResponse>> getUsersByType(@RequestParam String type) {
+        try {
+            List<UserResponse> users = userService.getUsersByType(type);
+            return ResponseEntity.ok(users);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

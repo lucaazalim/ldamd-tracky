@@ -65,10 +65,12 @@ app:
     exchange: tracky.exchange
     queue:
       order-delivered: order.delivered.queue
+      campaign-notification: campaign.notification.queue
     routing-key:
       order-delivered: order.delivered
-  fcm:
-    server-key: ${FCM_SERVER_KEY:your-fcm-server-key-here}
+      campaign-notification: campaign.notification
+  firebase:
+    service-account-key-path: ${FIREBASE_SERVICE_ACCOUNT_KEY_PATH:}
 
 logging:
   level:
@@ -128,10 +130,12 @@ app:
     exchange: tracky.exchange
     queue:
       order-delivered: order.delivered.queue
+      campaign-notification: campaign.notification.queue
     routing-key:
       order-delivered: order.delivered
-  fcm:
-    server-key: ${FCM_SERVER_KEY:your-fcm-server-key-here}
+      campaign-notification: campaign.notification
+  firebase:
+    service-account-key-path: ${FIREBASE_SERVICE_ACCOUNT_KEY_PATH:}
 
 logging:
   level:
