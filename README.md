@@ -1,3 +1,6 @@
+> [!NOTE]
+> Hugo, pedimos que, por gentileza, consulte o arquivo [AVALIACAO.md](/AVALIACAO.md) para obter informações importantes que podem auxiliar na avaliação. Obrigado!
+
 # Tracky
 
 This project was developed as an assignment for the Laboratory for Mobile and Distributed Application Development course at PUC Minas University by:
@@ -7,7 +10,8 @@ This project was developed as an assignment for the Laboratory for Mobile and Di
 - Pedro Braga ([@bragap](https://github.com/bragap))
 - Luca Azalim ([@lucaazalim](https://github.com/lucaazalim))
 
-<h2>Demo video</h2>
+## Demo Video
+
 <img src="assets/demo.gif" alt="Demonstração da aplicação Tracky" height="600">
 
 ## Screenshots

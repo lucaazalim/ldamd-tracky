@@ -6,7 +6,6 @@ actor Admin as ADM
 
 participant "Mobile App" as MA
 participant "User Service" as US
-participant "Order Service" as OS
 participant "Notification Service" as NS
 participant "Campaign Service" as CS
 
@@ -27,10 +26,13 @@ CS -> RMQ: Publishes a notification request\nwith device token, email and messag
 RMQ -> NS: Triggers a notification
 activate NS
 NS -> FCM: Send push notification
-NS -> SG: Send email notification
+FCM -> MA: Send push notification
+MA -> U: Displays the notification
+NS -> ES: Send email notification
+ES -> U: Notifies the user
 deactivate NS
 end
-CS -> Database: Register campaign with number of users reached
+CS -> DB: Register campaign with number of users reached
 deactivate CS
 
 @enduml

@@ -1,6 +1,9 @@
 @startuml TrackyCloudSequence
 title Tracky
 
+actor Driver as D
+actor Customer as C
+
 participant "Mobile App" as MA
 participant "User Service" as US
 participant "Order Service" as OS
@@ -14,7 +17,8 @@ participant "Email Server" as ES
 
 == Order Delivered Notification ==
 
-MA -> OS: Driver confirm delivery
+D -> MA: Driver confirms delivery
+MA -> OS: Driver confirms delivery
 
 activate OS
 OS -> DB: Update order status to delivered
@@ -25,8 +29,13 @@ RMQ -> NS: Triggers order delivered notification
 
 activate NS
 NS -> FCM: Send push notification to customer
+FCM -> C: Send push notification
 NS -> ES: Send email notification to customer
+ES -> C: Notifies the customer
 NS -> ES: Send email notification to driver
+ES -> D: Notifies the driver
+
+NS -> DB: Register notification for audit purposes
 deactivate NS
 
 @enduml
