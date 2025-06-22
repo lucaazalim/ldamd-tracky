@@ -28,12 +28,29 @@ The notification service requires additional configuration for Firebase Cloud Me
 The following environment variables need to be configured:
 
 ```yaml
-FCM_SERVER_KEY: your-fcm-server-key-here
+FIREBASE_SERVICE_ACCOUNT_KEY_PATH: /path/to/your/firebase-service-account-key.json
 SMTP_HOST: smtp.gmail.com
 SMTP_PORT: 587
 SMTP_USERNAME: your-email@gmail.com
 SMTP_PASSWORD: your-app-password
 ```
+
+## Firebase Configuration
+
+This service now uses the modern Firebase Admin SDK with HTTP v1 API instead of the legacy server key approach.
+
+### Setting up Firebase Service Account
+
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Select your project
+3. Go to Project Settings → Service Accounts
+4. Click "Generate new private key"
+5. Download the JSON file and place it in a secure location
+6. Set `FIREBASE_SERVICE_ACCOUNT_KEY_PATH` to the path of this file
+
+### Alternative: Using Google Application Default Credentials
+
+If you're running in Google Cloud Platform, you can leave `FIREBASE_SERVICE_ACCOUNT_KEY_PATH` empty and the service will use the default service account credentials.
 
 ## Testing the Flow
 

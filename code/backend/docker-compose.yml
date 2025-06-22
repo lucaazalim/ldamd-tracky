@@ -211,13 +211,13 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USERNAME: tracky
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
-      # Firebase Cloud Messaging configuration
-      FCM_SERVER_KEY: ${FCM_SERVER_KEY}
       # Gmail SMTP configuration
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
       SMTP_USERNAME: ${SMTP_USERNAME}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
+      # Firebase Service Account Key Path (for FCM v1 API)
+      FIREBASE_SERVICE_ACCOUNT_KEY_PATH: ${FIREBASE_SERVICE_ACCOUNT_KEY_PATH}
     depends_on:
       consul:
         condition: service_healthy
