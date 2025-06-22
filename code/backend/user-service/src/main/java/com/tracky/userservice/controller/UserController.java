@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tracky.userservice.dto.DeviceTokenUpdateRequest;
 import com.tracky.userservice.dto.LoginRequest;
 import com.tracky.userservice.dto.LoginResponse;
 import com.tracky.userservice.dto.UserRegistrationRequest;
 import com.tracky.userservice.dto.UserResponse;
+import com.tracky.userservice.dto.UserUpdateRequest;
 import com.tracky.userservice.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -91,19 +91,19 @@ public class UserController {
     }
 
     /**
-     * Updates the device token for a user.
+     * Updates user information.
      * 
      * @param userId  The ID of the user to update
-     * @param request The device token update request
+     * @param request The user update request
      * @return Response with updated user information
      */
-    @PutMapping("/{userId}/device-token")
-    @Operation(summary = "Update device token", description = "Update device token for push notifications")
-    public ResponseEntity<UserResponse> updateDeviceToken(
+    @PutMapping("/{userId}")
+    @Operation(summary = "Update user", description = "Update user information (currently supports device token)")
+    public ResponseEntity<UserResponse> updateUser(
             @PathVariable UUID userId,
-            @Valid @RequestBody DeviceTokenUpdateRequest request) {
+            @Valid @RequestBody UserUpdateRequest request) {
         try {
-            UserResponse response = userService.updateDeviceToken(userId, request.getDeviceToken());
+            UserResponse response = userService.updateUser(userId, request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

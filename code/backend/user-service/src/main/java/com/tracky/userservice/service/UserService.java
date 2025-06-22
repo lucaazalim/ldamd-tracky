@@ -10,6 +10,7 @@ import com.tracky.userservice.dto.LoginRequest;
 import com.tracky.userservice.dto.LoginResponse;
 import com.tracky.userservice.dto.UserRegistrationRequest;
 import com.tracky.userservice.dto.UserResponse;
+import com.tracky.userservice.dto.UserUpdateRequest;
 import com.tracky.userservice.model.User;
 import com.tracky.userservice.repository.UserRepository;
 import com.tracky.userservice.security.JwtTokenProvider;
@@ -97,18 +98,22 @@ public class UserService {
     }
 
     /**
-     * Updates the device token for a user.
+     * Updates a user's information.
      * 
-     * @param userId      The ID of the user to update
-     * @param deviceToken The new device token
+     * @param userId  The ID of the user to update
+     * @param request The user update request
      * @return Updated user information response
      * @throws RuntimeException If the user is not found
      */
-    public UserResponse updateDeviceToken(UUID userId, String deviceToken) {
+    public UserResponse updateUser(UUID userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setDeviceToken(deviceToken);
+        // Update device token if provided
+        if (request.getDeviceToken() != null) {
+            user.setDeviceToken(request.getDeviceToken());
+        }
+
         User updatedUser = userRepository.save(user);
         return UserResponse.fromUser(updatedUser);
     }
