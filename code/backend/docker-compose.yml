@@ -216,8 +216,11 @@ services:
       SMTP_PORT: ${SMTP_PORT}
       SMTP_USERNAME: ${SMTP_USERNAME}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
-      # Firebase Service Account Key Path (for FCM v1 API)
-      FIREBASE_SERVICE_ACCOUNT_KEY_PATH: ${FIREBASE_SERVICE_ACCOUNT_KEY_PATH}
+      # Firebase Service Account Key Path (for FCM v1 API) - now points to mounted file
+      FIREBASE_SERVICE_ACCOUNT_KEY_PATH: /app/config/firebase-service-account-key.json
+    volumes:
+      # Mount the Firebase service account key file from host to container
+      - ${FIREBASE_SERVICE_ACCOUNT_KEY_PATH}:/app/config/firebase-service-account-key.json:ro
     depends_on:
       consul:
         condition: service_healthy
