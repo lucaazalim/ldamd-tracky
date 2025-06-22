@@ -13,23 +13,24 @@ participant "Campaign Service" as CS
 participant "Database" as DB
 participant "RabbitMQ" as RMQ
 
-participant "Firebase Cloud (Push Notif.)" as FCM
-participant "Sendgrid (Email)" as SG
+participant "FCM (Push Notifications)" as FCM
+participant "Email Service (Email)" as ES
 
 == Campaigns ==
 
-ADM -> CS: Triggers a campaign, providing\nmessage and filter (type of user and/or state)
+ADM -> CS: Triggers a campaign, providing\nmessage and user type
 activate CS
-CS -> US: GET /users?type={DRIVER or CUSTOMER}&state={MG, SP, RJ etc.}
-US --> CS: List of matched users
+CS -> US: GET /users?type={DRIVER or CUSTOMER}
+US --> CS: List of users
 loop users matched
-CS -> NS: Send notification
+CS -> RMQ: Publishes a notification request\nwith device token, email and message
+RMQ -> NS: Triggers a notification
 activate NS
 NS -> FCM: Send push notification
 NS -> SG: Send email notification
 deactivate NS
 end
-CS -> Database: Register campaign trigger
+CS -> Database: Register campaign with number of users reached
 deactivate CS
 
 @enduml
