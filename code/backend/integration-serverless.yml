@@ -1,0 +1,32 @@
+service: tracky-integration
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+
+resources:
+  Resources:
+    # Subscribe notification service campaign queue to campaign service SNS topic
+    CampaignNotificationSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: sqs
+        TopicArn: !ImportValue campaign-service-serverless-notification-topic-${self:provider.stage}
+        Endpoint: !ImportValue notification-service-serverless-campaign-queue-${self:provider.stage}
+
+    # Subscribe notification service order delivered queue to external order service SNS topic
+    # Note: This assumes an external order service publishes to an SNS topic
+    # OrderDeliveredSubscription:
+    #   Type: AWS::SNS::Subscription
+    #   Properties:
+    #     Protocol: sqs
+    #     TopicArn: !ImportValue order-service-order-delivered-topic-${self:provider.stage}
+    #     Endpoint: !ImportValue notification-service-serverless-order-delivered-queue-${self:provider.stage}
+
+  Outputs:
+    IntegrationStatus:
+      Description: Integration configuration status
+      Value: "Campaign and Notification services integrated successfully"
