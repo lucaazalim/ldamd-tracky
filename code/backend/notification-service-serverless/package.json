@@ -1,0 +1,20 @@
+{
+  "name": "notification-service-serverless",
+  "version": "1.0.0",
+  "description": "Serverless Notification Service for Tracky",
+  "main": "serverless.yml",
+  "scripts": {
+    "build": "./build.sh",
+    "deploy": "sls deploy",
+    "deploy:dev": "sls deploy --stage dev",
+    "deploy:prod": "sls deploy --stage prod",
+    "remove": "sls remove",
+    "logs:campaign": "sls logs -f processCampaignNotification",
+    "logs:order": "sls logs -f processOrderDeliveredEvent",
+    "offline": "sls offline"
+  },
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-offline": "^13.3.0"
+  }
+}

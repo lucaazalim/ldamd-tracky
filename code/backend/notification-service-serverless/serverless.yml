@@ -1,0 +1,164 @@
+service: notification-service-serverless
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: java21
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  architecture: x86_64
+  memorySize: 1024
+  timeout: 30
+  
+  environment:
+    STAGE: ${self:provider.stage}
+    REGION: ${self:provider.region}
+    NOTIFICATION_TABLE: ${self:custom.notificationTable}
+    USER_SERVICE_URL: ${self:custom.userServiceUrl}
+    FIREBASE_CONFIG: ${env:FIREBASE_CONFIG}
+    SMTP_HOST: ${env:SMTP_HOST, 'smtp.gmail.com'}
+    SMTP_PORT: ${env:SMTP_PORT, '587'}
+    SMTP_USERNAME: ${env:SMTP_USERNAME}
+    SMTP_PASSWORD: ${env:SMTP_PASSWORD}
+    
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:Query
+        - dynamodb:Scan
+      Resource:
+        - !GetAtt NotificationTable.Arn
+        - !Sub "${NotificationTable.Arn}/index/*"
+    - Effect: Allow
+      Action:
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueAttributes
+      Resource:
+        - !GetAtt CampaignNotificationQueue.Arn
+        - !GetAtt OrderDeliveredQueue.Arn
+    - Effect: Allow
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "*"
+
+custom:
+  notificationTable: ${self:service}-notifications-${self:provider.stage}
+  userServiceUrl: https://api.tracky.com/users # Replace with actual user service URL
+
+functions:
+  processCampaignNotification:
+    handler: com.tracky.notificationservice.lambda.ProcessCampaignNotificationHandler
+    package:
+      artifact: target/notification-service-serverless.jar
+    events:
+      - sqs:
+          arn: !GetAtt CampaignNotificationQueue.Arn
+          batchSize: 10
+          maximumBatchingWindowInSeconds: 5
+    environment:
+      FUNCTION_NAME: processCampaignNotification
+
+  processOrderDeliveredEvent:
+    handler: com.tracky.notificationservice.lambda.ProcessOrderDeliveredHandler
+    package:
+      artifact: target/notification-service-serverless.jar
+    events:
+      - sqs:
+          arn: !GetAtt OrderDeliveredQueue.Arn
+          batchSize: 10
+          maximumBatchingWindowInSeconds: 5
+    environment:
+      FUNCTION_NAME: processOrderDeliveredEvent
+
+resources:
+  Resources:
+    NotificationTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.notificationTable}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: UserIndex
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+
+    CampaignNotificationQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-campaign-notifications-${self:provider.stage}
+        VisibilityTimeoutSeconds: 300
+        MessageRetentionPeriod: 1209600
+        ReceiveMessageWaitTimeSeconds: 20
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt CampaignNotificationDLQ.Arn
+          maxReceiveCount: 3
+
+    CampaignNotificationDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-campaign-notifications-dlq-${self:provider.stage}
+        MessageRetentionPeriod: 1209600
+
+    OrderDeliveredQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-order-delivered-${self:provider.stage}
+        VisibilityTimeoutSeconds: 300
+        MessageRetentionPeriod: 1209600
+        ReceiveMessageWaitTimeSeconds: 20
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt OrderDeliveredDLQ.Arn
+          maxReceiveCount: 3
+
+    OrderDeliveredDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-order-delivered-dlq-${self:provider.stage}
+        MessageRetentionPeriod: 1209600
+
+  Outputs:
+    NotificationTable:
+      Description: DynamoDB table for notifications
+      Value: !Ref NotificationTable
+      Export:
+        Name: ${self:service}-notification-table-${self:provider.stage}
+        
+    CampaignNotificationQueueUrl:
+      Description: SQS Queue URL for campaign notifications
+      Value: !Ref CampaignNotificationQueue
+      Export:
+        Name: ${self:service}-campaign-queue-${self:provider.stage}
+        
+    OrderDeliveredQueueUrl:
+      Description: SQS Queue URL for order delivered events
+      Value: !Ref OrderDeliveredQueue
+      Export:
+        Name: ${self:service}-order-delivered-queue-${self:provider.stage}
+
+plugins:
+  - serverless-offline
