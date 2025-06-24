@@ -50,6 +50,7 @@ dependencies:
   geocoding: ^2.1.0
   firebase_core: ^2.31.0
   firebase_messaging: ^14.7.9
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
