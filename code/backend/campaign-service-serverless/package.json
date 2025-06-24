@@ -1,0 +1,19 @@
+{
+  "name": "campaign-service-serverless",
+  "version": "1.0.0",
+  "description": "Serverless Campaign Service for Tracky",
+  "main": "serverless.yml",
+  "scripts": {
+    "build": "./build.sh",
+    "deploy": "sls deploy",
+    "deploy:dev": "sls deploy --stage dev",
+    "deploy:prod": "sls deploy --stage prod",
+    "remove": "sls remove",
+    "logs": "sls logs -f createCampaign",
+    "offline": "sls offline"
+  },
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-offline": "^13.3.0"
+  }
+}
