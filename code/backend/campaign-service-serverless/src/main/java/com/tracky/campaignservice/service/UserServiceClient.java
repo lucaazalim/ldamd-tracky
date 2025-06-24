@@ -14,11 +14,11 @@ import java.util.List;
 
 @Slf4j
 public class UserServiceClient {
-    
+
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final String userServiceUrl;
-    
+
     public UserServiceClient(String userServiceUrl) {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
@@ -26,7 +26,7 @@ public class UserServiceClient {
         this.objectMapper = new ObjectMapper();
         this.userServiceUrl = userServiceUrl;
     }
-    
+
     public List<UserDto> getUsersByType(String userType) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -35,14 +35,15 @@ public class UserServiceClient {
                     .timeout(Duration.ofSeconds(30))
                     .GET()
                     .build();
-                    
-            HttpResponse<String> response = httpClient.send(request, 
+
+            HttpResponse<String> response = httpClient.send(request,
                     HttpResponse.BodyHandlers.ofString());
-                    
+
             if (response.statusCode() == 200) {
-                return objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {});
+                return objectMapper.readValue(response.body(), new TypeReference<List<UserDto>>() {
+                });
             } else {
-                log.error("Failed to get users by type: {}. Status: {}, Body: {}", 
+                log.error("Failed to get users by type: {}. Status: {}, Body: {}",
                         userType, response.statusCode(), response.body());
                 return List.of();
             }

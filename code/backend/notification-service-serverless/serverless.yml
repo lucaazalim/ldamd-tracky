@@ -1,6 +1,6 @@
 service: notification-service-serverless
 
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -10,7 +10,7 @@ provider:
   architecture: x86_64
   memorySize: 1024
   timeout: 30
-  
+
   environment:
     STAGE: ${self:provider.stage}
     REGION: ${self:provider.region}
@@ -21,7 +21,7 @@ provider:
     SMTP_PORT: ${env:SMTP_PORT, '587'}
     SMTP_USERNAME: ${env:SMTP_USERNAME}
     SMTP_PASSWORD: ${env:SMTP_PASSWORD}
-    
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -147,13 +147,13 @@ resources:
       Value: !Ref NotificationTable
       Export:
         Name: ${self:service}-notification-table-${self:provider.stage}
-        
+
     CampaignNotificationQueueUrl:
       Description: SQS Queue URL for campaign notifications
       Value: !Ref CampaignNotificationQueue
       Export:
         Name: ${self:service}-campaign-queue-${self:provider.stage}
-        
+
     OrderDeliveredQueueUrl:
       Description: SQS Queue URL for order delivered events
       Value: !Ref OrderDeliveredQueue

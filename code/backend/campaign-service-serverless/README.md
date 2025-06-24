@@ -40,6 +40,7 @@ export USER_SERVICE_URL="https://your-user-service-url.com"
 ## Deployment
 
 ### Quick Deployment
+
 ```bash
 # Deploy to dev stage
 ./deploy.sh
@@ -49,6 +50,7 @@ export USER_SERVICE_URL="https://your-user-service-url.com"
 ```
 
 ### Manual Deployment
+
 ```bash
 # Install dependencies
 npm install

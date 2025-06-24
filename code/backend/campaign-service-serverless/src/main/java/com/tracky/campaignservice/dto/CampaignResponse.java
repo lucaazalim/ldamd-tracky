@@ -13,26 +13,26 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CampaignResponse {
-    
+
     @JsonProperty("id")
     private String id;
-    
+
     @JsonProperty("message")
     private String message;
-    
+
     @JsonProperty("userType")
     private String userType;
-    
+
     @JsonProperty("usersReached")
     private Integer usersReached;
-    
+
     @JsonProperty("status")
     private Campaign.CampaignStatus status;
-    
+
     @JsonProperty("createdAt")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
-    
+
     @JsonProperty("updatedAt")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;

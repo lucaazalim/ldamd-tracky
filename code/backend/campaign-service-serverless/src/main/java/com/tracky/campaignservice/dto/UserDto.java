@@ -9,19 +9,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    
+
     @JsonProperty("id")
     private String id;
-    
+
     @JsonProperty("name")
     private String name;
-    
+
     @JsonProperty("email")
     private String email;
-    
+
     @JsonProperty("deviceToken")
     private String deviceToken;
-    
+
     @JsonProperty("userType")
     private String userType;
 }

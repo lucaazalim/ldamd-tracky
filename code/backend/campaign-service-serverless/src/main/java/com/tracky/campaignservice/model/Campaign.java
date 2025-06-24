@@ -1,15 +1,16 @@
 package com.tracky.campaignservice.model;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -40,7 +41,7 @@ public class Campaign {
         return id;
     }
 
-    @DynamoDbSecondaryPartitionKey(indexNames = "CreatedAtIndex")  
+    @DynamoDbSecondaryPartitionKey(indexNames = "CreatedAtIndex")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     public LocalDateTime getCreatedAt() {
         return createdAt;

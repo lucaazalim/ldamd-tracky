@@ -7,6 +7,7 @@ This directory contains the serverless versions of the Tracky microservices, con
 ### Converted Services
 
 1. **Campaign Service Serverless** (`campaign-service-serverless/`)
+
    - Manages marketing campaigns
    - API Gateway + Lambda functions
    - DynamoDB for data storage
@@ -20,16 +21,16 @@ This directory contains the serverless versions of the Tracky microservices, con
 
 ## Architecture Comparison
 
-| Component | Original Microservice | Serverless Version |
-|-----------|----------------------|-------------------|
-| **Compute** | Spring Boot + Docker | AWS Lambda |
-| **Database** | PostgreSQL | DynamoDB |
-| **Messaging** | RabbitMQ | SNS + SQS |
-| **API** | Spring Web | API Gateway |
-| **Service Discovery** | Consul | Direct HTTPS calls |
-| **Configuration** | Spring Profiles | Environment Variables |
-| **Scaling** | Manual/Auto-scaling groups | Automatic (Lambda) |
-| **Deployment** | Docker Compose | Serverless Framework |
+| Component             | Original Microservice      | Serverless Version    |
+| --------------------- | -------------------------- | --------------------- |
+| **Compute**           | Spring Boot + Docker       | AWS Lambda            |
+| **Database**          | PostgreSQL                 | DynamoDB              |
+| **Messaging**         | RabbitMQ                   | SNS + SQS             |
+| **API**               | Spring Web                 | API Gateway           |
+| **Service Discovery** | Consul                     | Direct HTTPS calls    |
+| **Configuration**     | Spring Profiles            | Environment Variables |
+| **Scaling**           | Manual/Auto-scaling groups | Automatic (Lambda)    |
+| **Deployment**        | Docker Compose             | Serverless Framework  |
 
 ## Benefits of Serverless Architecture
 

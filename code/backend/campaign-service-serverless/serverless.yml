@@ -1,6 +1,6 @@
 service: campaign-service-serverless
 
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -10,14 +10,14 @@ provider:
   architecture: x86_64
   memorySize: 1024
   timeout: 30
-  
+
   environment:
     STAGE: ${self:provider.stage}
     REGION: ${self:provider.region}
     CAMPAIGN_TABLE: ${self:custom.campaignTable}
     USER_SERVICE_URL: ${self:custom.userServiceUrl}
     SNS_TOPIC_ARN: !Ref CampaignNotificationTopic
-    
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -139,13 +139,13 @@ resources:
       Value: !Ref CampaignTable
       Export:
         Name: ${self:service}-campaign-table-${self:provider.stage}
-        
+
     CampaignNotificationTopicArn:
       Description: SNS Topic ARN for campaign notifications
       Value: !Ref CampaignNotificationTopic
       Export:
         Name: ${self:service}-notification-topic-${self:provider.stage}
-        
+
     CampaignNotificationQueueUrl:
       Description: SQS Queue URL for campaign notifications
       Value: !Ref CampaignNotificationQueue

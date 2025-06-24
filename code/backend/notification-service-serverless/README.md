@@ -18,7 +18,7 @@ This is the serverless version of the Notification Service, converted from a Spr
 ## Infrastructure
 
 - **DynamoDB Table**: `notification-service-notifications-{stage}`
-- **SQS Queues**: 
+- **SQS Queues**:
   - Campaign notifications queue
   - Order delivered events queue
   - Dead letter queues for failed messages
@@ -79,9 +79,11 @@ sls deploy --stage dev --region us-east-1
 The service processes messages from SQS queues:
 
 ### Campaign Notifications
+
 - **Queue**: `notification-service-campaign-notifications-{stage}`
 - **Handler**: `processCampaignNotification`
 - **Message Format**:
+
 ```json
 {
   "deviceToken": "fcm-device-token",
@@ -92,9 +94,11 @@ The service processes messages from SQS queues:
 ```
 
 ### Order Delivered Events
+
 - **Queue**: `notification-service-order-delivered-{stage}`
 - **Handler**: `processOrderDeliveredEvent`
 - **Message Format**:
+
 ```json
 {
   "orderId": "uuid",
@@ -109,7 +113,7 @@ The service processes messages from SQS queues:
 
 ## Monitoring
 
-- CloudWatch Logs: 
+- CloudWatch Logs:
   - `sls logs -f processCampaignNotification --tail`
   - `sls logs -f processOrderDeliveredEvent --tail`
 - CloudWatch Metrics: Available in AWS Console
