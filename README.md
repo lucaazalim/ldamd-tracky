@@ -77,7 +77,7 @@ For detailed setup instructions, please refer to:
 
 ## Demo Video
 
-![Demonstração da aplicação Tracky](assets/demo.gif)
+<img src="assets/demo.gif" alt="Demonstração da aplicação Tracky" height="600">
 
 ## Screenshots
 
