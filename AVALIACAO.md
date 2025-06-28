@@ -1,8 +1,6 @@
 # Orientações para Correção (PT-BR)
 
-Olá, Hugo!
-
-Preparamos este documento para orientá-lo sobre como avaliar o que foi desenvolvido para esta última entrega do trabalho de Laboratório de Desenvolvimento de Aplicações Móveis e Distribuídas.
+Este documento traz orientações sobre como avaliar o que foi desenvolvido para esta última entrega do trabalho de Laboratório de Desenvolvimento de Aplicações Móveis e Distribuídas.
 
 ---
 
@@ -103,5 +101,4 @@ Para situações específicas em que uma informação é necessária de forma im
 
 Este critério não foi implementado devido a limitações de tempo. A abordagem sugerida no enunciado previa a comunicação direta entre funções Lambda e os microsserviços, o que exigiria o provisionamento completo da infraestrutura na AWS, incluindo o deploy dos serviços em contêineres EC2 e a configuração de rede necessária. Diante do prazo restrito de uma semana, essa implementação se mostrou inviável.
 
-> [!NOTE]
-> **23/06/2025**: Em tempo, fizemos uma tentativa de implementação da arquitetura serverless, fazendo uso das ferramentas disponibilizadas pela AWS e pelo Serverless Framework para execução local. O código está disponível na branch `serverless` do repositório.
+> [!NOTE] > **23/06/2025**: Em tempo, fizemos uma tentativa de implementação da arquitetura serverless, fazendo uso das ferramentas disponibilizadas pela AWS e pelo Serverless Framework para execução local. O código está disponível na branch `serverless` do repositório.

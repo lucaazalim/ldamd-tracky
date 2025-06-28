@@ -1,18 +1,83 @@
-> [!NOTE]
-> Hugo, pedimos que, por gentileza, consulte o arquivo [AVALIACAO.md](/AVALIACAO.md) para obter informações importantes que podem auxiliar na avaliação. Obrigado!
-
 # Tracky
 
-This project was developed as an assignment for the Laboratory for Mobile and Distributed Application Development course at PUC Minas University by:
+**Tracky** is a delivery tracking system prototype built for academic purposes as part of the Laboratory for Mobile and Distributed Application Development course at PUC Minas University. This project demonstrates modern software architecture principles, microservices design, and cross-platform mobile development.
+
+## About the Project
+
+Tracky is a delivery management system that connects customers who need packages delivered with drivers who can fulfill those deliveries. The system provides real-time tracking, route optimization, automated notifications, and a mobile experience for both user types.
+
+### Key Features
+
+- **Customer Experience**: Create orders, track deliveries in real-time, receive notifications, and manage delivery preferences
+- **Driver Experience**: Accept orders, update delivery status, optimize routes, and manage driver profiles
+- **Real-time Tracking**: Live location updates with interactive maps and route visualization
+- **Smart Notifications**: Push notifications and email alerts for order status changes
+- **Marketing Campaigns**: Simple campaign management for promotions and customer engagement
+
+### Technology Stack
+
+#### Backend (Microservices Architecture)
+
+- **Java 17** with **Spring Boot** framework
+- **HashiCorp Consul** for service discovery and configuration
+- **RabbitMQ** for asynchronous messaging between services
+- **Docker** and **Docker Compose** for containerization
+- **Maven** for dependency management and build automation
+- **JWT** for secure authentication
+- **Google Maps API** for route calculation and optimization
+- **Firebase Cloud Messaging** for push notifications
+- **SMTP** for email notifications
+
+#### Mobile Application (Cross-platform)
+
+- **Flutter** framework with **Dart** programming language
+- **Provider** for state management
+- **Google Maps** integration for interactive mapping
+- **Geolocator** for real-time location services
+
+### Architecture
+
+The system follows a **microservices architecture** with service discovery, providing scalability and maintainability:
+
+![Tracky Architecture](assets/architecture.png)
+
+The backend consists of specialized services:
+
+- **API Gateway**: Single entry point routing requests to appropriate services
+- **User Service**: Authentication and user management
+- **Order Service**: Order creation and lifecycle management
+- **Tracking Service**: Real-time location tracking and updates
+- **Campaign Service**: Marketing campaign management and execution
+- **Notification Service**: Event-driven push and email notifications
+
+### Academic Purpose
+
+This project was developed as an **educational assignment** to demonstrate:
+
+- Modern microservices architecture design
+- Cross-platform mobile development with Flutter
+- Service discovery and distributed systems concepts
+- Real-time data synchronization and messaging
+- Integration with third-party APIs and services
+- Docker containerization and deployment strategies
+
+## Team Members
 
 - Fernando Ibrahim ([@FernandoIbrahim](https://github.com/FernandoIbrahim))
 - Jhonata Dias ([@jhonatasdias](https://github.com/jhonatasdias))
 - Pedro Braga ([@bragap](https://github.com/bragap))
 - Luca Azalim ([@lucaazalim](https://github.com/lucaazalim))
 
+## Getting Started
+
+For detailed setup instructions, please refer to:
+
+- **Backend Setup**: [Backend README](code/backend/README.md) - Complete guide for running the microservices
+- **Mobile Setup**: [Mobile README](code/mobile/README.md) - Flutter app installation and configuration
+
 ## Demo Video
 
-<img src="assets/demo.gif" alt="Demonstração da aplicação Tracky" height="600">
+![Demonstração da aplicação Tracky](assets/demo.gif)
 
 ## Screenshots
 
